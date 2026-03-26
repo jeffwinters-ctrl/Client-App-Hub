@@ -1168,42 +1168,95 @@ app.post('/api/industry-feed', async (req, res) => {
     const { clientConfig } = req.body;
     if (!clientConfig) return res.status(400).json({ error: 'Missing client config' });
 
-    const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    // Build a smart search query from the client profile
+    const queryParts = [
+      clientConfig.productDescription,
+      clientConfig.industry,
+      clientConfig.context
+    ].filter(Boolean).join('. ');
 
-    const systemPrompt = `You are a sales intelligence analyst who curates industry news and trends for B2B sales teams. Your job is to identify the most relevant current trends, developments, and talking points in a specific industry and frame them as actionable sales intelligence.
+    const searchTerms = clientConfig.productDescription
+      ? clientConfig.productDescription.split(/[,.]/).slice(0, 2).join(' ').trim()
+      : (clientConfig.context || clientConfig.companyName || '').split('.')[0];
+
+    // Fetch real articles via Google News RSS
+    let articles = [];
+    const queries = [searchTerms];
+    if (clientConfig.industry && clientConfig.industry !== 'general') {
+      queries.push(clientConfig.industry + ' industry news');
+    }
+
+    for (const q of queries) {
+      if (articles.length >= 10) break;
+      try {
+        const rssUrl = 'https://news.google.com/rss/search?q=' + encodeURIComponent(q) + '&hl=en-US&gl=US&ceid=US:en';
+        const rssRes = await fetch(rssUrl, {
+          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SapperBot/1.0)' },
+          signal: AbortSignal.timeout(8000)
+        });
+        const rssXml = await rssRes.text();
+        const items = rssXml.split('<item>').slice(1, 8);
+        items.forEach(item => {
+          const title = (item.match(/<title><!\[CDATA\[(.*?)\]\]>/) || item.match(/<title>(.*?)<\/title>/) || [])[1] || '';
+          const link = (item.match(/<link\/>(.*?)</) || item.match(/<link>(.*?)<\/link>/) || [])[1] || '';
+          const pubDate = (item.match(/<pubDate>(.*?)<\/pubDate>/) || [])[1] || '';
+          const source = (item.match(/<source[^>]*>(.*?)<\/source>/) || [])[1] || '';
+          if (title && link) {
+            articles.push({
+              title: title.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/<!\[CDATA\[|\]\]>/g, ''),
+              link: link.trim(),
+              source,
+              date: pubDate ? new Date(pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''
+            });
+          }
+        });
+      } catch (e) {
+        console.error('RSS fetch error for query "' + q + '":', e.message);
+      }
+    }
+
+    // Deduplicate by title
+    const seen = new Set();
+    articles = articles.filter(a => {
+      const key = a.title.toLowerCase().substring(0, 60);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).slice(0, 10);
+
+    if (articles.length === 0) {
+      return res.json({ articles: [], feed_context: 'No recent articles found. Try refreshing later.' });
+    }
+
+    const systemPrompt = `You are a sales intelligence analyst. Given a list of real news articles and a company profile, curate the most relevant articles for this sales team. For each article, write a summary and a "sales angle."
 
 CLIENT CONTEXT:
 ${buildClientContext(clientConfig)}
 
-Today's date: ${today}
-
 Return ONLY valid JSON:
 {
-  "feed_context": "Brief 1-sentence description of the industry/topics covered in this feed",
+  "feed_context": "Brief 1-sentence description of the industry/topics covered",
   "articles": [
     {
-      "title": "Compelling headline about a real, current industry trend or development",
-      "link": "",
-      "source": "Industry source (e.g. Industry Week, Gartner, McKinsey, Bloomberg, relevant trade pub)",
-      "date": "${today}",
-      "summary": "2-3 sentence summary of this trend/development — what's happening and why it matters",
-      "sales_angle": "1-2 actionable sentences for sales reps — how to use this in prospecting, discovery calls, or deal conversations. Be very specific."
+      "title": "Exact original article title",
+      "link": "Exact original URL",
+      "source": "Source name",
+      "date": "Date string",
+      "summary": "2-sentence summary of what the article is about",
+      "sales_angle": "1-2 actionable sentences — how a rep can use this in conversations. Be specific: mention buyer types, objections it counters, or opportunities it creates."
     }
   ]
 }
 
 RULES:
-- Generate 6-8 items covering a MIX of: industry trends, market shifts, regulatory changes, technology developments, competitor moves, buying pattern changes, and economic factors
-- Every item must be directly relevant to what this company sells and who they sell to
-- Headlines should be specific and credible — like real trade publication headlines
-- Sales angles must be actionable: "Use this when talking to [specific buyer type] who is concerned about [specific issue]" or "This counters the objection that [common objection]"
-- Include a mix of macro trends and tactical insights
-- Source names should be realistic and relevant to the industry (trade publications, analyst firms, business press)
-- Set link to empty string for all articles
-- Order by most actionable for sales reps first`;
+- Keep the 6-8 MOST relevant articles — skip anything not useful for this sales team
+- Preserve the exact title, link, source, and date from the input
+- Summaries should be factual and concise
+- Sales angles must be specific and actionable
+- Order by most useful to the sales team first`;
 
-    const userPrompt = `Generate a curated industry intelligence feed for this company's sales team. Focus on trends and developments that directly impact their sales conversations and prospecting.`;
-    const raw = await callClaude(systemPrompt, userPrompt, 2500);
+    const userPrompt = 'Articles:\n' + articles.map((a, i) => (i + 1) + '. "' + a.title + '" — ' + a.source + ' (' + a.date + ') [' + a.link + ']').join('\n');
+    const raw = await callClaude(systemPrompt, userPrompt, 2000);
     const result = extractJSON(raw);
     res.json(result);
   } catch (e) {
