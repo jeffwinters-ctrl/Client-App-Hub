@@ -291,6 +291,102 @@ app.post('/api/admin/set-password', requireAdmin, async (req, res) => {
   }
 });
 
+// ─── GENERATE CUSTOM DEALCHECK CONFIG ────────────────────
+
+app.post('/api/admin/generate-config', requireAdmin, async (req, res) => {
+  try {
+    const { slug } = req.body;
+    const client = await getClient(slug);
+    if (!client) return res.status(404).json({ error: 'Client not found' });
+
+    const clientCtx = buildClientContext(client);
+    const baseConfig = loadIndustry(client.industry) || loadIndustry('general');
+    if (!baseConfig) return res.status(500).json({ error: 'No base industry config found' });
+
+    const questionKeys = baseConfig.questions.map(q => `- ${q.key}: "${q.text}" (${q.type})`).join('\n');
+
+    const systemPrompt = `You are a sales enablement specialist who customizes AI coaching tools for specific companies. Given a company profile, generate customizations that make every dropdown, example, and coaching text feel specifically built for this company's sales team.
+
+Return ONLY valid JSON matching this schema:
+{
+  "label": "Their specific industry/market label (e.g. 'Office Furniture', 'IT Consulting')",
+  "tagline": "Short tagline (e.g. 'For Reps Who Sell [Their Product Category]')",
+  "headline": "3-line headline with <br> and <em> tags (e.g. Is this deal<br><em>real</em> or just<br>a wish list?)",
+  "description": "2-3 sentences describing what DealCheck does for them specifically. Mention their product/market.",
+  "industryKnowledge": "3-4 paragraphs of sales knowledge specific to their market. Include: typical deal sizes, cycle lengths, buyer dynamics, common objections, competitive landscape, and what separates wins from losses. Write like a veteran coach in their space.",
+  "personas": {
+    "Persona 1 Label": "1-2 paragraph description of this buyer type — how they think, what they care about, how to win them...",
+    "Persona 2 Label": "...",
+    "Persona 3 Label": "...",
+    "Persona 4 Label": "...",
+    "Persona 5 Label": "...",
+    "Persona 6 Label": "..."
+  },
+  "verticals": {
+    "Vertical 1 Label": "1-2 paragraph description of selling into this type of organization...",
+    "Vertical 2 Label": "...",
+    "Vertical 3 Label": "...",
+    "Vertical 4 Label": "...",
+    "Vertical 5 Label": "...",
+    "Vertical 6 Label": "..."
+  },
+  "questionUpdates": [
+    { "key": "ctx", "placeholder": "Realistic example using their product...", "hint": "Updated hint for their context..." }
+  ]
+}
+
+RULES:
+- Personas must be the 6 buyer types THIS company's reps actually encounter (use their target buyers info)
+- Verticals must be the 6 organization types they most commonly sell into
+- Question placeholders must reference their actual product/service with realistic scenarios
+- Industry knowledge must be specific to their market, not generic B2B advice
+- Everything should make a sales rep think "this was built just for us"
+- Only include questionUpdates for questions where a custom placeholder adds real value (skip generic ones)`;
+
+    const raw = await callClaude(systemPrompt, `Company Profile:\n${clientCtx}\n\nQuestion keys to customize:\n${questionKeys}`, 6000);
+    const overrides = extractJSON(raw);
+
+    const customConfig = JSON.parse(JSON.stringify(baseConfig));
+    if (overrides.label) customConfig.label = overrides.label;
+    if (overrides.tagline) customConfig.tagline = overrides.tagline;
+    if (overrides.headline) customConfig.headline = overrides.headline;
+    if (overrides.description) customConfig.description = overrides.description;
+    if (overrides.industryKnowledge) customConfig.industryKnowledge = overrides.industryKnowledge;
+    if (overrides.personas) {
+      customConfig.personas = overrides.personas;
+      const personaQ = customConfig.questions.find(q => q.key === 'persona');
+      if (personaQ) personaQ.options = Object.keys(overrides.personas);
+    }
+    if (overrides.verticals) {
+      customConfig.verticals = overrides.verticals;
+      const verticalQ = customConfig.questions.find(q => q.key === 'vertical');
+      if (verticalQ) verticalQ.options = Object.keys(overrides.verticals);
+    }
+    if (overrides.questionUpdates) {
+      overrides.questionUpdates.forEach(u => {
+        const q = customConfig.questions.find(q => q.key === u.key);
+        if (q) {
+          if (u.placeholder) q.placeholder = u.placeholder;
+          if (u.hint) q.hint = u.hint;
+        }
+      });
+    }
+
+    const updatedClient = { ...client, customConfig };
+    if (supabase) {
+      const { error } = await supabase.from('clients').update({
+        data: updatedClient, updated_at: new Date().toISOString()
+      }).eq('slug', slug);
+      if (error) throw error;
+    }
+
+    res.json({ success: true });
+  } catch (e) {
+    console.error('Generate config error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // ─── WEBSITE ANALYZER ────────────────────────────────────
 
 app.post('/api/admin/analyze-website', requireAdmin, async (req, res) => {
@@ -424,7 +520,7 @@ app.get('/:slug/dealcheck', requireAuth, async (req, res) => {
   const client = await getClient(req.params.slug);
   if (!client) return res.status(404).send(renderTemplate('404.html', {}));
   if (!client.apps.includes('dealcheck')) return res.status(403).send('App not available');
-  let industry = loadIndustry(client.industry);
+  let industry = client.customConfig || loadIndustry(client.industry);
   if (!industry) industry = loadIndustry('general');
   if (!industry) return res.status(500).send('Industry config missing');
   logEvent(client.slug, 'dealcheck', 'app_open', {}, req);

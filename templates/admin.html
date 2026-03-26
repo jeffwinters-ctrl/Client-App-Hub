@@ -314,11 +314,13 @@
                 <div class="detail-label">Initial Password</div>
                 <input class="cf-input" type="text" id="cf_password" placeholder="Set a login password for this client (min 6 chars)">
               </div>
-              <div style="display:flex;gap:10px;">
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
                 <button type="submit" class="btn-set-pw" id="btnSaveClient">Save Client</button>
+                <button type="button" class="btn-add-client" id="btnGenConfig" style="display:none;" onclick="generateConfig()">Generate Custom DealCheck</button>
                 <button type="button" class="btn-set-pw" style="background:transparent;color:var(--ink-light);border:1px solid var(--rule);" onclick="hideAddClient()">Cancel</button>
               </div>
               <div class="pw-msg" id="clientFormMsg"></div>
+              <div class="pw-msg" id="genConfigMsg" style="margin-top:4px;"></div>
             </form>
           </div>
         </div>
@@ -498,7 +500,7 @@
           <td><strong>${c.companyName}</strong></td>
           <td><code>${c.slug}</code></td>
           <td>${c.industry}</td>
-          <td>${c.apps.map(a => `<span class="badge badge-green">${a}</span> `).join('')}</td>
+          <td>${c.apps.map(a => `<span class="badge badge-green">${a}</span> `).join('')}${c.customConfig ? '<span class="badge badge-amber" title="Custom DealCheck config active">custom</span>' : ''}</td>
           <td>
             <button class="btn-set-pw" style="font-size:0.75rem;padding:4px 12px;" onclick="showClientDetail('${c.slug}')">Manage</button>
             <button class="btn-set-pw" style="font-size:0.75rem;padding:4px 12px;" onclick="editClient('${c.slug}')">Edit</button>
@@ -532,6 +534,8 @@
       document.getElementById('cf_password').value = '';
       document.getElementById('clientFormMsg').textContent = '';
       document.getElementById('analyzeMsg').textContent = '';
+      document.getElementById('genConfigMsg').textContent = '';
+      document.getElementById('btnGenConfig').style.display = 'none';
       document.getElementById('clientFormWrap').style.display = 'block';
       document.getElementById('cf_companyName').focus();
     }
@@ -545,7 +549,9 @@
       const c = CLIENTS.find(cl => cl.slug === slug);
       if (!c) return;
       document.getElementById('cf_editing').value = slug;
-      document.getElementById('formTitle').textContent = 'Edit Client: ' + c.companyName;
+      document.getElementById('formTitle').textContent = 'Edit Client: ' + c.companyName + (c.customConfig ? ' (Custom DealCheck Active)' : '');
+      document.getElementById('btnGenConfig').style.display = 'inline-block';
+      document.getElementById('genConfigMsg').textContent = c.customConfig ? 'Custom DealCheck config is active. Click to regenerate.' : '';
       document.getElementById('cf_companyName').value = c.companyName;
       document.getElementById('cf_slug').value = c.slug;
       document.getElementById('cf_slug').setAttribute('readonly', 'true');
@@ -607,6 +613,29 @@
         btn.disabled = false;
         btn.textContent = 'Analyze Website';
       }
+    }
+
+    async function generateConfig() {
+      const slug = document.getElementById('cf_editing').value;
+      if (!slug) return;
+      const msg = document.getElementById('genConfigMsg');
+      const btn = document.getElementById('btnGenConfig');
+      btn.disabled = true;
+      btn.textContent = 'Generating...';
+      msg.textContent = 'Building custom personas, verticals, and questions — this takes 20-30 seconds...';
+      msg.style.color = 'var(--ink-light)';
+      try {
+        const res = await fetch('/api/admin/generate-config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug })
+        });
+        const data = await res.json();
+        if (data.error) { msg.textContent = 'Error: ' + data.error; msg.style.color = 'var(--red)'; }
+        else { msg.textContent = 'Custom DealCheck config generated! Their reps will now see personalized questions, personas, and examples.'; msg.style.color = 'var(--green)'; }
+      } catch (e) { msg.textContent = 'Error: ' + e.message; msg.style.color = 'var(--red)'; }
+      btn.disabled = false;
+      btn.textContent = 'Generate Custom DealCheck';
     }
 
     async function saveClient(e) {
