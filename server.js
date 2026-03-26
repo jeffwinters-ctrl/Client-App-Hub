@@ -1168,6 +1168,19 @@ app.post('/api/industry-feed', async (req, res) => {
     const { clientConfig } = req.body;
     if (!clientConfig) return res.status(400).json({ error: 'Missing client config' });
 
+    // Check Supabase cache (4-hour TTL)
+    if (supabase && clientConfig.slug) {
+      try {
+        const { data: row } = await supabase.from('clients').select('data').eq('slug', clientConfig.slug).single();
+        if (row?.data?._feedCache && row?.data?._feedCacheTime) {
+          const age = Date.now() - new Date(row.data._feedCacheTime).getTime();
+          if (age < 4 * 60 * 60 * 1000) {
+            return res.json(row.data._feedCache);
+          }
+        }
+      } catch (e) { /* cache miss, continue */ }
+    }
+
     // Build a smart search query from the client profile
     const queryParts = [
       clientConfig.productDescription,
@@ -1258,6 +1271,18 @@ RULES:
     const userPrompt = 'Articles:\n' + articles.map((a, i) => (i + 1) + '. "' + a.title + '" — ' + a.source + ' (' + a.date + ') [' + a.link + ']').join('\n');
     const raw = await callClaude(systemPrompt, userPrompt, 2000);
     const result = extractJSON(raw);
+
+    // Cache result in Supabase
+    if (supabase && clientConfig.slug) {
+      try {
+        const client = await getClient(clientConfig.slug);
+        if (client) {
+          const updated = { ...client, _feedCache: result, _feedCacheTime: new Date().toISOString() };
+          await supabase.from('clients').update({ data: updated, updated_at: new Date().toISOString() }).eq('slug', clientConfig.slug);
+        }
+      } catch (e) { console.error('Feed cache write error:', e.message); }
+    }
+
     res.json(result);
   } catch (e) {
     console.error('Industry feed error:', e);
