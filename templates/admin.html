@@ -693,9 +693,27 @@
           });
         }
 
-        msg.textContent = editing ? 'Client updated! Reloading...' : 'Client added! Reloading...';
-        msg.style.color = 'var(--green)';
-        setTimeout(() => window.location.reload(), 1000);
+        const savedSlug = payload.slug || editing;
+        const hasProfile = (payload.productDescription && payload.productDescription.length > 10) || (payload.context && payload.context.length > 20);
+
+        if (hasProfile && savedSlug) {
+          msg.textContent = (editing ? 'Client updated!' : 'Client added!') + ' Generating custom DealCheck config...';
+          msg.style.color = 'var(--green)';
+          try {
+            await fetch('/api/admin/generate-config', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ slug: savedSlug })
+            });
+            msg.textContent += ' Done! Reloading...';
+          } catch (ge) {
+            msg.textContent += ' Config generation failed — you can retry from Edit. Reloading...';
+          }
+        } else {
+          msg.textContent = editing ? 'Client updated! Reloading...' : 'Client added! Reloading...';
+          msg.style.color = 'var(--green)';
+        }
+        setTimeout(() => window.location.reload(), 1200);
       } catch (err) {
         msg.textContent = 'Error: ' + err.message;
         msg.style.color = 'var(--red)';
