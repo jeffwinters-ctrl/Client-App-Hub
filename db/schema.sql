@@ -1,5 +1,17 @@
 -- Run this in your Supabase SQL editor to set up the required tables
 
+-- Client configs (managed via admin dashboard)
+CREATE TABLE IF NOT EXISTS clients (
+  slug TEXT PRIMARY KEY,
+  data JSONB NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE clients ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Service role full access on clients" ON clients
+  FOR ALL USING (true) WITH CHECK (true);
+
 -- Client passwords (managed via admin dashboard)
 CREATE TABLE IF NOT EXISTS client_passwords (
   slug TEXT PRIMARY KEY,

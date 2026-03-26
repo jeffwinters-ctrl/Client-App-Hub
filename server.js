@@ -19,7 +19,23 @@ if (process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY) {
 }
 
 // Load client configs
-function loadClients() {
+async function loadClients() {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('clients').select('data').order('slug');
+      if (!error && data) {
+        if (data.length > 0) return data.map(row => row.data);
+        // Table exists but is empty — seed from JSON file
+        const raw = fs.readFileSync(path.join(__dirname, 'clients', 'clients.json'), 'utf8');
+        const clients = JSON.parse(raw);
+        const rows = clients.map(c => ({ slug: c.slug, data: c }));
+        const { error: seedErr } = await supabase.from('clients').insert(rows);
+        if (!seedErr) return clients;
+      }
+    } catch (e) {
+      console.error('Supabase loadClients error:', e.message);
+    }
+  }
   const raw = fs.readFileSync(path.join(__dirname, 'clients', 'clients.json'), 'utf8');
   return JSON.parse(raw);
 }
@@ -30,8 +46,16 @@ function loadIndustry(industry) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
 
-function getClient(slug) {
-  const clients = loadClients();
+async function getClient(slug) {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('clients').select('data').eq('slug', slug).single();
+      if (!error && data) return data.data;
+    } catch (e) {
+      console.error('Supabase getClient error:', e.message);
+    }
+  }
+  const clients = await loadClients();
   return clients.find(c => c.slug === slug) || null;
 }
 
@@ -134,8 +158,8 @@ app.post('/api/admin/login', (req, res) => {
   res.json({ success: true });
 });
 
-app.get('/admin', requireAdmin, (req, res) => {
-  const clients = loadClients();
+app.get('/admin', requireAdmin, async (req, res) => {
+  const clients = await loadClients();
   res.send(renderTemplate('admin.html', {
     CLIENTS_JSON: JSON.stringify(clients)
   }));
@@ -161,8 +185,8 @@ app.get('/api/admin/analytics', requireAdmin, async (req, res) => {
   }
 });
 
-app.get('/api/admin/clients', requireAdmin, (req, res) => {
-  res.json(loadClients());
+app.get('/api/admin/clients', requireAdmin, async (req, res) => {
+  res.json(await loadClients());
 });
 
 app.get('/api/admin/industries', requireAdmin, (req, res) => {
@@ -171,14 +195,14 @@ app.get('/api/admin/industries', requireAdmin, (req, res) => {
   res.json(files.map(f => f.replace('.json', '')));
 });
 
-app.post('/api/admin/clients', requireAdmin, (req, res) => {
+app.post('/api/admin/clients', requireAdmin, async (req, res) => {
   try {
     const client = req.body;
     if (!client.slug || !client.companyName || !client.industry) {
       return res.status(400).json({ error: 'slug, companyName, and industry are required' });
     }
     client.slug = client.slug.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
-    const clients = loadClients();
+    const clients = await loadClients();
     if (clients.find(c => c.slug === client.slug)) {
       return res.status(409).json({ error: 'A client with this slug already exists' });
     }
@@ -194,36 +218,51 @@ app.post('/api/admin/clients', requireAdmin, (req, res) => {
       formspreeUrl: client.formspreeUrl || '',
       context: client.context || ''
     };
-    clients.push(newClient);
-    fs.writeFileSync(path.join(__dirname, 'clients', 'clients.json'), JSON.stringify(clients, null, 2));
+    if (supabase) {
+      const { error } = await supabase.from('clients').insert({ slug: newClient.slug, data: newClient });
+      if (error) throw error;
+    } else {
+      clients.push(newClient);
+      fs.writeFileSync(path.join(__dirname, 'clients', 'clients.json'), JSON.stringify(clients, null, 2));
+    }
     res.json({ success: true, client: newClient });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
 });
 
-app.put('/api/admin/clients/:slug', requireAdmin, (req, res) => {
+app.put('/api/admin/clients/:slug', requireAdmin, async (req, res) => {
   try {
-    const clients = loadClients();
+    const clients = await loadClients();
     const idx = clients.findIndex(c => c.slug === req.params.slug);
     if (idx === -1) return res.status(404).json({ error: 'Client not found' });
     const updates = req.body;
     delete updates.slug;
     clients[idx] = { ...clients[idx], ...updates };
-    fs.writeFileSync(path.join(__dirname, 'clients', 'clients.json'), JSON.stringify(clients, null, 2));
+    if (supabase) {
+      const { error } = await supabase.from('clients').update({ data: clients[idx], updated_at: new Date().toISOString() }).eq('slug', req.params.slug);
+      if (error) throw error;
+    } else {
+      fs.writeFileSync(path.join(__dirname, 'clients', 'clients.json'), JSON.stringify(clients, null, 2));
+    }
     res.json({ success: true, client: clients[idx] });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
 });
 
-app.delete('/api/admin/clients/:slug', requireAdmin, (req, res) => {
+app.delete('/api/admin/clients/:slug', requireAdmin, async (req, res) => {
   try {
-    let clients = loadClients();
+    const clients = await loadClients();
     const idx = clients.findIndex(c => c.slug === req.params.slug);
     if (idx === -1) return res.status(404).json({ error: 'Client not found' });
-    clients.splice(idx, 1);
-    fs.writeFileSync(path.join(__dirname, 'clients', 'clients.json'), JSON.stringify(clients, null, 2));
+    if (supabase) {
+      const { error } = await supabase.from('clients').delete().eq('slug', req.params.slug);
+      if (error) throw error;
+    } else {
+      clients.splice(idx, 1);
+      fs.writeFileSync(path.join(__dirname, 'clients', 'clients.json'), JSON.stringify(clients, null, 2));
+    }
     res.json({ success: true });
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -247,8 +286,8 @@ app.post('/api/admin/set-password', requireAdmin, async (req, res) => {
 
 // ─── CLIENT LOGIN ────────────────────────────────────────
 
-app.get('/:slug/login', (req, res) => {
-  const client = getClient(req.params.slug);
+app.get('/:slug/login', async (req, res) => {
+  const client = await getClient(req.params.slug);
   if (!client) return res.status(404).send(renderTemplate('404.html', {}));
   res.send(renderTemplate('login.html', {
     CLIENT_CONFIG: JSON.stringify(client),
@@ -263,7 +302,7 @@ app.get('/:slug/login', (req, res) => {
 
 app.post('/api/login', async (req, res) => {
   const { slug, password } = req.body;
-  const client = getClient(slug);
+  const client = await getClient(slug);
   if (!client) return res.status(404).json({ error: 'Client not found' });
 
   if (!supabase) {
@@ -297,8 +336,8 @@ app.post('/api/logout', (req, res) => {
 
 // ─── CLIENT DASHBOARD ────────────────────────────────────
 
-app.get('/:slug', requireAuth, (req, res) => {
-  const client = getClient(req.params.slug);
+app.get('/:slug', requireAuth, async (req, res) => {
+  const client = await getClient(req.params.slug);
   if (!client) return res.status(404).send(renderTemplate('404.html', {}));
   logEvent(client.slug, 'hub', 'dashboard_view', {}, req);
   res.send(renderTemplate('dashboard.html', {
@@ -315,8 +354,8 @@ app.get('/:slug', requireAuth, (req, res) => {
 
 // ─── DEALCHECK APP ───────────────────────────────────────
 
-app.get('/:slug/dealcheck', requireAuth, (req, res) => {
-  const client = getClient(req.params.slug);
+app.get('/:slug/dealcheck', requireAuth, async (req, res) => {
+  const client = await getClient(req.params.slug);
   if (!client) return res.status(404).send(renderTemplate('404.html', {}));
   if (!client.apps.includes('dealcheck')) return res.status(403).send('App not available');
   const industry = loadIndustry(client.industry);
@@ -338,8 +377,8 @@ app.get('/:slug/dealcheck', requireAuth, (req, res) => {
 
 // ─── BUSINESS CASE BUILDER APP ───────────────────────────
 
-app.get('/:slug/business-case', requireAuth, (req, res) => {
-  const client = getClient(req.params.slug);
+app.get('/:slug/business-case', requireAuth, async (req, res) => {
+  const client = await getClient(req.params.slug);
   if (!client) return res.status(404).send(renderTemplate('404.html', {}));
   if (!client.apps.includes('business-case')) return res.status(403).send('App not available');
   logEvent(client.slug, 'business-case', 'app_open', {}, req);
@@ -357,8 +396,8 @@ app.get('/:slug/business-case', requireAuth, (req, res) => {
 
 // ─── LINKEDIN POST WRITER APP ────────────────────────────
 
-app.get('/:slug/linkedin-post', requireAuth, (req, res) => {
-  const client = getClient(req.params.slug);
+app.get('/:slug/linkedin-post', requireAuth, async (req, res) => {
+  const client = await getClient(req.params.slug);
   if (!client) return res.status(404).send(renderTemplate('404.html', {}));
   if (!client.apps.includes('linkedin-post')) return res.status(403).send('App not available');
   logEvent(client.slug, 'linkedin-post', 'app_open', {}, req);
@@ -633,13 +672,15 @@ app.use((req, res) => {
 
 // ─── START ───────────────────────────────────────────────
 
-app.listen(PORT, () => {
-  console.log(`Sapper Client Hub running on http://localhost:${PORT}`);
-  console.log(`Admin: http://localhost:${PORT}/admin`);
-  const clients = loadClients();
-  clients.forEach(c => {
-    console.log(`  ${c.companyName}: http://localhost:${PORT}/${c.slug}`);
+if (require.main === module) {
+  app.listen(PORT, async () => {
+    console.log(`Sapper Client Hub running on http://localhost:${PORT}`);
+    console.log(`Admin: http://localhost:${PORT}/admin`);
+    const clients = await loadClients();
+    clients.forEach(c => {
+      console.log(`  ${c.companyName}: http://localhost:${PORT}/${c.slug}`);
+    });
   });
-});
+}
 
 module.exports = app;

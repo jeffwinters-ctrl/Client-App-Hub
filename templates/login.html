@@ -154,7 +154,15 @@
             password: document.getElementById('password').value
           })
         });
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch (pe) {
+          err.textContent = 'Server error — please try again.';
+          err.style.display = 'block';
+          btn.disabled = false;
+          btn.textContent = 'SIGN IN';
+          return;
+        }
         if (data.success) {
           window.location.href = data.redirect;
         } else {
