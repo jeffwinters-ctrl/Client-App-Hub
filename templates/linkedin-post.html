@@ -238,16 +238,21 @@
           body: JSON.stringify({ answers, clientConfig: CLIENT })
         });
         const data = await res.json();
-        let result;
-        try {
-          const raw = typeof data.result === 'string' ? data.result : JSON.stringify(data.result);
-          result = JSON.parse(raw.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim());
-        } catch (pe) {
-          console.error('Parse error', pe);
-          alert('Failed to parse response. Please try again.');
+        if (data.error) {
+          alert('Error: ' + data.error);
           showScreen('screenForm');
           btn.disabled = false;
           return;
+        }
+        let result = data.result;
+        if (typeof result === 'string') {
+          try { result = JSON.parse(result.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim()); } catch (pe) {
+            console.error('Parse error', pe);
+            alert('Failed to parse response. Please try again.');
+            showScreen('screenForm');
+            btn.disabled = false;
+            return;
+          }
         }
         renderPosts(result);
       } catch (err) {

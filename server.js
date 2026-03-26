@@ -376,6 +376,15 @@ app.get('/:slug/linkedin-post', requireAuth, (req, res) => {
 
 // ─── AI API PROXIES ──────────────────────────────────────
 
+function extractJSON(text) {
+  let cleaned = text.trim();
+  cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '');
+  const first = cleaned.indexOf('{');
+  const last = cleaned.lastIndexOf('}');
+  if (first !== -1 && last !== -1) cleaned = cleaned.substring(first, last + 1);
+  return JSON.parse(cleaned);
+}
+
 async function callClaude(systemPrompt, userPrompt, maxTokens = 1800) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey || !apiKey.startsWith('sk-ant-')) {
@@ -479,7 +488,8 @@ CRITICAL RULES:
 
     const userPrompt = `Here is the deal information from the sales rep:\n\n${answersFormatted}`;
 
-    const result = await callClaude(systemPrompt, userPrompt);
+    const raw = await callClaude(systemPrompt, userPrompt);
+    const result = extractJSON(raw);
     await logEvent(clientConfig.slug, 'dealcheck', 'analysis_complete', {}, req);
     res.json({ result });
   } catch (e) {
@@ -543,7 +553,8 @@ RULES:
 
     const userPrompt = `Build a business case from this information:\n\n${Object.entries(answers).map(([k, v]) => `${k}: ${v}`).join('\n')}`;
 
-    const result = await callClaude(systemPrompt, userPrompt, 2000);
+    const raw = await callClaude(systemPrompt, userPrompt, 2000);
+    const result = extractJSON(raw);
     await logEvent(clientConfig.slug, 'business-case', 'generation_complete', {}, req);
     res.json({ result });
   } catch (e) {
@@ -604,7 +615,8 @@ RULES:
 
     const userPrompt = `Write LinkedIn posts based on this:\n\n${Object.entries(answers).map(([k, v]) => `${k}: ${v}`).join('\n')}`;
 
-    const result = await callClaude(systemPrompt, userPrompt, 2000);
+    const raw = await callClaude(systemPrompt, userPrompt, 2000);
+    const result = extractJSON(raw);
     await logEvent(clientConfig.slug, 'linkedin-post', 'generation_complete', {}, req);
     res.json({ result });
   } catch (e) {

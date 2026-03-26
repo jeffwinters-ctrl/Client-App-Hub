@@ -456,16 +456,21 @@
         }
         procFill.style.width = '100%';
 
-        let result;
-        try {
-          const raw = typeof data.result === 'string' ? data.result : JSON.stringify(data.result);
-          const cleaned = raw.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-          result = JSON.parse(cleaned);
-        } catch (e) {
-          console.error('Parse error', e, data.result);
-          alert('Failed to parse AI response. Please try again.');
+        if (data.error) {
+          alert('Error: ' + data.error);
           showScreen('screenLanding');
           return;
+        }
+        let result = data.result;
+        if (typeof result === 'string') {
+          try {
+            result = JSON.parse(result.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim());
+          } catch (e) {
+            console.error('Parse error', e, data.result);
+            alert('Failed to parse AI response. Please try again.');
+            showScreen('screenLanding');
+            return;
+          }
         }
 
         setTimeout(() => renderResults(result), 600);
