@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{PAGE_TITLE}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Source+Sans+3:wght@300;400;500;600&family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: {{PRIMARY_COLOR}};
+      --accent: {{ACCENT_COLOR}};
+      --bg: #FAFAF7;
+      --surface: #FFFFFF;
+      --cream: #F5F3EE;
+      --ink: #1A1A1A;
+      --ink-mid: #4A4A4A;
+      --ink-light: #7A7A7A;
+      --rule: #E0DDD6;
+      --rule-light: #EDEBE5;
+    }
+    body { font-family: 'Source Sans 3', system-ui, sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+    /* Header — thin editorial bar */
+    .cs-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--rule);
+      padding: 0 40px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cs-header-brand {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      text-transform: uppercase;
+    }
+    .cs-header a { color: var(--ink-light); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .cs-header a:hover { color: var(--primary); }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ─── FORM SCREEN ─── */
+    .form-screen { max-width: 680px; margin: 0 auto; padding: 56px 24px 96px; }
+    .form-masthead { text-align: center; margin-bottom: 48px; }
+    .form-masthead h1 {
+      font-family: 'Source Serif 4', serif; font-size: 2.4rem; font-weight: 700;
+      line-height: 1.2; margin-bottom: 12px; color: var(--ink);
+    }
+    .form-masthead .lead {
+      font-family: 'Source Serif 4', serif; font-size: 1.1rem; font-weight: 300;
+      color: var(--ink-light); line-height: 1.6; max-width: 500px; margin: 0 auto;
+    }
+    .form-divider {
+      width: 48px; height: 2px; background: var(--primary); margin: 32px auto;
+    }
+
+    .field { margin-bottom: 28px; }
+    .field label {
+      display: block; font-family: 'Source Serif 4', serif; font-weight: 600;
+      font-size: 0.95rem; color: var(--ink); margin-bottom: 6px;
+    }
+    .field textarea, .field input, .field select {
+      width: 100%; padding: 14px 18px; border: 1px solid var(--rule);
+      border-radius: 4px; font-family: 'Source Sans 3', sans-serif;
+      font-size: 1rem; background: var(--surface); color: var(--ink);
+      transition: border-color 0.2s;
+    }
+    .field textarea { min-height: 90px; resize: vertical; line-height: 1.6; }
+    .field textarea:focus, .field input:focus, .field select:focus {
+      outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,0,0,0.04);
+    }
+    .field .hint {
+      font-size: 0.82rem; color: var(--ink-light); margin-top: 5px;
+      font-family: 'Source Serif 4', serif; font-style: italic;
+    }
+
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .btn-generate {
+      width: 100%; padding: 18px; background: var(--ink); color: #fff; border: none;
+      border-radius: 4px; font-family: 'Source Serif 4', serif; font-size: 1.05rem;
+      font-weight: 600; letter-spacing: 0.02em; cursor: pointer; transition: background 0.2s;
+      margin-top: 8px;
+    }
+    .btn-generate:hover { background: var(--primary); }
+    .btn-generate:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ─── PROCESSING SCREEN ─── */
+    .processing-screen { max-width: 480px; margin: 0 auto; padding: 120px 24px; text-align: center; }
+    .processing-screen h3 {
+      font-family: 'Source Serif 4', serif; font-size: 1.4rem; font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .processing-screen p { color: var(--ink-light); font-size: 0.95rem; }
+    .spinner-editorial {
+      width: 40px; height: 40px; margin: 0 auto 32px;
+      border: 2px solid var(--rule-light); border-top-color: var(--primary);
+      border-radius: 50%; animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── RESULTS SCREEN ─── */
+    .results-screen { max-width: 960px; margin: 0 auto; padding: 0 24px 96px; }
+
+    /* Format Toggle */
+    .format-toggle-bar {
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+      padding: 24px 0 0; margin-bottom: 0;
+    }
+    .format-btn {
+      padding: 8px 24px; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem;
+      font-weight: 500; border: 1px solid var(--rule); background: var(--surface);
+      color: var(--ink-light); cursor: pointer; transition: all 0.2s;
+    }
+    .format-btn:first-child { border-radius: 4px 0 0 4px; }
+    .format-btn:last-child { border-radius: 0 4px 4px 0; }
+    .format-btn.active {
+      background: var(--ink); color: #fff; border-color: var(--ink);
+    }
+
+    /* ─── FULL CASE STUDY VIEW ─── */
+    .cs-article { animation: fadeIn 0.5s ease both; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Hero Banner */
+    .cs-hero {
+      background: var(--ink); color: #fff; padding: 64px 48px;
+      margin-top: 24px; position: relative; overflow: hidden;
+    }
+    .cs-hero::after {
+      content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 6px;
+      background: var(--primary);
+    }
+    .cs-hero-label {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.15em; color: var(--primary);
+      margin-bottom: 16px;
+    }
+    .cs-hero h1 {
+      font-family: 'Source Serif 4', serif; font-size: 2.2rem; font-weight: 700;
+      line-height: 1.25; margin-bottom: 12px; max-width: 700px;
+    }
+    .cs-hero .cs-subtitle {
+      font-family: 'Source Serif 4', serif; font-size: 1.1rem; font-weight: 300;
+      color: rgba(255,255,255,0.7); line-height: 1.5; max-width: 600px;
+    }
+
+    /* Key Results Strip */
+    .cs-results-strip {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      background: var(--surface); border: 1px solid var(--rule);
+      border-top: none;
+    }
+    .cs-metric-card {
+      padding: 28px 24px; text-align: center;
+      border-right: 1px solid var(--rule-light);
+    }
+    .cs-metric-card:last-child { border-right: none; }
+    .cs-metric-value {
+      font-family: 'Source Serif 4', serif; font-size: 2rem; font-weight: 700;
+      color: var(--primary); margin-bottom: 6px; line-height: 1;
+    }
+    .cs-metric-desc {
+      font-size: 0.85rem; color: var(--ink-mid); line-height: 1.4;
+    }
+
+    /* Body Layout: main + sidebar */
+    .cs-body-layout {
+      display: grid; grid-template-columns: 1fr 260px; gap: 48px;
+      margin-top: 48px;
+    }
+
+    /* Main Content */
+    .cs-main {}
+    .cs-section { margin-bottom: 40px; }
+    .cs-section-headline {
+      font-family: 'Source Serif 4', serif; font-size: 1.35rem; font-weight: 600;
+      margin-bottom: 16px; color: var(--ink); position: relative;
+      padding-bottom: 12px;
+    }
+    .cs-section-headline::after {
+      content: ''; position: absolute; left: 0; bottom: 0;
+      width: 32px; height: 2px; background: var(--primary);
+    }
+    .cs-section-body {
+      font-family: 'Source Serif 4', serif; font-size: 1.05rem; line-height: 1.85;
+      color: var(--ink-mid);
+    }
+    .cs-section-body p { margin-bottom: 16px; }
+    .cs-section-body p:last-child { margin-bottom: 0; }
+
+    /* Pull Quote */
+    .cs-pull-quote {
+      margin: 48px 0; padding: 32px 0; border-top: 1px solid var(--rule-light);
+      border-bottom: 1px solid var(--rule-light); position: relative;
+    }
+    .cs-pull-quote::before {
+      content: '\201C'; font-family: 'Source Serif 4', serif; font-size: 5rem;
+      color: var(--primary); opacity: 0.25; position: absolute;
+      top: -8px; left: -4px; line-height: 1;
+    }
+    .cs-quote-text {
+      font-family: 'Source Serif 4', serif; font-size: 1.25rem; font-weight: 400;
+      font-style: italic; line-height: 1.7; color: var(--ink); padding-left: 36px;
+      margin-bottom: 12px;
+    }
+    .cs-quote-attr {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; font-weight: 500;
+      color: var(--ink-light); padding-left: 36px; letter-spacing: 0.02em;
+    }
+
+    /* Sidebar — At a Glance */
+    .cs-sidebar { position: relative; }
+    .cs-at-glance {
+      background: var(--cream); padding: 28px 24px; position: sticky; top: 24px;
+    }
+    .cs-at-glance h4 {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.72rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-light);
+      margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--rule);
+    }
+    .cs-glance-item { margin-bottom: 18px; }
+    .cs-glance-item:last-child { margin-bottom: 0; }
+    .cs-glance-label {
+      font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--ink-light); margin-bottom: 3px;
+    }
+    .cs-glance-value {
+      font-family: 'Source Serif 4', serif; font-size: 0.95rem; font-weight: 600;
+      color: var(--ink); line-height: 1.4;
+    }
+
+    /* ─── ONE-PAGER VIEW ─── */
+    .cs-onepager {
+      background: var(--surface); border: 1px solid var(--rule);
+      max-width: 680px; margin: 32px auto 0; padding: 48px 44px;
+      animation: fadeIn 0.4s ease both;
+    }
+    .cs-onepager-label {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.14em; color: var(--primary);
+      margin-bottom: 12px;
+    }
+    .cs-onepager h2 {
+      font-family: 'Source Serif 4', serif; font-size: 1.6rem; font-weight: 700;
+      line-height: 1.3; margin-bottom: 20px;
+    }
+    .cs-onepager-divider { width: 40px; height: 2px; background: var(--primary); margin-bottom: 20px; }
+    .cs-onepager-body {
+      font-family: 'Source Serif 4', serif; font-size: 1rem; line-height: 1.8;
+      color: var(--ink-mid);
+    }
+
+    /* ─── ACTION BUTTONS ─── */
+    .actions-bar {
+      display: flex; gap: 12px; flex-wrap: wrap; margin-top: 40px;
+      justify-content: center;
+    }
+    .btn-action {
+      padding: 12px 28px; border-radius: 4px; font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.9rem; font-weight: 500; cursor: pointer; text-decoration: none;
+      transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-primary-action { background: var(--ink); color: #fff; border: 1px solid var(--ink); }
+    .btn-primary-action:hover { background: var(--primary); border-color: var(--primary); }
+    .btn-outline { background: transparent; border: 1px solid var(--rule); color: var(--ink); }
+    .btn-outline:hover { border-color: var(--ink); }
+
+    /* Footer */
+    .cs-footer {
+      background: var(--surface); border-top: 1px solid var(--rule);
+      color: var(--ink-light); text-align: center; padding: 20px;
+      font-size: 0.8rem; margin-top: 48px;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .cs-header { padding: 0 20px; }
+      .form-screen { padding: 40px 16px 72px; }
+      .form-masthead h1 { font-size: 1.8rem; }
+      .field-row { grid-template-columns: 1fr; }
+      .cs-hero { padding: 40px 24px; }
+      .cs-hero h1 { font-size: 1.6rem; }
+      .cs-results-strip { grid-template-columns: 1fr 1fr; }
+      .cs-metric-card:nth-child(odd):last-child { grid-column: 1 / -1; }
+      .cs-body-layout { grid-template-columns: 1fr; gap: 32px; }
+      .cs-sidebar { order: -1; }
+      .cs-at-glance { position: static; }
+      .cs-onepager { padding: 32px 24px; }
+      .cs-pull-quote::before { font-size: 3.5rem; }
+      .cs-quote-text { font-size: 1.1rem; padding-left: 28px; }
+      .cs-quote-attr { padding-left: 28px; }
+      .results-screen { padding: 0 16px 72px; }
+    }
+
+    @media (max-width: 480px) {
+      .cs-results-strip { grid-template-columns: 1fr; }
+      .cs-metric-card { border-right: none; border-bottom: 1px solid var(--rule-light); }
+      .cs-metric-card:last-child { border-bottom: none; }
+      .actions-bar { flex-direction: column; }
+      .btn-action { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <header class="cs-header">
+    <span class="cs-header-brand">Case Study Generator</span>
+    <a href="/{{SLUG}}">← Back to Hub</a>
+  </header>
+
+  <!-- ═══════ FORM SCREEN ═══════ -->
+  <div class="screen active" id="screenForm">
+    <div class="form-screen">
+      <div class="form-masthead">
+        <h1>Build a Compelling<br>Case Study</h1>
+        <p class="lead">Enter the details of a successful customer engagement. We'll craft a polished, publishable success story.</p>
+        <div class="form-divider"></div>
+      </div>
+
+      <form id="csForm">
+        <div class="field">
+          <label>Customer Name</label>
+          <input type="text" id="f_customer_name" placeholder="e.g. Meridian Manufacturing Corp." required>
+          <div class="hint">The company this case study is about.</div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Customer Industry</label>
+            <input type="text" id="f_industry" placeholder="e.g. Industrial Manufacturing">
+          </div>
+          <div class="field">
+            <label>Company Size</label>
+            <input type="text" id="f_size" placeholder="e.g. 2,500 employees, $400M revenue">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Your Solution</label>
+          <input type="text" id="f_solution" placeholder="What product or service did they purchase?" required>
+          <div class="hint">The specific product, service, or package they bought from you.</div>
+        </div>
+
+        <div class="field">
+          <label>The Challenge</label>
+          <textarea id="f_challenge" placeholder="What problem were they facing? What was at stake? What pain points drove them to seek a solution?" required></textarea>
+        </div>
+
+        <div class="field">
+          <label>The Previous Approach</label>
+          <textarea id="f_previous" placeholder="What were they doing before — manual processes, a competitor's product, spreadsheets, nothing at all?"></textarea>
+          <div class="hint">Understanding the "before" makes the transformation more compelling.</div>
+        </div>
+
+        <div class="field">
+          <label>How the Solution Was Implemented</label>
+          <textarea id="f_implementation" placeholder="Describe the rollout — timeline, phases, integration, training, any unique aspects of the deployment."></textarea>
+        </div>
+
+        <div class="field">
+          <label>Key Results</label>
+          <textarea id="f_results" placeholder="Be specific with numbers: 47% faster processing, $2.1M saved annually, 3-week deployment, 98% adoption rate..." required></textarea>
+          <div class="hint">Numbers are the heart of a great case study. The more specific, the better.</div>
+        </div>
+
+        <div class="field">
+          <label>Quote from Customer</label>
+          <textarea id="f_quote" placeholder="A testimonial or quote from a stakeholder at the customer's company. Include their name and title if possible."></textarea>
+          <div class="hint">Optional — but a strong quote is worth its weight in gold.</div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Timeline</label>
+            <input type="text" id="f_timeline" placeholder="e.g. 6 weeks to deploy, results in 90 days">
+          </div>
+          <div class="field">
+            <label>Anything Else</label>
+            <input type="text" id="f_extra" placeholder="Awards, unique context, expansion plans...">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-generate" id="btnGenerate">Generate Case Study</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════ PROCESSING SCREEN ═══════ -->
+  <div class="screen" id="screenProcessing">
+    <div class="processing-screen">
+      <div class="spinner-editorial"></div>
+      <h3>Crafting your case study…</h3>
+      <p>Writing, structuring, and polishing. This takes about 20–30 seconds.</p>
+    </div>
+  </div>
+
+  <!-- ═══════ RESULTS SCREEN ═══════ -->
+  <div class="screen" id="screenResults">
+    <div class="results-screen">
+
+      <!-- Format Toggle -->
+      <div class="format-toggle-bar">
+        <button class="format-btn active" data-view="full" onclick="toggleView('full')">Full Case Study</button>
+        <button class="format-btn" data-view="onepager" onclick="toggleView('onepager')">One-Pager</button>
+      </div>
+
+      <!-- Full Case Study -->
+      <div id="viewFull">
+        <div class="cs-article">
+          <div class="cs-hero" id="csHero">
+            <div class="cs-hero-label">Customer Success Story</div>
+            <h1 id="csTitle"></h1>
+            <div class="cs-subtitle" id="csSubtitle"></div>
+          </div>
+
+          <div class="cs-results-strip" id="csMetrics"></div>
+
+          <div class="cs-body-layout">
+            <div class="cs-main">
+              <div id="csSections"></div>
+              <div class="cs-pull-quote" id="csPullQuote" style="display:none;">
+                <div class="cs-quote-text" id="csQuoteText"></div>
+                <div class="cs-quote-attr" id="csQuoteAttr"></div>
+              </div>
+            </div>
+            <div class="cs-sidebar">
+              <div class="cs-at-glance" id="csGlance">
+                <h4>At a Glance</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- One-Pager -->
+      <div id="viewOnePager" style="display:none;">
+        <div class="cs-onepager">
+          <div class="cs-onepager-label">One-Page Summary</div>
+          <h2 id="csOnePagerTitle"></h2>
+          <div class="cs-onepager-divider"></div>
+          <div class="cs-onepager-body" id="csOnePagerBody"></div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions-bar">
+        <button class="btn-action btn-primary-action" id="btnCopyFull" onclick="copyCaseStudy()">Copy Case Study</button>
+        <button class="btn-action btn-outline" id="btnCopyOnePager" onclick="copyOnePager()">Copy One-Pager</button>
+        <a href="/{{SLUG}}/case-study" class="btn-action btn-outline">Generate Another</a>
+        <a href="/{{SLUG}}" class="btn-action btn-outline">Back to Hub</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="cs-footer">Presented by {{POWERED_BY}}</footer>
+
+  <script>
+    const CLIENT = {{CLIENT_CONFIG}};
+    const SLUG = '{{SLUG}}';
+    let _caseStudy = null;
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function toggleView(view) {
+      document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`.format-btn[data-view="${view}"]`).classList.add('active');
+      document.getElementById('viewFull').style.display = view === 'full' ? 'block' : 'none';
+      document.getElementById('viewOnePager').style.display = view === 'onepager' ? 'block' : 'none';
+    }
+
+    document.getElementById('csForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnGenerate');
+      btn.disabled = true;
+
+      const answers = {
+        customer_name: document.getElementById('f_customer_name').value,
+        industry: document.getElementById('f_industry').value,
+        size: document.getElementById('f_size').value,
+        solution: document.getElementById('f_solution').value,
+        challenge: document.getElementById('f_challenge').value,
+        previous_approach: document.getElementById('f_previous').value,
+        implementation: document.getElementById('f_implementation').value,
+        results: document.getElementById('f_results').value,
+        quote: document.getElementById('f_quote').value,
+        timeline: document.getElementById('f_timeline').value,
+        extra: document.getElementById('f_extra').value
+      };
+
+      showScreen('screenProcessing');
+
+      try {
+        const res = await fetch('/api/case-study', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers, clientConfig: CLIENT })
+        });
+        const data = await res.json();
+        if (data.error) {
+          alert('Error: ' + data.error);
+          showScreen('screenForm');
+          btn.disabled = false;
+          return;
+        }
+        let result = data.result;
+        if (typeof result === 'string') {
+          try {
+            result = JSON.parse(result.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim());
+          } catch (pe) {
+            console.error('Parse error', pe);
+            alert('Failed to parse response. Please try again.');
+            showScreen('screenForm');
+            btn.disabled = false;
+            return;
+          }
+        }
+        _caseStudy = result;
+        renderCaseStudy(result);
+      } catch (err) {
+        console.error(err);
+        alert('Generation failed: ' + err.message);
+        showScreen('screenForm');
+        btn.disabled = false;
+      }
+    });
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function renderCaseStudy(cs) {
+      // Hero
+      document.getElementById('csTitle').textContent = cs.title || '';
+      document.getElementById('csSubtitle').textContent = cs.subtitle || '';
+
+      // Key Results Strip
+      const metricsEl = document.getElementById('csMetrics');
+      metricsEl.innerHTML = '';
+      (cs.key_results || []).forEach(kr => {
+        const card = document.createElement('div');
+        card.className = 'cs-metric-card';
+        card.innerHTML = `
+          <div class="cs-metric-value">${escapeHtml(kr.metric)}</div>
+          <div class="cs-metric-desc">${escapeHtml(kr.description)}</div>
+        `;
+        metricsEl.appendChild(card);
+      });
+
+      // Sections
+      const sectionsEl = document.getElementById('csSections');
+      sectionsEl.innerHTML = '';
+      const sectionOrder = ['challenge', 'solution', 'implementation', 'results'];
+      const sections = cs.sections || {};
+      sectionOrder.forEach(key => {
+        if (sections[key]) {
+          const sec = sections[key];
+          const div = document.createElement('div');
+          div.className = 'cs-section';
+          const bodyHtml = (sec.body || '').split('\n').filter(p => p.trim()).map(p => `<p>${escapeHtml(p)}</p>`).join('');
+          div.innerHTML = `
+            <h2 class="cs-section-headline">${escapeHtml(sec.headline)}</h2>
+            <div class="cs-section-body">${bodyHtml}</div>
+          `;
+          sectionsEl.appendChild(div);
+        }
+      });
+
+      // Pull Quote
+      const quoteEl = document.getElementById('csPullQuote');
+      if (cs.pull_quote && cs.pull_quote.quote) {
+        document.getElementById('csQuoteText').textContent = cs.pull_quote.quote;
+        document.getElementById('csQuoteAttr').textContent = '— ' + (cs.pull_quote.attribution || '');
+        quoteEl.style.display = 'block';
+        // Insert after the second section (solution) for editorial flow
+        const allSections = sectionsEl.querySelectorAll('.cs-section');
+        if (allSections.length >= 2) {
+          allSections[1].after(quoteEl);
+        }
+      } else {
+        quoteEl.style.display = 'none';
+      }
+
+      // At a Glance Sidebar
+      const glanceEl = document.getElementById('csGlance');
+      glanceEl.innerHTML = '<h4>At a Glance</h4>';
+      const glance = cs.at_a_glance || {};
+      const glanceFields = [
+        { key: 'customer', label: 'Customer' },
+        { key: 'industry', label: 'Industry' },
+        { key: 'solution', label: 'Solution' },
+        { key: 'timeline', label: 'Timeline' }
+      ];
+      glanceFields.forEach(f => {
+        if (glance[f.key]) {
+          const item = document.createElement('div');
+          item.className = 'cs-glance-item';
+          item.innerHTML = `
+            <div class="cs-glance-label">${f.label}</div>
+            <div class="cs-glance-value">${escapeHtml(glance[f.key])}</div>
+          `;
+          glanceEl.appendChild(item);
+        }
+      });
+
+      // One-Pager
+      document.getElementById('csOnePagerTitle').textContent = cs.title || '';
+      document.getElementById('csOnePagerBody').innerHTML = (cs.one_pager || '').split('\n').filter(p => p.trim()).map(p => `<p>${escapeHtml(p)}</p>`).join('');
+
+      // Show results
+      toggleView('full');
+      showScreen('screenResults');
+    }
+
+    function buildPlainText() {
+      if (!_caseStudy) return '';
+      const cs = _caseStudy;
+      let text = cs.title + '\n' + (cs.subtitle || '') + '\n\n';
+
+      if (cs.at_a_glance) {
+        text += '--- At a Glance ---\n';
+        const g = cs.at_a_glance;
+        if (g.customer) text += 'Customer: ' + g.customer + '\n';
+        if (g.industry) text += 'Industry: ' + g.industry + '\n';
+        if (g.solution) text += 'Solution: ' + g.solution + '\n';
+        if (g.timeline) text += 'Timeline: ' + g.timeline + '\n';
+        text += '\n';
+      }
+
+      if (cs.key_results && cs.key_results.length) {
+        text += '--- Key Results ---\n';
+        cs.key_results.forEach(kr => {
+          text += '• ' + kr.metric + ' — ' + kr.description + '\n';
+        });
+        text += '\n';
+      }
+
+      const sectionOrder = ['challenge', 'solution', 'implementation', 'results'];
+      const sections = cs.sections || {};
+      sectionOrder.forEach(key => {
+        if (sections[key]) {
+          text += sections[key].headline.toUpperCase() + '\n\n' + sections[key].body + '\n\n';
+        }
+      });
+
+      if (cs.pull_quote && cs.pull_quote.quote) {
+        text += '"' + cs.pull_quote.quote + '"\n— ' + (cs.pull_quote.attribution || '') + '\n\n';
+      }
+
+      return text.trim();
+    }
+
+    function copyCaseStudy() {
+      const text = buildPlainText();
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('btnCopyFull');
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = 'Copy Case Study'; }, 1500);
+      });
+    }
+
+    function copyOnePager() {
+      if (!_caseStudy) return;
+      const text = _caseStudy.title + '\n\n' + (_caseStudy.one_pager || '');
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('btnCopyOnePager');
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = 'Copy One-Pager'; }, 1500);
+      });
+    }
+  </script>
+</body>
+</html>

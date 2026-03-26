@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{PAGE_TITLE}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: {{PRIMARY_COLOR}};
+      --accent: {{ACCENT_COLOR}};
+      --coral: #FF6B6B;
+      --teal: #087F8C;
+      --gold: #F5A623;
+      --bg: linear-gradient(160deg, #FFFAF7 0%, #FFF0E8 50%, #FFF5F0 100%);
+      --bg-flat: #FFFAF7;
+      --surface: #FFFFFF;
+      --ink: #1A1A2E;
+      --ink-light: #6E7191;
+      --rule: #EDE8E3;
+    }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+    /* Header — badge / lanyard feel */
+    .ts-header {
+      background: linear-gradient(135deg, var(--teal) 0%, #065A63 100%);
+      color: #fff;
+      padding: 0 32px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 2px 12px rgba(8,127,140,0.25);
+    }
+    .ts-header .header-left { display: flex; align-items: center; gap: 10px; }
+    .ts-header .header-icon { width: 22px; height: 22px; opacity: 0.9; }
+    .ts-header a { color: rgba(255,255,255,0.8); text-decoration: none; font-family: 'Inter', sans-serif; font-size: 0.8rem; text-transform: none; letter-spacing: 0.02em; font-weight: 500; transition: color 0.2s; }
+    .ts-header a:hover { color: #fff; }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ===== FORM SCREEN ===== */
+    .form-screen { max-width: 680px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* Event registration banner */
+    .form-banner {
+      background: linear-gradient(135deg, var(--coral) 0%, #E85555 100%);
+      border-radius: 16px;
+      padding: 28px 32px;
+      color: #fff;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .form-banner::after {
+      content: '';
+      position: absolute;
+      top: -30px; right: -30px;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+    }
+    .form-banner h2 { font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 800; margin-bottom: 6px; }
+    .form-banner p { opacity: 0.9; font-size: 1rem; font-weight: 400; }
+
+    /* Progress steps */
+    .progress-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      margin-bottom: 36px;
+      padding: 0 8px;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ink-light);
+      transition: color 0.3s;
+    }
+    .step-item.active { color: var(--coral); }
+    .step-item.done { color: var(--teal); }
+    .step-dot {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700;
+      background: var(--rule);
+      color: var(--ink-light);
+      transition: all 0.3s;
+    }
+    .step-item.active .step-dot { background: var(--coral); color: #fff; }
+    .step-item.done .step-dot { background: var(--teal); color: #fff; }
+    .step-line {
+      flex: 0 0 32px;
+      height: 2px;
+      background: var(--rule);
+      margin: 0 4px;
+    }
+    .step-line.done { background: var(--teal); }
+
+    /* Form sections */
+    .form-section { display: none; }
+    .form-section.active { display: block; }
+
+    .section-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title svg { width: 22px; height: 22px; flex-shrink: 0; }
+
+    .field { margin-bottom: 20px; }
+    .field label {
+      display: block; font-weight: 600; font-size: 0.78rem; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--ink-light); margin-bottom: 8px;
+    }
+    .field textarea, .field input, .field select {
+      width: 100%; padding: 12px 16px; border: 2px solid var(--rule); border-radius: 10px;
+      font-family: inherit; font-size: 0.95rem; background: var(--surface);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field textarea { min-height: 76px; resize: vertical; line-height: 1.5; }
+    .field textarea:focus, .field input:focus, .field select:focus {
+      outline: none; border-color: var(--coral); box-shadow: 0 0 0 3px rgba(255,107,107,0.12);
+    }
+    .field .hint { font-size: 0.82rem; color: var(--ink-light); margin-top: 4px; }
+
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .btn-row { display: flex; gap: 12px; margin-top: 8px; }
+    .btn-next, .btn-prev, .btn-generate {
+      padding: 14px 32px; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 0.9rem;
+      font-weight: 600; cursor: pointer; transition: all 0.2s; border: none;
+    }
+    .btn-next {
+      background: var(--coral); color: #fff; margin-left: auto;
+    }
+    .btn-next:hover { background: #E85555; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,107,107,0.3); }
+    .btn-prev {
+      background: transparent; color: var(--ink-light); border: 2px solid var(--rule);
+    }
+    .btn-prev:hover { border-color: var(--ink-light); color: var(--ink); }
+    .btn-generate {
+      width: 100%; padding: 16px; background: linear-gradient(135deg, var(--teal) 0%, #065A63 100%);
+      color: #fff; letter-spacing: 0.04em; text-transform: uppercase;
+      box-shadow: 0 4px 16px rgba(8,127,140,0.3);
+    }
+    .btn-generate:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(8,127,140,0.4); }
+    .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* ===== PROCESSING SCREEN ===== */
+    .processing-screen { max-width: 480px; margin: 0 auto; padding: 100px 24px; text-align: center; }
+    .processing-screen h3 { font-family: 'Poppins', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+    .processing-screen p { color: var(--ink-light); font-size: 0.95rem; }
+    .spinner-wrap { margin: 0 auto 28px; position: relative; width: 64px; height: 64px; }
+    .spinner-ring {
+      width: 64px; height: 64px;
+      border: 3px solid var(--rule);
+      border-top-color: var(--coral);
+      border-right-color: var(--teal);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== RESULTS SCREEN ===== */
+    .results-screen { max-width: 880px; margin: 0 auto; padding: 32px 24px 80px; }
+
+    /* Countdown banner */
+    .countdown-banner {
+      background: linear-gradient(135deg, var(--ink) 0%, #2A2A4A 100%);
+      border-radius: 16px;
+      padding: 24px 32px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .countdown-event { flex: 1; min-width: 200px; }
+    .countdown-event h3 { font-family: 'Poppins', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 2px; }
+    .countdown-event p { opacity: 0.7; font-size: 0.9rem; }
+    .countdown-timer { display: flex; gap: 12px; }
+    .countdown-unit {
+      text-align: center;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 10px 14px;
+      min-width: 58px;
+    }
+    .countdown-unit .num { font-family: 'Poppins', sans-serif; font-size: 1.6rem; font-weight: 800; display: block; }
+    .countdown-unit .lbl { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.7; }
+
+    /* ROI targets banner */
+    .roi-banner {
+      background: var(--surface);
+      border: 2px solid var(--gold);
+      border-radius: 14px;
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 12px rgba(245,166,35,0.1);
+    }
+    .roi-stat { text-align: center; }
+    .roi-stat .roi-num {
+      font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--teal);
+    }
+    .roi-stat .roi-lbl {
+      font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-light); margin-top: 2px;
+    }
+
+    /* Event summary */
+    .event-summary {
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      border-left: 4px solid var(--coral);
+      font-size: 1.02rem;
+      line-height: 1.65;
+      color: var(--ink);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    /* Tabbed navigation */
+    .tabs-nav {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 0;
+      background: var(--surface);
+      border-radius: 14px 14px 0 0;
+      padding: 4px 4px 0;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.03);
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 14px 20px;
+      border: none;
+      background: transparent;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 10px 10px 0 0;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--ink-light);
+      position: relative;
+    }
+    .tab-btn svg { width: 18px; height: 18px; }
+    .tab-btn:hover { color: var(--ink); background: rgba(0,0,0,0.03); }
+    .tab-btn.active { color: #fff; }
+    .tab-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; border-radius: 3px 3px 0 0; }
+    .tab-btn[data-tab="preshow"].active { background: var(--coral); }
+    .tab-btn[data-tab="preshow"].active::after { background: #E85555; }
+    .tab-btn[data-tab="atshow"].active { background: var(--teal); }
+    .tab-btn[data-tab="atshow"].active::after { background: #065A63; }
+    .tab-btn[data-tab="postshow"].active { background: var(--gold); }
+    .tab-btn[data-tab="postshow"].active::after { background: #D99020; }
+
+    .tab-panel {
+      display: none;
+      background: var(--surface);
+      border-radius: 0 0 14px 14px;
+      padding: 28px 28px 32px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    }
+    .tab-panel.active { display: block; }
+
+    /* Panel sub-headers */
+    .panel-heading {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 24px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-heading:first-child { margin-top: 0; }
+    .panel-heading svg { width: 20px; height: 20px; }
+    .panel-heading.coral { color: var(--coral); }
+    .panel-heading.teal { color: var(--teal); }
+    .panel-heading.gold { color: var(--gold); }
+
+    /* Timeline cards (itinerary style) */
+    .timeline-cards { display: flex; flex-direction: column; gap: 12px; }
+    .tl-card {
+      display: flex; gap: 16px; align-items: flex-start;
+      border: 1px solid var(--rule); border-radius: 12px;
+      padding: 16px 20px;
+      transition: box-shadow 0.2s;
+    }
+    .tl-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .tl-when {
+      flex-shrink: 0;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 6px 12px;
+      border-radius: 8px;
+      white-space: nowrap;
+      min-width: 100px;
+      text-align: center;
+    }
+    .tl-when.coral-bg { background: rgba(255,107,107,0.1); color: var(--coral); }
+    .tl-when.teal-bg { background: rgba(8,127,140,0.1); color: var(--teal); }
+    .tl-when.gold-bg { background: rgba(245,166,35,0.12); color: #C48A1A; }
+    .tl-actions { flex: 1; }
+    .tl-actions li {
+      padding: 3px 0;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      list-style: none;
+      position: relative;
+      padding-left: 16px;
+    }
+    .tl-actions li::before { content: '▸'; position: absolute; left: 0; color: var(--ink-light); font-size: 0.8rem; }
+
+    /* Copyable template cards */
+    .template-card {
+      border: 1px solid var(--rule);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .template-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .template-header.coral-header { background: rgba(255,107,107,0.06); border-bottom: 1px solid rgba(255,107,107,0.15); }
+    .template-header.teal-header { background: rgba(8,127,140,0.06); border-bottom: 1px solid rgba(8,127,140,0.15); }
+    .template-header.gold-header { background: rgba(245,166,35,0.06); border-bottom: 1px solid rgba(245,166,35,0.15); }
+    .template-body {
+      padding: 14px 16px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+    .template-subject { font-weight: 600; margin-bottom: 6px; font-size: 0.85rem; }
+    .btn-copy {
+      padding: 5px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--rule);
+      background: var(--surface);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      color: var(--ink-light);
+    }
+    .btn-copy:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+    /* Chat bubble style for pitches / conversation starters */
+    .bubble-list { display: flex; flex-direction: column; gap: 12px; }
+    .bubble {
+      max-width: 85%;
+      padding: 14px 18px;
+      border-radius: 16px 16px 16px 4px;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      position: relative;
+    }
+    .bubble:nth-child(even) { align-self: flex-end; border-radius: 16px 16px 4px 16px; }
+    .bubble.coral-bubble { background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.15); }
+    .bubble.teal-bubble { background: rgba(8,127,140,0.08); border: 1px solid rgba(8,127,140,0.15); }
+    .bubble-label {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .bubble-label.coral-text { color: var(--coral); }
+    .bubble-label.teal-text { color: var(--teal); }
+
+    /* Checklist style */
+    .checklist { list-style: none; padding: 0; }
+    .checklist li {
+      padding: 10px 12px 10px 36px;
+      position: relative;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      border-bottom: 1px solid var(--rule);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li:hover { background: rgba(8,127,140,0.03); }
+    .checklist li::before {
+      content: '';
+      position: absolute;
+      left: 8px; top: 12px;
+      width: 18px; height: 18px;
+      border: 2px solid var(--teal);
+      border-radius: 4px;
+    }
+    .checklist li.checked::before {
+      background: var(--teal);
+      border-color: var(--teal);
+    }
+    .checklist li.checked::after {
+      content: '✓';
+      position: absolute;
+      left: 12px; top: 10px;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .checklist li.checked { color: var(--ink-light); text-decoration: line-through; }
+
+    /* Demo talking points */
+    .points-grid { display: flex; flex-direction: column; gap: 8px; }
+    .point-card {
+      display: flex; gap: 12px; align-items: flex-start;
+      padding: 12px 16px;
+      background: rgba(8,127,140,0.04);
+      border-radius: 10px;
+      border-left: 3px solid var(--teal);
+    }
+    .point-num {
+      flex-shrink: 0;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--teal);
+      opacity: 0.5;
+    }
+    .point-text { font-size: 0.92rem; line-height: 1.5; }
+
+    /* Lead scoring tiers */
+    .lead-tiers { display: flex; flex-direction: column; gap: 12px; }
+    .lead-tier {
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 16px 20px;
+      border-radius: 12px;
+    }
+    .lead-tier.hot { background: rgba(255,107,107,0.08); border: 1px solid rgba(255,107,107,0.2); }
+    .lead-tier.warm { background: rgba(245,166,35,0.08); border: 1px solid rgba(245,166,35,0.2); }
+    .lead-tier.nurture { background: rgba(8,127,140,0.08); border: 1px solid rgba(8,127,140,0.2); }
+    .tier-badge {
+      flex-shrink: 0;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 6px 12px;
+      border-radius: 8px;
+      min-width: 72px;
+      text-align: center;
+    }
+    .tier-badge.hot-badge { background: var(--coral); color: #fff; }
+    .tier-badge.warm-badge { background: var(--gold); color: #fff; }
+    .tier-badge.nurture-badge { background: var(--teal); color: #fff; }
+    .tier-text { font-size: 0.92rem; line-height: 1.5; }
+
+    /* Actions bar */
+    .actions-bar { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+    .btn-action {
+      padding: 12px 28px; border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 0.85rem;
+      font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.2s; border: none;
+    }
+    .btn-primary-action { background: var(--teal); color: #fff; }
+    .btn-outline-action { background: transparent; border: 2px solid var(--rule); color: var(--ink); }
+    .btn-action:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    /* Footer */
+    .ts-footer {
+      background: linear-gradient(135deg, var(--ink) 0%, #2A2A4A 100%);
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      padding: 16px;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 600px) {
+      .ts-header { padding: 0 16px; }
+      .form-screen { padding: 24px 16px 60px; }
+      .form-banner { padding: 20px 20px; }
+      .form-banner h2 { font-size: 1.4rem; }
+      .field-row { grid-template-columns: 1fr; }
+      .progress-bar { gap: 0; }
+      .step-item span { display: none; }
+      .countdown-banner { flex-direction: column; text-align: center; }
+      .countdown-timer { justify-content: center; }
+      .roi-banner { grid-template-columns: repeat(2, 1fr); }
+      .tab-btn { font-size: 0.75rem; padding: 12px 8px; }
+      .tab-btn svg { display: none; }
+      .tab-panel { padding: 20px 16px; }
+      .bubble { max-width: 95%; }
+      .tl-card { flex-direction: column; gap: 8px; }
+      .tl-when { min-width: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header class="ts-header">
+    <div class="header-left">
+      <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 0 0-8 0v2"/><circle cx="12" cy="14" r="2"/></svg>
+      <span>Trade Show Strategy</span>
+    </div>
+    <a href="/{{SLUG}}">← Back to Hub</a>
+  </header>
+
+  <!-- ===== FORM SCREEN ===== -->
+  <div class="screen active" id="screenForm">
+    <div class="form-screen">
+      <div class="form-banner">
+        <h2>🎯 Trade Show Playbook</h2>
+        <p>Plan your next event like a pro. Get pre-show prep, booth strategy, scripts, and follow-up plans — all tailored to your event.</p>
+      </div>
+
+      <!-- Progress Steps -->
+      <div class="progress-bar" id="progressBar">
+        <div class="step-item active" data-step="1">
+          <div class="step-dot">1</div>
+          <span>Event</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item" data-step="2">
+          <div class="step-dot">2</div>
+          <span>Strategy</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step-item" data-step="3">
+          <div class="step-dot">3</div>
+          <span>Details</span>
+        </div>
+      </div>
+
+      <form id="tsForm">
+        <!-- STEP 1: Event Info -->
+        <div class="form-section active" data-section="1">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Event Information
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label>Event Name</label>
+              <input type="text" id="f_eventname" placeholder="e.g. SaaStr Annual 2025" required>
+            </div>
+            <div class="field">
+              <label>Event Date</label>
+              <input type="date" id="f_eventdate" required>
+            </div>
+          </div>
+          <div class="field">
+            <label>Event Type</label>
+            <select id="f_eventtype" required>
+              <option value="" disabled selected>Select event type...</option>
+              <option value="Trade Show">Trade Show</option>
+              <option value="Industry Conference">Industry Conference</option>
+              <option value="Regional Event">Regional Event</option>
+              <option value="Virtual Event">Virtual Event</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Your Goals for This Event</label>
+            <textarea id="f_goals" placeholder="What do you want to achieve? (e.g. generate 50 leads, book 10 meetings, build brand awareness, connect with partners)" required></textarea>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn-next" onclick="goToStep(2)">Next: Strategy →</button>
+          </div>
+        </div>
+
+        <!-- STEP 2: Strategy -->
+        <div class="form-section" data-section="2">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            Strategy &amp; Targeting
+          </div>
+          <div class="field">
+            <label>Products / Solutions to Showcase</label>
+            <textarea id="f_products" placeholder="What are you featuring at this event? What's the star of the show?" required></textarea>
+          </div>
+          <div class="field">
+            <label>Target Attendees</label>
+            <textarea id="f_target" placeholder="Who do you want to talk to? (titles, industries, company sizes)"></textarea>
+            <div class="hint">e.g. VP of Sales at mid-market SaaS companies, 200-1000 employees</div>
+          </div>
+          <div class="field">
+            <label>Booth Setup</label>
+            <select id="f_booth" required>
+              <option value="" disabled selected>Select your booth situation...</option>
+              <option value="Large booth">Large booth (20x20 or bigger)</option>
+              <option value="Standard booth">Standard booth (10x10)</option>
+              <option value="Table only">Table only</option>
+              <option value="No booth (attending only)">No booth (attending only)</option>
+            </select>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn-prev" onclick="goToStep(1)">← Back</button>
+            <button type="button" class="btn-next" onclick="goToStep(3)">Next: Details →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Details -->
+        <div class="form-section" data-section="3">
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            Final Details
+          </div>
+          <div class="field">
+            <label>Budget Range</label>
+            <input type="text" id="f_budget" placeholder="e.g. $5,000 - $15,000 total event budget">
+          </div>
+          <div class="field">
+            <label>Known Competitors at Event</label>
+            <textarea id="f_competitors" placeholder="Who else will be there? What rival booths will attendees compare you to?"></textarea>
+          </div>
+          <div class="field">
+            <label>Pre-Scheduled Meetings</label>
+            <textarea id="f_meetings" placeholder="Any meetings already booked? Key people you're confirmed to meet?"></textarea>
+          </div>
+          <div class="field">
+            <label>Special Announcements</label>
+            <textarea id="f_announcements" placeholder="Any product launches, news, promotions, or special offers to feature at the event?"></textarea>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn-prev" onclick="goToStep(2)">← Back</button>
+          </div>
+          <div style="margin-top: 16px;">
+            <button type="submit" class="btn-generate" id="btnGenerate">
+              🚀 Generate My Trade Show Playbook
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== PROCESSING SCREEN ===== -->
+  <div class="screen" id="screenProcessing">
+    <div class="processing-screen">
+      <div class="spinner-wrap"><div class="spinner-ring"></div></div>
+      <h3>Building your event playbook...</h3>
+      <p>Crafting pre-show prep, booth strategy, scripts & follow-up plan. ~20-30 seconds.</p>
+    </div>
+  </div>
+
+  <!-- ===== RESULTS SCREEN ===== -->
+  <div class="screen" id="screenResults">
+    <div class="results-screen">
+      <!-- Countdown Banner -->
+      <div class="countdown-banner" id="countdownBanner"></div>
+
+      <!-- ROI Targets Banner -->
+      <div class="roi-banner" id="roiBanner"></div>
+
+      <!-- Event Summary -->
+      <div class="event-summary" id="eventSummary"></div>
+
+      <!-- Tabbed Content -->
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="preshow" onclick="switchTab('preshow')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Pre-Show
+        </button>
+        <button class="tab-btn" data-tab="atshow" onclick="switchTab('atshow')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          At the Show
+        </button>
+        <button class="tab-btn" data-tab="postshow" onclick="switchTab('postshow')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Post-Show
+        </button>
+      </div>
+
+      <!-- Pre-Show Panel -->
+      <div class="tab-panel active" id="panel-preshow"></div>
+
+      <!-- At the Show Panel -->
+      <div class="tab-panel" id="panel-atshow"></div>
+
+      <!-- Post-Show Panel -->
+      <div class="tab-panel" id="panel-postshow"></div>
+
+      <div class="actions-bar">
+        <a href="/{{SLUG}}/trade-show" class="btn-action btn-primary-action">🎯 Plan Another Event</a>
+        <a href="/{{SLUG}}" class="btn-action btn-outline-action">← Back to Hub</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="ts-footer">Presented by {{POWERED_BY}}</footer>
+
+  <script>
+    const CLIENT = {{CLIENT_CONFIG}};
+    const SLUG = '{{SLUG}}';
+    let currentStep = 1;
+    let eventDateStr = '';
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    /* ===== Multi-step Form Navigation ===== */
+    function goToStep(step) {
+      // Basic validation before advancing
+      if (step > currentStep) {
+        const currentSection = document.querySelector(`.form-section[data-section="${currentStep}"]`);
+        const requiredFields = currentSection.querySelectorAll('[required]');
+        for (const f of requiredFields) {
+          if (!f.value.trim()) {
+            f.focus();
+            f.style.borderColor = 'var(--coral)';
+            setTimeout(() => f.style.borderColor = '', 2000);
+            return;
+          }
+        }
+      }
+
+      currentStep = step;
+
+      // Update sections
+      document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+      document.querySelector(`.form-section[data-section="${step}"]`).classList.add('active');
+
+      // Update progress bar
+      document.querySelectorAll('.step-item').forEach(si => {
+        const s = parseInt(si.dataset.step);
+        si.classList.remove('active', 'done');
+        if (s === step) si.classList.add('active');
+        else if (s < step) si.classList.add('done');
+      });
+      document.querySelectorAll('.step-line').forEach((line, i) => {
+        line.classList.toggle('done', i + 1 < step);
+      });
+
+      window.scrollTo(0, 0);
+    }
+
+    /* ===== Form Submission ===== */
+    document.getElementById('tsForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnGenerate');
+      btn.disabled = true;
+
+      eventDateStr = document.getElementById('f_eventdate').value;
+
+      const answers = {
+        event_name: document.getElementById('f_eventname').value,
+        event_date: eventDateStr,
+        event_type: document.getElementById('f_eventtype').value,
+        goals: document.getElementById('f_goals').value,
+        products: document.getElementById('f_products').value,
+        target_attendees: document.getElementById('f_target').value,
+        booth_setup: document.getElementById('f_booth').value,
+        budget: document.getElementById('f_budget').value,
+        competitors: document.getElementById('f_competitors').value,
+        pre_scheduled_meetings: document.getElementById('f_meetings').value,
+        special_announcements: document.getElementById('f_announcements').value
+      };
+
+      showScreen('screenProcessing');
+
+      try {
+        const res = await fetch('/api/trade-show', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers, clientConfig: CLIENT })
+        });
+        const data = await res.json();
+        if (data.error) {
+          alert('Error: ' + data.error);
+          showScreen('screenForm');
+          btn.disabled = false;
+          return;
+        }
+        let result = data.result;
+        if (typeof result === 'string') {
+          try {
+            result = JSON.parse(result.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim());
+          } catch (pe) {
+            console.error('Parse error', pe);
+            alert('Failed to parse response. Please try again.');
+            showScreen('screenForm');
+            btn.disabled = false;
+            return;
+          }
+        }
+        renderResults(result);
+      } catch (err) {
+        console.error(err);
+        alert('Generation failed: ' + err.message);
+        showScreen('screenForm');
+        btn.disabled = false;
+      }
+    });
+
+    /* ===== Tab Switching ===== */
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add('active');
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + tab).classList.add('active');
+    }
+
+    /* ===== Countdown Calculation ===== */
+    function getCountdown(dateStr) {
+      const eventDate = new Date(dateStr + 'T00:00:00');
+      const now = new Date();
+      const diff = eventDate - now;
+      if (diff <= 0) return { days: 0, hours: 0, mins: 0 };
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      return { days, hours, mins };
+    }
+
+    /* ===== Copy Helper ===== */
+    function copyText(text, btnEl) {
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btnEl.textContent;
+        btnEl.textContent = 'Copied!';
+        btnEl.style.background = 'var(--teal)';
+        btnEl.style.color = '#fff';
+        btnEl.style.borderColor = 'var(--teal)';
+        setTimeout(() => {
+          btnEl.textContent = orig;
+          btnEl.style.background = '';
+          btnEl.style.color = '';
+          btnEl.style.borderColor = '';
+        }, 1500);
+      });
+    }
+
+    /* ===== Render Results ===== */
+    function renderResults(r) {
+      const eventName = document.getElementById('f_eventname').value;
+
+      // Countdown banner
+      const cd = getCountdown(eventDateStr);
+      document.getElementById('countdownBanner').innerHTML = `
+        <div class="countdown-event">
+          <h3>${escHtml(eventName)}</h3>
+          <p>${new Date(eventDateStr + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        </div>
+        <div class="countdown-timer">
+          <div class="countdown-unit"><span class="num">${cd.days}</span><span class="lbl">Days</span></div>
+          <div class="countdown-unit"><span class="num">${cd.hours}</span><span class="lbl">Hours</span></div>
+          <div class="countdown-unit"><span class="num">${cd.mins}</span><span class="lbl">Mins</span></div>
+        </div>`;
+
+      // ROI targets
+      const roi = r.roi_targets || {};
+      document.getElementById('roiBanner').innerHTML = `
+        <div class="roi-stat"><div class="roi-num">${escHtml(roi.target_conversations || '-')}</div><div class="roi-lbl">Target Conversations</div></div>
+        <div class="roi-stat"><div class="roi-num">${escHtml(roi.target_qualified_leads || '-')}</div><div class="roi-lbl">Qualified Leads</div></div>
+        <div class="roi-stat"><div class="roi-num">${escHtml(roi.target_meetings_booked || '-')}</div><div class="roi-lbl">Meetings Booked</div></div>
+        <div class="roi-stat"><div class="roi-num">${escHtml(roi.estimated_pipeline_value || '-')}</div><div class="roi-lbl">Pipeline Value</div></div>`;
+
+      // Event summary
+      document.getElementById('eventSummary').textContent = r.event_summary || '';
+
+      // === PRE-SHOW TAB ===
+      let preHtml = '';
+
+      // Timeline
+      if (r.pre_show && r.pre_show.timeline) {
+        preHtml += `<div class="panel-heading coral">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Preparation Timeline</div>`;
+        preHtml += '<div class="timeline-cards">';
+        r.pre_show.timeline.forEach(t => {
+          preHtml += `<div class="tl-card">
+            <div class="tl-when coral-bg">${escHtml(t.when)}</div>
+            <ul class="tl-actions">${(t.actions || []).map(a => `<li>${escHtml(a)}</li>`).join('')}</ul>
+          </div>`;
+        });
+        preHtml += '</div>';
+      }
+
+      // Outreach templates
+      if (r.pre_show && r.pre_show.outreach_templates) {
+        preHtml += `<div class="panel-heading coral">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Outreach Templates</div>`;
+        r.pre_show.outreach_templates.forEach((t, i) => {
+          const bodyText = (t.subject ? 'Subject: ' + t.subject + '\n\n' : '') + (t.body || '');
+          preHtml += `<div class="template-card">
+            <div class="template-header coral-header">
+              <span>${escHtml(t.channel)}</span>
+              <button class="btn-copy" onclick="copyText(\`${escJs(bodyText)}\`, this)">Copy</button>
+            </div>
+            <div class="template-body">${t.subject ? '<div class="template-subject">Subject: ' + escHtml(t.subject) + '</div>' : ''}${escHtml(t.body || '')}</div>
+          </div>`;
+        });
+      }
+
+      // Social posts
+      if (r.pre_show && r.pre_show.social_posts) {
+        preHtml += `<div class="panel-heading coral">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          Social Media Posts</div>`;
+        r.pre_show.social_posts.forEach(p => {
+          preHtml += `<div class="template-card">
+            <div class="template-header coral-header">
+              <span>${escHtml(p.platform)}</span>
+              <button class="btn-copy" onclick="copyText(\`${escJs(p.post || '')}\`, this)">Copy</button>
+            </div>
+            <div class="template-body">${escHtml(p.post || '')}</div>
+          </div>`;
+        });
+      }
+
+      document.getElementById('panel-preshow').innerHTML = preHtml;
+
+      // === AT THE SHOW TAB ===
+      let atHtml = '';
+
+      // Booth strategy
+      if (r.at_show && r.at_show.booth_strategy) {
+        atHtml += `<div class="panel-heading teal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 0 0-8 0v2"/></svg>
+          Booth Strategy</div>`;
+        atHtml += `<div style="font-size:0.93rem;line-height:1.7;margin-bottom:16px;white-space:pre-wrap;">${escHtml(r.at_show.booth_strategy)}</div>`;
+      }
+
+      // Elevator pitches as chat bubbles
+      if (r.at_show && r.at_show.elevator_pitches) {
+        atHtml += `<div class="panel-heading teal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Elevator Pitches</div>`;
+        atHtml += '<div class="bubble-list">';
+        r.at_show.elevator_pitches.forEach(p => {
+          atHtml += `<div class="bubble teal-bubble">
+            <span class="bubble-label teal-text">${escHtml(p.audience)}</span>
+            ${escHtml(p.pitch)}
+          </div>`;
+        });
+        atHtml += '</div>';
+      }
+
+      // Conversation starters as bubbles
+      if (r.at_show && r.at_show.conversation_starters) {
+        atHtml += `<div class="panel-heading teal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Conversation Starters</div>`;
+        atHtml += '<div class="bubble-list">';
+        r.at_show.conversation_starters.forEach(q => {
+          atHtml += `<div class="bubble coral-bubble">"${escHtml(q)}"</div>`;
+        });
+        atHtml += '</div>';
+      }
+
+      // Qualifying questions as checklist
+      if (r.at_show && r.at_show.qualifying_questions) {
+        atHtml += `<div class="panel-heading teal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Lead Qualifying Questions</div>`;
+        atHtml += '<ul class="checklist">';
+        r.at_show.qualifying_questions.forEach(q => {
+          atHtml += `<li onclick="this.classList.toggle('checked')">${escHtml(q)}</li>`;
+        });
+        atHtml += '</ul>';
+      }
+
+      // Demo talking points
+      if (r.at_show && r.at_show.demo_talking_points) {
+        atHtml += `<div class="panel-heading teal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          Demo Talking Points</div>`;
+        atHtml += '<div class="points-grid">';
+        r.at_show.demo_talking_points.forEach((p, i) => {
+          atHtml += `<div class="point-card">
+            <div class="point-num">${String(i + 1).padStart(2, '0')}</div>
+            <div class="point-text">${escHtml(p)}</div>
+          </div>`;
+        });
+        atHtml += '</div>';
+      }
+
+      document.getElementById('panel-atshow').innerHTML = atHtml;
+
+      // === POST-SHOW TAB ===
+      let postHtml = '';
+
+      // Follow-up timeline
+      if (r.post_show && r.post_show.follow_up_timeline) {
+        postHtml += `<div class="panel-heading gold">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Follow-Up Timeline</div>`;
+        postHtml += '<div class="timeline-cards">';
+        r.post_show.follow_up_timeline.forEach(t => {
+          postHtml += `<div class="tl-card">
+            <div class="tl-when gold-bg">${escHtml(t.when)}</div>
+            <ul class="tl-actions">${(t.actions || []).map(a => `<li>${escHtml(a)}</li>`).join('')}</ul>
+          </div>`;
+        });
+        postHtml += '</div>';
+      }
+
+      // Email templates
+      if (r.post_show && r.post_show.email_templates) {
+        postHtml += `<div class="panel-heading gold">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Follow-Up Email Templates</div>`;
+        r.post_show.email_templates.forEach(t => {
+          const bodyText = 'Subject: ' + (t.subject || '') + '\n\n' + (t.body || '');
+          postHtml += `<div class="template-card">
+            <div class="template-header gold-header">
+              <span>${escHtml(t.type)}</span>
+              <button class="btn-copy" onclick="copyText(\`${escJs(bodyText)}\`, this)">Copy</button>
+            </div>
+            <div class="template-body"><div class="template-subject">Subject: ${escHtml(t.subject || '')}</div>${escHtml(t.body || '')}</div>
+          </div>`;
+        });
+      }
+
+      // Lead scoring tiers
+      if (r.post_show && r.post_show.lead_scoring) {
+        const ls = r.post_show.lead_scoring;
+        postHtml += `<div class="panel-heading gold">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Lead Scoring Guide</div>`;
+        postHtml += '<div class="lead-tiers">';
+        if (ls.hot) {
+          postHtml += `<div class="lead-tier hot"><div class="tier-badge hot-badge">🔥 Hot</div><div class="tier-text">${escHtml(ls.hot)}</div></div>`;
+        }
+        if (ls.warm) {
+          postHtml += `<div class="lead-tier warm"><div class="tier-badge warm-badge">☀️ Warm</div><div class="tier-text">${escHtml(ls.warm)}</div></div>`;
+        }
+        if (ls.nurture) {
+          postHtml += `<div class="lead-tier nurture"><div class="tier-badge nurture-badge">🌱 Nurture</div><div class="tier-text">${escHtml(ls.nurture)}</div></div>`;
+        }
+        postHtml += '</div>';
+      }
+
+      document.getElementById('panel-postshow').innerHTML = postHtml;
+
+      showScreen('screenResults');
+    }
+
+    /* ===== Utility: HTML-escape ===== */
+    function escHtml(str) {
+      if (!str) return '';
+      const d = document.createElement('div');
+      d.textContent = String(str);
+      return d.innerHTML;
+    }
+
+    /* ===== Utility: JS template literal escape ===== */
+    function escJs(str) {
+      if (!str) return '';
+      return String(str).replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+    }
+  </script>
+</body>
+</html>

@@ -576,6 +576,82 @@ app.get('/:slug/linkedin-post', requireAuth, async (req, res) => {
   }));
 });
 
+// ─── CORPORATE STRATEGY APP ──────────────────────────────
+
+app.get('/:slug/corporate-strategy', requireAuth, async (req, res) => {
+  const client = await getClient(req.params.slug);
+  if (!client) return res.status(404).send(renderTemplate('404.html', {}));
+  if (!client.apps.includes('corporate-strategy')) return res.status(403).send('App not available');
+  logEvent(client.slug, 'corporate-strategy', 'app_open', {}, req);
+  res.send(renderTemplate('corporate-strategy.html', {
+    CLIENT_CONFIG: JSON.stringify(client),
+    PAGE_TITLE: `Corporate Strategy — ${client.companyName}`,
+    SLUG: client.slug,
+    COMPANY_NAME: client.companyName,
+    PRIMARY_COLOR: client.primaryColor,
+    ACCENT_COLOR: client.accentColor,
+    LOGO_URL: client.logo,
+    POWERED_BY: client.poweredBy
+  }));
+});
+
+// ─── CASE STUDY GENERATOR APP ────────────────────────────
+
+app.get('/:slug/case-study', requireAuth, async (req, res) => {
+  const client = await getClient(req.params.slug);
+  if (!client) return res.status(404).send(renderTemplate('404.html', {}));
+  if (!client.apps.includes('case-study')) return res.status(403).send('App not available');
+  logEvent(client.slug, 'case-study', 'app_open', {}, req);
+  res.send(renderTemplate('case-study.html', {
+    CLIENT_CONFIG: JSON.stringify(client),
+    PAGE_TITLE: `Case Study Generator — ${client.companyName}`,
+    SLUG: client.slug,
+    COMPANY_NAME: client.companyName,
+    PRIMARY_COLOR: client.primaryColor,
+    ACCENT_COLOR: client.accentColor,
+    LOGO_URL: client.logo,
+    POWERED_BY: client.poweredBy
+  }));
+});
+
+// ─── TRADE SHOW STRATEGY APP ─────────────────────────────
+
+app.get('/:slug/trade-show', requireAuth, async (req, res) => {
+  const client = await getClient(req.params.slug);
+  if (!client) return res.status(404).send(renderTemplate('404.html', {}));
+  if (!client.apps.includes('trade-show')) return res.status(403).send('App not available');
+  logEvent(client.slug, 'trade-show', 'app_open', {}, req);
+  res.send(renderTemplate('trade-show.html', {
+    CLIENT_CONFIG: JSON.stringify(client),
+    PAGE_TITLE: `Trade Show Strategy — ${client.companyName}`,
+    SLUG: client.slug,
+    COMPANY_NAME: client.companyName,
+    PRIMARY_COLOR: client.primaryColor,
+    ACCENT_COLOR: client.accentColor,
+    LOGO_URL: client.logo,
+    POWERED_BY: client.poweredBy
+  }));
+});
+
+// ─── INDUSTRY FEED APP ───────────────────────────────────
+
+app.get('/:slug/industry-feed', requireAuth, async (req, res) => {
+  const client = await getClient(req.params.slug);
+  if (!client) return res.status(404).send(renderTemplate('404.html', {}));
+  if (!client.apps.includes('industry-feed')) return res.status(403).send('App not available');
+  logEvent(client.slug, 'industry-feed', 'app_open', {}, req);
+  res.send(renderTemplate('industry-feed.html', {
+    CLIENT_CONFIG: JSON.stringify(client),
+    PAGE_TITLE: `Industry Feed — ${client.companyName}`,
+    SLUG: client.slug,
+    COMPANY_NAME: client.companyName,
+    PRIMARY_COLOR: client.primaryColor,
+    ACCENT_COLOR: client.accentColor,
+    LOGO_URL: client.logo,
+    POWERED_BY: client.poweredBy
+  }));
+});
+
 // ─── AI API PROXIES ──────────────────────────────────────
 
 function buildClientContext(client) {
@@ -836,6 +912,291 @@ RULES:
     res.json({ result });
   } catch (e) {
     console.error('LinkedIn post error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ─── CORPORATE STRATEGY API ──────────────────────────────
+
+app.post('/api/corporate-strategy', async (req, res) => {
+  try {
+    const { answers, clientConfig } = req.body;
+    if (!answers || !clientConfig) return res.status(400).json({ error: 'Missing fields' });
+
+    const systemPrompt = `You are a senior strategic account planner with 20+ years of experience in enterprise B2B sales strategy. You think like a chess player — multiple moves ahead, mapping stakeholders, identifying leverage points, and building long-term account dominance strategies.
+
+CLIENT CONTEXT:
+${buildClientContext(clientConfig)}
+
+Return ONLY valid JSON matching this schema:
+{
+  "account_overview": "2-3 sentence strategic assessment of this account — honest and direct",
+  "strategic_objectives": [
+    { "priority": 1, "objective": "Clear objective statement", "rationale": "Why this matters", "timeline": "Q1-Q2", "success_metric": "How you measure it" },
+    { "priority": 2, "objective": "...", "rationale": "...", "timeline": "...", "success_metric": "..." },
+    { "priority": 3, "objective": "...", "rationale": "...", "timeline": "...", "success_metric": "..." }
+  ],
+  "stakeholder_map": {
+    "champions": [{ "title": "Role/title to target", "approach": "How to engage them" }],
+    "blockers": [{ "title": "Role/title that may resist", "strategy": "How to neutralize or convert them" }],
+    "untapped": [{ "title": "Role/title not yet engaged", "entry_point": "How to get introduced" }]
+  },
+  "risk_assessment": [
+    { "risk": "Specific risk to this account", "severity": "high", "mitigation": "What to do about it" },
+    { "risk": "...", "severity": "medium", "mitigation": "..." },
+    { "risk": "...", "severity": "low", "mitigation": "..." }
+  ],
+  "quarterly_playbook": [
+    { "quarter": "Q1", "theme": "Quarter theme", "actions": ["Specific action 1", "Action 2", "Action 3"], "milestones": ["Key milestone"] },
+    { "quarter": "Q2", "theme": "...", "actions": ["..."], "milestones": ["..."] },
+    { "quarter": "Q3", "theme": "...", "actions": ["..."], "milestones": ["..."] },
+    { "quarter": "Q4", "theme": "...", "actions": ["..."], "milestones": ["..."] }
+  ],
+  "expansion_opportunities": [
+    { "opportunity": "Specific expansion area", "estimated_value": "$X-$Y", "approach": "How to pursue it" }
+  ],
+  "executive_summary": "3-4 sentence summary of the entire strategy — what you'd tell your VP in an elevator"
+}
+
+RULES:
+- Be specific to THEIR account details — reference names, products, numbers they mentioned
+- Think like a strategist, not a salesperson — this is about long-term account growth
+- Stakeholder map should be actionable — real titles and real approaches
+- Risks should be honest — don't sugarcoat
+- Each quarter should build on the previous one`;
+
+    const userPrompt = `Build a corporate strategy for this account:\n\n${Object.entries(answers).map(([k, v]) => `${k}: ${v}`).join('\n')}`;
+    const raw = await callClaude(systemPrompt, userPrompt, 3000);
+    const result = extractJSON(raw);
+    await logEvent(clientConfig.slug, 'corporate-strategy', 'generation_complete', {}, req);
+    res.json({ result });
+  } catch (e) {
+    console.error('Corporate strategy error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ─── CASE STUDY API ──────────────────────────────────────
+
+app.post('/api/case-study', async (req, res) => {
+  try {
+    const { answers, clientConfig } = req.body;
+    if (!answers || !clientConfig) return res.status(400).json({ error: 'Missing fields' });
+
+    const systemPrompt = `You are a B2B content strategist who specializes in writing compelling customer case studies. You write stories that prospects actually read — because they see themselves in the customer's shoes. Your tone is professional but narrative-driven, using specific numbers and real outcomes to build credibility.
+
+CLIENT CONTEXT:
+${buildClientContext(clientConfig)}
+
+Return ONLY valid JSON matching this schema:
+{
+  "title": "Case Study: How [Customer] Achieved [Key Result] with [Solution]",
+  "subtitle": "One compelling subtitle line",
+  "at_a_glance": {
+    "customer": "Company name",
+    "industry": "Their industry",
+    "solution": "What was deployed",
+    "timeline": "Implementation to results timeframe"
+  },
+  "key_results": [
+    { "metric": "47%", "description": "Reduction in processing time" },
+    { "metric": "$2.1M", "description": "Annual cost savings" },
+    { "metric": "3 weeks", "description": "Time to full deployment" }
+  ],
+  "sections": {
+    "challenge": { "headline": "The Challenge", "body": "2-3 paragraphs describing the problem they faced..." },
+    "solution": { "headline": "The Solution", "body": "2-3 paragraphs describing how the solution was implemented..." },
+    "implementation": { "headline": "Implementation", "body": "1-2 paragraphs on the implementation process..." },
+    "results": { "headline": "The Results", "body": "2-3 paragraphs with specific metrics and outcomes..." }
+  },
+  "pull_quote": {
+    "quote": "A compelling quote that sounds like a real person said it...",
+    "attribution": "Name, Title, Company"
+  },
+  "one_pager": "A concise 200-word summary of the entire case study — challenge, solution, results — suitable for a one-page leave-behind or email."
+}
+
+RULES:
+- Key results must be specific numbers — estimate realistically if exact numbers weren't given
+- The narrative should read like a story, not a brochure
+- The quote should sound natural and genuine, not corporate
+- Reference the customer's specific situation throughout
+- The one-pager should be tight and punchy — every sentence earns its place`;
+
+    const userPrompt = `Create a case study from this information:\n\n${Object.entries(answers).map(([k, v]) => `${k}: ${v}`).join('\n')}`;
+    const raw = await callClaude(systemPrompt, userPrompt, 2500);
+    const result = extractJSON(raw);
+    await logEvent(clientConfig.slug, 'case-study', 'generation_complete', {}, req);
+    res.json({ result });
+  } catch (e) {
+    console.error('Case study error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ─── TRADE SHOW API ──────────────────────────────────────
+
+app.post('/api/trade-show', async (req, res) => {
+  try {
+    const { answers, clientConfig } = req.body;
+    if (!answers || !clientConfig) return res.status(400).json({ error: 'Missing fields' });
+
+    const systemPrompt = `You are a trade show and event marketing strategist who has helped companies maximize ROI from hundreds of industry events. You think about the full lifecycle: pre-show buzz, at-show execution, and post-show conversion. You're practical and specific — every recommendation should be something the team can act on immediately.
+
+CLIENT CONTEXT:
+${buildClientContext(clientConfig)}
+
+Return ONLY valid JSON matching this schema:
+{
+  "event_summary": "2-sentence assessment of this event opportunity and expected ROI potential",
+  "pre_show": {
+    "timeline": [
+      { "when": "4 weeks before", "actions": ["Specific action 1", "Action 2"] },
+      { "when": "2 weeks before", "actions": ["..."] },
+      { "when": "1 week before", "actions": ["..."] }
+    ],
+    "outreach_templates": [
+      { "channel": "Email", "subject": "Subject line", "body": "Full email body text" },
+      { "channel": "LinkedIn", "body": "LinkedIn message text" }
+    ],
+    "social_posts": [
+      { "platform": "LinkedIn", "post": "Full post text" },
+      { "platform": "Twitter/X", "post": "Full tweet text" }
+    ]
+  },
+  "at_show": {
+    "booth_strategy": "2-3 paragraphs on booth setup, traffic flow, engagement tactics, and team roles",
+    "elevator_pitches": [
+      { "audience": "Executive", "pitch": "30-second pitch tailored to executives..." },
+      { "audience": "Technical", "pitch": "30-second pitch tailored to technical buyers..." },
+      { "audience": "End User", "pitch": "30-second pitch tailored to end users..." }
+    ],
+    "conversation_starters": ["5 natural opener questions that don't feel salesy"],
+    "qualifying_questions": ["5 questions to quickly identify if someone is a real prospect"],
+    "demo_talking_points": ["3-5 key points to hit in every demo or product walkthrough"]
+  },
+  "post_show": {
+    "follow_up_timeline": [
+      { "when": "Day 1-2", "actions": ["..."] },
+      { "when": "Week 1", "actions": ["..."] },
+      { "when": "Week 2-3", "actions": ["..."] }
+    ],
+    "email_templates": [
+      { "type": "Hot Lead", "subject": "Subject", "body": "Full email" },
+      { "type": "Warm Lead", "subject": "Subject", "body": "Full email" },
+      { "type": "Networking Contact", "subject": "Subject", "body": "Full email" }
+    ],
+    "lead_scoring": {
+      "hot": "Criteria for hot leads — what makes someone a priority follow-up",
+      "warm": "Criteria for warm leads — interested but not urgent",
+      "nurture": "Criteria for long-term nurture — worth staying in touch"
+    }
+  },
+  "roi_targets": {
+    "target_conversations": "Realistic number",
+    "target_qualified_leads": "Realistic number",
+    "target_meetings_booked": "Realistic number",
+    "estimated_pipeline_value": "Realistic dollar estimate"
+  }
+}
+
+RULES:
+- All templates (emails, social, pitches) should be ready to use — not placeholders
+- Reference the specific event, products, and target audience throughout
+- ROI targets should be realistic based on the event type and booth setup
+- Qualifying questions should be conversational, not interrogation-style
+- Post-show emails should reference the specific event by name`;
+
+    const userPrompt = `Build a trade show strategy for:\n\n${Object.entries(answers).map(([k, v]) => `${k}: ${v}`).join('\n')}`;
+    const raw = await callClaude(systemPrompt, userPrompt, 3500);
+    const result = extractJSON(raw);
+    await logEvent(clientConfig.slug, 'trade-show', 'generation_complete', {}, req);
+    res.json({ result });
+  } catch (e) {
+    console.error('Trade show error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ─── INDUSTRY FEED API ───────────────────────────────────
+
+app.post('/api/industry-feed', async (req, res) => {
+  try {
+    const { clientConfig } = req.body;
+    if (!clientConfig) return res.status(400).json({ error: 'Missing client config' });
+
+    const keywords = [
+      clientConfig.productDescription,
+      clientConfig.industry,
+      clientConfig.competitors,
+      clientConfig.context
+    ].filter(Boolean).join(' ').substring(0, 200);
+
+    const searchQuery = clientConfig.productDescription
+      ? clientConfig.productDescription.split(/[,.]/).slice(0, 2).join(' ').trim()
+      : clientConfig.companyName;
+
+    // Fetch Google News RSS
+    let articles = [];
+    try {
+      const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery)}&hl=en-US&gl=US&ceid=US:en`;
+      const rssRes = await fetch(rssUrl, { signal: AbortSignal.timeout(8000) });
+      const rssXml = await rssRes.text();
+
+      const items = rssXml.split('<item>').slice(1, 11);
+      articles = items.map(item => {
+        const title = (item.match(/<title>(.*?)<\/title>/) || [])[1] || '';
+        const link = (item.match(/<link>(.*?)<\/link>/) || [])[1] || '';
+        const pubDate = (item.match(/<pubDate>(.*?)<\/pubDate>/) || [])[1] || '';
+        const source = (item.match(/<source[^>]*>(.*?)<\/source>/) || [])[1] || '';
+        return {
+          title: title.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'").replace(/&quot;/g, '"'),
+          link,
+          source,
+          date: pubDate ? new Date(pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''
+        };
+      }).filter(a => a.title && a.link);
+    } catch (e) {
+      console.error('RSS fetch error:', e.message);
+    }
+
+    if (articles.length === 0) {
+      return res.json({ articles: [], feed_context: 'No recent articles found. Try refreshing later.' });
+    }
+
+    const systemPrompt = `You are a sales intelligence analyst. Given a list of news articles and a company profile, curate the articles for a sales team. For each article, write a brief summary and a "sales angle" — how this news could be used in sales conversations, prospecting, or account strategy.
+
+CLIENT CONTEXT:
+${buildClientContext(clientConfig)}
+
+Return ONLY valid JSON:
+{
+  "feed_context": "Brief 1-sentence description of the industry/topics covered",
+  "articles": [
+    {
+      "title": "Original article title",
+      "link": "Original URL",
+      "source": "Source name",
+      "date": "Date string",
+      "summary": "2-sentence summary of what the article is about",
+      "sales_angle": "1-2 sentences on how a sales rep could use this in conversations — be specific and actionable"
+    }
+  ]
+}
+
+RULES:
+- Keep only the 6-8 most relevant articles for this company's sales team
+- Summaries should be factual and concise
+- Sales angles should be specific and actionable — "mention this to prospects who..." or "use this to counter the objection that..."
+- Order by relevance to the sales team, most useful first
+- If an article isn't relevant, skip it`;
+
+    const userPrompt = `Articles:\n${articles.map((a, i) => `${i + 1}. "${a.title}" — ${a.source} (${a.date}) [${a.link}]`).join('\n')}`;
+    const raw = await callClaude(systemPrompt, userPrompt, 2000);
+    const result = extractJSON(raw);
+    res.json(result);
+  } catch (e) {
+    console.error('Industry feed error:', e);
     res.status(500).json({ error: e.message });
   }
 });

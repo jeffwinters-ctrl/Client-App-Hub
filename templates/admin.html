@@ -273,6 +273,18 @@
                   <label style="font-size:0.9rem;display:flex;align-items:center;gap:6px;cursor:pointer;">
                     <input type="checkbox" id="cf_app_linkedin" value="linkedin-post" checked> LinkedIn Post
                   </label>
+                  <label style="font-size:0.9rem;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                    <input type="checkbox" id="cf_app_corpstrat" value="corporate-strategy" checked> Corp Strategy
+                  </label>
+                  <label style="font-size:0.9rem;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                    <input type="checkbox" id="cf_app_casestudy" value="case-study" checked> Case Study
+                  </label>
+                  <label style="font-size:0.9rem;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                    <input type="checkbox" id="cf_app_tradeshow" value="trade-show" checked> Trade Show
+                  </label>
+                  <label style="font-size:0.9rem;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                    <input type="checkbox" id="cf_app_feed" value="industry-feed" checked> Industry Feed
+                  </label>
                 </div>
               </div>
 
@@ -562,6 +574,10 @@
       document.getElementById('cf_app_dealcheck').checked = c.apps.includes('dealcheck');
       document.getElementById('cf_app_bizcase').checked = c.apps.includes('business-case');
       document.getElementById('cf_app_linkedin').checked = c.apps.includes('linkedin-post');
+      document.getElementById('cf_app_corpstrat').checked = c.apps.includes('corporate-strategy');
+      document.getElementById('cf_app_casestudy').checked = c.apps.includes('case-study');
+      document.getElementById('cf_app_tradeshow').checked = c.apps.includes('trade-show');
+      document.getElementById('cf_app_feed').checked = c.apps.includes('industry-feed');
       document.getElementById('cf_website').value = c.website || '';
       document.getElementById('cf_productDescription').value = c.productDescription || '';
       document.getElementById('cf_targetBuyers').value = c.targetBuyers || '';
@@ -646,6 +662,10 @@
       if (document.getElementById('cf_app_dealcheck').checked) apps.push('dealcheck');
       if (document.getElementById('cf_app_bizcase').checked) apps.push('business-case');
       if (document.getElementById('cf_app_linkedin').checked) apps.push('linkedin-post');
+      if (document.getElementById('cf_app_corpstrat').checked) apps.push('corporate-strategy');
+      if (document.getElementById('cf_app_casestudy').checked) apps.push('case-study');
+      if (document.getElementById('cf_app_tradeshow').checked) apps.push('trade-show');
+      if (document.getElementById('cf_app_feed').checked) apps.push('industry-feed');
 
       const payload = {
         slug: document.getElementById('cf_slug').value.trim(),

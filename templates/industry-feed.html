@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{PAGE_TITLE}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: {{PRIMARY_COLOR}};
+      --accent: {{ACCENT_COLOR}};
+      --bg: #FAFAFA;
+      --surface: #FFFFFF;
+      --ink: #1A1A1A;
+      --ink-secondary: #525866;
+      --ink-light: #8A8F98;
+      --rule: #E8EAED;
+      --skeleton: #E8EAED;
+      --skeleton-shine: #F4F5F6;
+      --accent-tint: rgba({{ACCENT_COLOR_RGB}}, 0.08);
+    }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+    /* Header */
+    .feed-header {
+      background: var(--ink);
+      color: #fff;
+      padding: 0 32px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .feed-header a { color: rgba(255,255,255,0.65); text-decoration: none; font-size: 0.8rem; font-weight: 400; text-transform: none; letter-spacing: 0; transition: color 0.2s; }
+    .feed-header a:hover { color: #fff; }
+
+    /* Hero */
+    .feed-hero {
+      background: var(--surface);
+      border-bottom: 1px solid var(--rule);
+      padding: 40px 24px 36px;
+      text-align: center;
+    }
+    .feed-hero-inner { max-width: 740px; margin: 0 auto; }
+    .feed-hero h1 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .feed-hero-date {
+      font-size: 0.85rem;
+      color: var(--ink-light);
+      font-weight: 400;
+      margin-bottom: 12px;
+    }
+    .feed-hero-context {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--ink-secondary);
+      line-height: 1.6;
+      max-width: 560px;
+      margin: 0 auto;
+      min-height: 1.6em;
+    }
+
+    /* Feed container */
+    .feed-container {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 28px 24px 80px;
+    }
+
+    /* Article card */
+    .article-card {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--accent);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: cardFadeIn 0.45s ease forwards;
+    }
+    .article-card:nth-child(1) { animation-delay: 0.05s; }
+    .article-card:nth-child(2) { animation-delay: 0.12s; }
+    .article-card:nth-child(3) { animation-delay: 0.19s; }
+    .article-card:nth-child(4) { animation-delay: 0.26s; }
+    .article-card:nth-child(5) { animation-delay: 0.33s; }
+    .article-card:nth-child(6) { animation-delay: 0.40s; }
+    .article-card:nth-child(7) { animation-delay: 0.47s; }
+    .article-card:nth-child(8) { animation-delay: 0.54s; }
+    .article-card:nth-child(9) { animation-delay: 0.61s; }
+    .article-card:nth-child(10) { animation-delay: 0.68s; }
+    @keyframes cardFadeIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .article-card-body { padding: 22px 24px 20px; }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 0.78rem;
+      color: var(--ink-light);
+      font-weight: 500;
+    }
+    .article-source {
+      background: var(--bg);
+      padding: 2px 9px;
+      border-radius: 4px;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .article-dot { color: var(--rule); }
+
+    .article-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.45;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+    .article-title a {
+      color: var(--ink);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .article-title a:hover { color: var(--primary); }
+
+    .article-summary {
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: var(--ink-secondary);
+      margin-bottom: 16px;
+    }
+
+    .sales-angle {
+      background: var(--accent-tint);
+      border-radius: 8px;
+      padding: 14px 18px;
+    }
+    .sales-angle-label {
+      font-size: 0.67rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sales-angle-label::before {
+      content: '';
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .sales-angle-text {
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: var(--ink);
+    }
+
+    /* Skeleton loading */
+    .skeleton-card {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--skeleton);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      padding: 22px 24px 20px;
+    }
+    .skeleton-line {
+      background: linear-gradient(90deg, var(--skeleton) 25%, var(--skeleton-shine) 50%, var(--skeleton) 75%);
+      background-size: 200% 100%;
+      animation: skeletonPulse 1.5s ease-in-out infinite;
+      border-radius: 5px;
+    }
+    @keyframes skeletonPulse {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .skeleton-meta { width: 140px; height: 14px; margin-bottom: 14px; }
+    .skeleton-title { width: 85%; height: 18px; margin-bottom: 8px; }
+    .skeleton-title-short { width: 55%; height: 18px; margin-bottom: 16px; }
+    .skeleton-summary { width: 100%; height: 13px; margin-bottom: 7px; }
+    .skeleton-summary-short { width: 72%; height: 13px; margin-bottom: 18px; }
+    .skeleton-angle-box {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 14px 18px;
+    }
+    .skeleton-angle-label { width: 80px; height: 10px; margin-bottom: 10px; }
+    .skeleton-angle-text { width: 90%; height: 13px; margin-bottom: 6px; }
+    .skeleton-angle-text-short { width: 60%; height: 13px; }
+
+    /* Refresh / bottom actions */
+    .feed-actions {
+      text-align: center;
+      padding: 12px 0 0;
+    }
+    .btn-refresh {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 32px;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .btn-refresh:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .btn-refresh:disabled { opacity: 0.5; cursor: default; }
+    .btn-refresh svg { width: 16px; height: 16px; transition: transform 0.4s; }
+    .btn-refresh.refreshing svg { animation: spinRefresh 0.8s linear infinite; }
+    @keyframes spinRefresh { to { transform: rotate(360deg); } }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: var(--ink-light);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--ink); }
+
+    /* Error state */
+    .error-state {
+      text-align: center;
+      padding: 56px 24px;
+    }
+    .error-state-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #FEF2F2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      font-size: 1.5rem;
+    }
+    .error-state h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .error-state p {
+      font-size: 0.9rem;
+      color: var(--ink-secondary);
+      max-width: 400px;
+      margin: 0 auto 24px;
+      line-height: 1.6;
+    }
+    .btn-retry {
+      padding: 10px 28px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-retry:hover { opacity: 0.9; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 56px 24px;
+      color: var(--ink-light);
+    }
+    .empty-state p { font-size: 0.95rem; }
+
+    /* Footer */
+    .feed-footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+      padding: 16px;
+      font-size: 0.78rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .feed-header { padding: 0 16px; }
+      .feed-hero { padding: 28px 16px 24px; }
+      .feed-hero h1 { font-size: 1.3rem; }
+      .feed-container { padding: 20px 16px 60px; }
+      .article-card-body { padding: 18px 18px 16px; }
+      .article-title { font-size: 1.05rem; }
+      .sales-angle { padding: 12px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="feed-header">
+    <span>INDUSTRY FEED</span>
+    <a href="/{{SLUG}}">Back to Hub</a>
+  </header>
+
+  <section class="feed-hero">
+    <div class="feed-hero-inner">
+      <h1>Industry Intelligence for {{COMPANY_NAME}}</h1>
+      <div class="feed-hero-date" id="heroDate"></div>
+      <div class="feed-hero-context" id="heroContext"></div>
+    </div>
+  </section>
+
+  <main class="feed-container">
+    <div id="feedContent">
+      <!-- Skeleton loading cards -->
+      <div id="skeletonLoader">
+        <div class="skeleton-card">
+          <div class="skeleton-line skeleton-meta"></div>
+          <div class="skeleton-line skeleton-title"></div>
+          <div class="skeleton-line skeleton-title-short"></div>
+          <div class="skeleton-line skeleton-summary"></div>
+          <div class="skeleton-line skeleton-summary-short"></div>
+          <div class="skeleton-angle-box">
+            <div class="skeleton-line skeleton-angle-label"></div>
+            <div class="skeleton-line skeleton-angle-text"></div>
+            <div class="skeleton-line skeleton-angle-text-short"></div>
+          </div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-line skeleton-meta"></div>
+          <div class="skeleton-line skeleton-title"></div>
+          <div class="skeleton-line skeleton-title-short"></div>
+          <div class="skeleton-line skeleton-summary"></div>
+          <div class="skeleton-line skeleton-summary-short"></div>
+          <div class="skeleton-angle-box">
+            <div class="skeleton-line skeleton-angle-label"></div>
+            <div class="skeleton-line skeleton-angle-text"></div>
+            <div class="skeleton-line skeleton-angle-text-short"></div>
+          </div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-line skeleton-meta"></div>
+          <div class="skeleton-line skeleton-title"></div>
+          <div class="skeleton-line skeleton-title-short"></div>
+          <div class="skeleton-line skeleton-summary"></div>
+          <div class="skeleton-line skeleton-summary-short"></div>
+          <div class="skeleton-angle-box">
+            <div class="skeleton-line skeleton-angle-label"></div>
+            <div class="skeleton-line skeleton-angle-text"></div>
+            <div class="skeleton-line skeleton-angle-text-short"></div>
+          </div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-line skeleton-meta"></div>
+          <div class="skeleton-line skeleton-title"></div>
+          <div class="skeleton-line skeleton-title-short"></div>
+          <div class="skeleton-line skeleton-summary"></div>
+          <div class="skeleton-line skeleton-summary-short"></div>
+          <div class="skeleton-angle-box">
+            <div class="skeleton-line skeleton-angle-label"></div>
+            <div class="skeleton-line skeleton-angle-text"></div>
+            <div class="skeleton-line skeleton-angle-text-short"></div>
+          </div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-line skeleton-meta"></div>
+          <div class="skeleton-line skeleton-title"></div>
+          <div class="skeleton-line skeleton-title-short"></div>
+          <div class="skeleton-line skeleton-summary"></div>
+          <div class="skeleton-line skeleton-summary-short"></div>
+          <div class="skeleton-angle-box">
+            <div class="skeleton-line skeleton-angle-label"></div>
+            <div class="skeleton-line skeleton-angle-text"></div>
+            <div class="skeleton-line skeleton-angle-text-short"></div>
+          </div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-line skeleton-meta"></div>
+          <div class="skeleton-line skeleton-title"></div>
+          <div class="skeleton-line skeleton-title-short"></div>
+          <div class="skeleton-line skeleton-summary"></div>
+          <div class="skeleton-line skeleton-summary-short"></div>
+          <div class="skeleton-angle-box">
+            <div class="skeleton-line skeleton-angle-label"></div>
+            <div class="skeleton-line skeleton-angle-text"></div>
+            <div class="skeleton-line skeleton-angle-text-short"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Articles render here -->
+      <div id="articlesContainer" style="display:none;"></div>
+
+      <!-- Error state -->
+      <div id="errorState" style="display:none;">
+        <div class="error-state">
+          <div class="error-state-icon">📡</div>
+          <h3>Couldn't Load Your Feed</h3>
+          <p id="errorMessage">Something went wrong while fetching industry news. This usually resolves itself — give it another try.</p>
+          <button class="btn-retry" onclick="loadFeed()">Try Again</button>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div id="emptyState" style="display:none;">
+        <div class="empty-state">
+          <p>No articles found. Try refreshing in a few minutes.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="feed-actions" id="feedActions" style="display:none;">
+      <button class="btn-refresh" id="btnRefresh" onclick="refreshFeed()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+        Refresh Feed
+      </button>
+      <br>
+      <a href="/{{SLUG}}" class="back-link">← Back to Hub</a>
+    </div>
+  </main>
+
+  <footer class="feed-footer">Presented by {{POWERED_BY}}</footer>
+
+  <script>
+    const CLIENT = {{CLIENT_CONFIG}};
+    const SLUG = '{{SLUG}}';
+
+    // Set today's date in the hero
+    (function setHeroDate() {
+      const now = new Date();
+      const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('heroDate').textContent = now.toLocaleDateString('en-US', opts);
+    })();
+
+    function showSkeleton() {
+      document.getElementById('skeletonLoader').style.display = '';
+      document.getElementById('articlesContainer').style.display = 'none';
+      document.getElementById('errorState').style.display = 'none';
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('feedActions').style.display = 'none';
+    }
+
+    function showArticles() {
+      document.getElementById('skeletonLoader').style.display = 'none';
+      document.getElementById('articlesContainer').style.display = '';
+      document.getElementById('errorState').style.display = 'none';
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('feedActions').style.display = '';
+    }
+
+    function showError(msg) {
+      document.getElementById('skeletonLoader').style.display = 'none';
+      document.getElementById('articlesContainer').style.display = 'none';
+      document.getElementById('errorState').style.display = '';
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('feedActions').style.display = 'none';
+      if (msg) document.getElementById('errorMessage').textContent = msg;
+    }
+
+    function showEmpty() {
+      document.getElementById('skeletonLoader').style.display = 'none';
+      document.getElementById('articlesContainer').style.display = 'none';
+      document.getElementById('errorState').style.display = 'none';
+      document.getElementById('emptyState').style.display = '';
+      document.getElementById('feedActions').style.display = '';
+    }
+
+    function escapeHTML(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function renderArticles(data) {
+      var articles = data.articles || [];
+      var feedContext = data.feed_context || '';
+
+      document.getElementById('heroContext').textContent = feedContext;
+
+      if (articles.length === 0) {
+        showEmpty();
+        return;
+      }
+
+      var container = document.getElementById('articlesContainer');
+      container.innerHTML = '';
+
+      articles.forEach(function(article) {
+        var card = document.createElement('div');
+        card.className = 'article-card';
+        card.innerHTML =
+          '<div class="article-card-body">' +
+            '<div class="article-meta">' +
+              '<span class="article-source">' + escapeHTML(article.source || 'News') + '</span>' +
+              '<span class="article-dot">·</span>' +
+              '<span>' + escapeHTML(article.date || '') + '</span>' +
+            '</div>' +
+            '<h2 class="article-title">' +
+              '<a href="' + escapeHTML(article.link || '#') + '" target="_blank" rel="noopener noreferrer">' +
+                escapeHTML(article.title || 'Untitled') +
+              '</a>' +
+            '</h2>' +
+            '<p class="article-summary">' + escapeHTML(article.summary || '') + '</p>' +
+            '<div class="sales-angle">' +
+              '<div class="sales-angle-label">SALES ANGLE</div>' +
+              '<div class="sales-angle-text">' + escapeHTML(article.sales_angle || '') + '</div>' +
+            '</div>' +
+          '</div>';
+        container.appendChild(card);
+      });
+
+      showArticles();
+    }
+
+    async function loadFeed() {
+      showSkeleton();
+
+      try {
+        var res = await fetch('/api/industry-feed', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ clientConfig: CLIENT })
+        });
+        var data = await res.json();
+
+        if (data.error) {
+          showError(data.error);
+          return;
+        }
+
+        var result = data.result !== undefined ? data.result : data;
+        if (typeof result === 'string') {
+          try {
+            result = JSON.parse(result.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim());
+          } catch (pe) {
+            console.error('Parse error', pe);
+            showError('Failed to parse the feed response. Please try again.');
+            return;
+          }
+        }
+
+        renderArticles(result);
+      } catch (err) {
+        console.error(err);
+        showError('Network error — check your connection and try again.');
+      }
+    }
+
+    function refreshFeed() {
+      var btn = document.getElementById('btnRefresh');
+      btn.classList.add('refreshing');
+      btn.disabled = true;
+      loadFeed().finally(function() {
+        btn.classList.remove('refreshing');
+        btn.disabled = false;
+      });
+    }
+
+    // Auto-load on page open
+    loadFeed();
+  </script>
+</body>
+</html>
