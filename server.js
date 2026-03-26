@@ -446,6 +446,47 @@ RULES:
   }
 });
 
+// ─── ONBOARDING PACKET PARSER ────────────────────────────
+
+app.post('/api/admin/parse-packet', requireAdmin, async (req, res) => {
+  try {
+    const { text } = req.body;
+    if (!text || text.length < 30) return res.status(400).json({ error: 'Packet text is too short' });
+
+    const industries = fs.readdirSync(path.join(__dirname, 'industries'))
+      .filter(f => f.endsWith('.json'))
+      .map(f => f.replace('.json', ''));
+
+    const systemPrompt = `You are a sales operations analyst. Given an onboarding packet or company document, extract a structured company profile for a sales enablement platform. Return ONLY valid JSON matching this schema:
+{
+  "companyName": "The company's official name",
+  "slug": "url-friendly-slug (lowercase, hyphens only)",
+  "industry": "Best match from: ${industries.join(', ')}",
+  "productDescription": "2-3 sentences describing what they sell (products/services)",
+  "targetBuyers": "Who their sales reps typically sell to (job titles, company types)",
+  "avgDealSize": "Deal size range (e.g. $50K-$200K)",
+  "salesCycle": "Sales cycle length (e.g. 3-6 months)",
+  "competitors": "2-4 likely competitors",
+  "differentiators": "2-3 key differentiators or value props",
+  "context": "A rich 3-4 sentence summary an AI sales coach would need to give great advice to their reps. Include what they sell, to whom, typical objections, and what makes them unique."
+}
+RULES:
+- Extract as much as you can from the text — use exact details when available
+- If a field isn't in the document, make your best estimate based on the overall context
+- For industry, pick the closest match from the list. Use "general" if none fit well
+- The slug should be derived from the company name (e.g. "Acme Industrial" -> "acme-industrial")
+- Be specific — this data trains an AI coach for their sales team
+- Return ONLY the JSON object`;
+
+    const raw = await callClaude(systemPrompt, `Onboarding packet:\n\n${text.substring(0, 8000)}`, 1000);
+    const profile = extractJSON(raw);
+    res.json({ profile });
+  } catch (e) {
+    console.error('Parse packet error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // ─── CLIENT LOGIN ────────────────────────────────────────
 
 app.get('/:slug/login', async (req, res) => {

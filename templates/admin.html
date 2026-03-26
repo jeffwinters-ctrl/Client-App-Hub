@@ -219,13 +219,17 @@
             <form id="clientForm" onsubmit="saveClient(event)">
               <input type="hidden" id="cf_editing" value="">
 
-              <!-- Website Auto-Analyze -->
+              <!-- Quick Setup Tools -->
               <div style="margin-bottom:20px;padding:16px 20px;background:var(--bg);border-radius:8px;border:1px solid var(--rule);">
-                <div class="detail-label" style="margin-bottom:8px;">Quick Setup — Paste a website to auto-fill</div>
-                <div style="display:flex;gap:8px;">
+                <div class="detail-label" style="margin-bottom:12px;">Quick Setup — Auto-fill from a website or onboarding packet</div>
+                <div style="display:flex;gap:8px;margin-bottom:10px;">
                   <input class="cf-input" type="url" id="cf_website" placeholder="https://www.clientcompany.com" style="flex:1;margin-top:0;">
                   <button type="button" class="btn-add-client" id="btnAnalyze" onclick="analyzeWebsite()" style="white-space:nowrap;">Analyze Website</button>
                 </div>
+                <div style="position:relative;text-align:center;margin:12px 0;"><span style="background:var(--bg);padding:0 12px;font-size:0.8rem;color:var(--ink-light);position:relative;z-index:1;">OR</span><div style="position:absolute;top:50%;left:0;right:0;height:1px;background:var(--rule);"></div></div>
+                <div class="detail-label" style="margin-bottom:6px;">Paste Onboarding Packet</div>
+                <textarea class="cf-input" id="cf_packet" rows="4" placeholder="Paste the full onboarding packet here — company overview, products, target market, deal sizes, competitors, etc. AI will extract everything automatically." style="margin-bottom:8px;"></textarea>
+                <button type="button" class="btn-add-client" id="btnParsePacket" onclick="parsePacket()" style="width:100%;">Extract Profile from Packet</button>
                 <div class="pw-msg" id="analyzeMsg" style="margin-top:6px;"></div>
               </div>
 
@@ -628,6 +632,45 @@
       } finally {
         btn.disabled = false;
         btn.textContent = 'Analyze Website';
+      }
+    }
+
+    async function parsePacket() {
+      const text = document.getElementById('cf_packet').value.trim();
+      const msg = document.getElementById('analyzeMsg');
+      const btn = document.getElementById('btnParsePacket');
+      if (!text || text.length < 30) { msg.textContent = 'Paste the onboarding packet first (needs at least a few sentences).'; msg.style.color = 'var(--red)'; return; }
+      btn.disabled = true;
+      btn.textContent = 'Extracting...';
+      msg.textContent = 'Reading packet and extracting profile — this takes 10-15 seconds...';
+      msg.style.color = 'var(--ink-light)';
+      try {
+        const res = await fetch('/api/admin/parse-packet', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        const data = await res.json();
+        if (data.error) { msg.textContent = data.error; msg.style.color = 'var(--red)'; return; }
+        const p = data.profile;
+        if (p.companyName && !document.getElementById('cf_companyName').value) document.getElementById('cf_companyName').value = p.companyName;
+        if (p.slug && !document.getElementById('cf_editing').value && !document.getElementById('cf_slug').value) document.getElementById('cf_slug').value = p.slug;
+        if (p.industry) document.getElementById('cf_industry').value = p.industry;
+        if (p.productDescription) document.getElementById('cf_productDescription').value = p.productDescription;
+        if (p.targetBuyers) document.getElementById('cf_targetBuyers').value = p.targetBuyers;
+        if (p.avgDealSize) document.getElementById('cf_avgDealSize').value = p.avgDealSize;
+        if (p.salesCycle) document.getElementById('cf_salesCycle').value = p.salesCycle;
+        if (p.competitors) document.getElementById('cf_competitors').value = p.competitors;
+        if (p.differentiators) document.getElementById('cf_differentiators').value = p.differentiators;
+        if (p.context) document.getElementById('cf_context').value = p.context;
+        msg.textContent = 'Profile extracted! Review the fields below, adjust anything, then save.';
+        msg.style.color = 'var(--green)';
+      } catch (e) {
+        msg.textContent = 'Error: ' + e.message;
+        msg.style.color = 'var(--red)';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Extract Profile from Packet';
       }
     }
 
