@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sapper — Client Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+      background: #1A1A1A;
+      color: #F8F7F4;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+    }
+    .landing h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 3rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .landing p {
+      font-size: 1.1rem;
+      color: #999;
+      max-width: 480px;
+      line-height: 1.6;
+    }
+    .landing a {
+      display: inline-block;
+      margin-top: 32px;
+      padding: 14px 32px;
+      background: #E8A020;
+      color: #1A1A1A;
+      text-decoration: none;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 500;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border-radius: 8px;
+      transition: opacity 0.2s;
+    }
+    .landing a:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="landing">
+    <h1>Sapper</h1>
+    <p>Your sales acceleration hub. If you're a client, use the link provided by your account manager to access your personalized tools.</p>
+    <a href="/admin/login">Admin Access</a>
+  </div>
+</body>
+</html>

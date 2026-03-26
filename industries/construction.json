@@ -1,0 +1,243 @@
+{
+  "industry": "construction",
+  "label": "Construction",
+  "questionCount": 14,
+  "healthFactorCount": 7,
+  "playCount": 3,
+  "tagline": "For Reps Who Sell to Contractors & Construction Firms",
+  "headline": "Is this deal<br><em>real</em> or just<br>a change order?",
+  "description": "Answer 14 quick questions about your construction deal. Get a health check on what's working and what's missing — then receive three specific plays to move it forward.",
+  "questions": [
+    {
+      "section": "The Basics",
+      "key": "ctx",
+      "label": "What are you selling and to which account?",
+      "type": "textarea",
+      "placeholder": "e.g. Fleet tracking and equipment management platform for Turner Construction, a top-10 GC"
+    },
+    {
+      "section": "The Basics",
+      "key": "size",
+      "label": "What's the deal size (ACV or total contract) and expected duration?",
+      "type": "textarea",
+      "placeholder": "e.g. $250K/year, 3-year deal with annual renewals"
+    },
+    {
+      "section": "The Basics",
+      "key": "contact",
+      "label": "Who is your primary contact? What's their title and role on the project?",
+      "type": "textarea",
+      "placeholder": "e.g. Mike Delgado, VP of Operations — oversees equipment and fleet across 12 active jobs"
+    },
+    {
+      "section": "The Buyer",
+      "key": "buyer",
+      "label": "Who is the economic buyer — the person who signs the check? Have you met them?",
+      "type": "textarea",
+      "placeholder": "e.g. CFO Karen Lim — met briefly at a site visit but haven't had a 1-on-1 yet"
+    },
+    {
+      "section": "The Buyer",
+      "key": "persona",
+      "label": "Which persona best describes your primary contact?",
+      "type": "select",
+      "options": [
+        "Owner / Principal",
+        "VP of Operations",
+        "Project Manager",
+        "Superintendent",
+        "Safety Director",
+        "Estimator / Preconstruction"
+      ]
+    },
+    {
+      "section": "The Buyer",
+      "key": "vertical",
+      "label": "What type of construction firm is this?",
+      "type": "select",
+      "options": [
+        "General Contractor (Commercial)",
+        "Specialty/Subcontractor",
+        "Heavy Civil / Infrastructure",
+        "Residential Builder (Production)",
+        "Industrial / Energy",
+        "Design-Build / Developer"
+      ]
+    },
+    {
+      "section": "The Problem",
+      "key": "pain",
+      "label": "What's the core pain or trigger driving this deal?",
+      "type": "textarea",
+      "placeholder": "e.g. Labor shortage forcing them to do more with fewer crews, plus two safety incidents in Q1 put them on OSHA's radar",
+      "hint": "Think labor shortage, safety incidents, schedule slippage, cost overruns, rework, bonding capacity, bid accuracy"
+    },
+    {
+      "section": "The Problem",
+      "key": "bizcase",
+      "label": "Has the prospect quantified the business impact of this problem?",
+      "type": "select",
+      "options": [
+        "Yes — documented with cost/safety data",
+        "Rough estimates discussed",
+        "They know it's a problem but no numbers",
+        "No — still in awareness stage"
+      ]
+    },
+    {
+      "section": "The Process",
+      "key": "process",
+      "label": "Walk me through their decision process. Who else is involved and what are the approval steps?",
+      "type": "textarea",
+      "placeholder": "e.g. Superintendent evaluates on-site, PM reviews budget fit, VP of Ops makes the recommendation, Owner signs off on anything over $100K",
+      "hint": "Construction buying committees are messy — owner vs. superintendent vs. PM vs. estimator all have different priorities"
+    },
+    {
+      "section": "The Process",
+      "key": "pipeline",
+      "label": "What does their project pipeline look like? Are they growing, steady, or slowing down?",
+      "type": "textarea",
+      "placeholder": "e.g. $180M backlog, 8 active jobs, just won a $40M hospital project starting in Q3",
+      "hint": "Current projects, backlog, awarded but not started, bidding pipeline — all signal urgency and budget"
+    },
+    {
+      "section": "The Competition",
+      "key": "competition",
+      "label": "What are they using today — competitor software, spreadsheets, paper, or nothing?",
+      "type": "textarea",
+      "placeholder": "e.g. Running Procore for project management but using Excel for equipment tracking and paper logs for safety inspections"
+    },
+    {
+      "section": "The Competition",
+      "key": "adoption",
+      "label": "Who in the organization has actually seen your product — office, field, or both?",
+      "type": "select",
+      "options": [
+        "Both office and field bought in",
+        "Office supports it but field hasn't seen it",
+        "Field wants it but office hasn't approved",
+        "Neither has seen it yet"
+      ]
+    },
+    {
+      "section": "The Close",
+      "key": "safety",
+      "label": "Does this deal have a safety or compliance angle?",
+      "type": "select",
+      "options": [
+        "Strong safety/compliance driver",
+        "Some safety relevance",
+        "Not a safety play",
+        "Unknown"
+      ]
+    },
+    {
+      "section": "The Close",
+      "key": "confidence",
+      "label": "Gut check — how confident are you this deal closes in the next 90 days?",
+      "type": "select",
+      "options": [
+        "High — we're in final negotiations or procurement",
+        "Medium — strong engagement but steps remain",
+        "Low — interested but no real momentum yet",
+        "Uncertain — too early to call"
+      ]
+    }
+  ],
+  "personas": {
+    "Owner / Principal": "The owner or principal runs the firm and thinks in terms of the whole business, not individual projects. Their world revolves around bonding capacity, backlog health, and overall profitability. They want to know how your solution protects the firm's ability to bid on bigger jobs and win more work. Risk management is always top of mind — one bad project, one serious safety incident, or one bonding hit can threaten the entire operation.\n\nOwners care about reputation with owners (the project owners, that is — developers, municipalities, institutions). They're relationship-driven and often involved in the biggest pursuits. Technology only matters to them if it makes the firm more competitive or protects the bottom line. Don't pitch features to an owner — pitch outcomes: fewer claims, tighter margins, better field visibility, and the ability to scale without adding overhead.\n\nIf you're selling to an owner, expect them to be direct. They've been burned by vendors before. They want proof it works — ideally from another contractor they respect. Peer references carry more weight than slide decks. And remember: their time is split between running the business, chasing work, and managing banking and bonding relationships. Every minute you take better be worth it.",
+    "VP of Operations": "The VP of Ops is the person who has to make everything work across multiple projects, crews, and offices. They're the bridge between the owner's strategy and the field's reality. Their pain points are standardization (every PM does things differently), resource allocation (who goes where), and getting visibility into what's actually happening across 10, 20, or 50 active jobs.\n\nThis persona cares deeply about fleet and equipment management, labor productivity, and process consistency. They're usually the one who inherits the mess when a project goes sideways — so they're motivated by tools that give them early warning signals. If your product can show them which jobs are trending over budget or behind schedule before it's too late, you've got their attention.\n\nVP of Ops is often your best internal champion because they feel the pain of the status quo every day. They're also usually the most tech-forward person in the leadership team. But they need air cover from the owner and buy-in from the field. Help them build the internal case by giving them ROI data, peer benchmarks, and a rollout plan that doesn't disrupt active projects.",
+    "Project Manager": "The PM owns the schedule and budget for their specific jobs. They're juggling subcontractor coordination, material deliveries, RFIs, submittals, change orders, and a dozen daily fires. Their number one fear is being over budget or behind schedule — because that's what gets them called into the owner's office.\n\nPMs are practical and skeptical. They've seen plenty of tools get pushed on them from corporate that don't actually help in the field. To win a PM over, you need to show them how your product saves them time on the things they already do — not add another system to check. Integration with their existing project management platform (Procore, CMiC, Viewpoint, etc.) matters a lot.\n\nThe PM's biggest leverage point is the subcontractor relationship. If your solution helps them coordinate subs more effectively, track daily progress, or reduce rework, you're speaking their language. But keep it concrete — show them the screen, walk them through a day-in-the-life scenario, and let them see how it fits into their actual workflow. Abstract value props won't cut it with a PM.",
+    "Superintendent": "The superintendent is the on-site leader. They're the first one on the jobsite in the morning and the last to leave. Their world is daily logistics: crew assignments, equipment positioning, material staging, safety walks, and quality inspections. They manage by walking around, and they trust what they see with their own eyes more than what any software dashboard tells them.\n\nSupers are notoriously resistant to technology — not because they're not smart, but because they've been handed tools that weren't built for the field. If your product works on a phone in direct sunlight with dirty hands, you've cleared the first hurdle. If it replaces their paper daily log with something faster (not just different), you've cleared the second. They need to feel like the tool helps them, not that it's a surveillance tool from the office.\n\nWinning the superintendent is critical because field adoption makes or breaks the deal. A super who loves your product becomes your best reference and your internal champion on every future jobsite. A super who hates it will kill the rollout. Get them into a pilot on a real job — not a demo environment — and let them see the value firsthand.",
+    "Safety Director": "The Safety Director lives and dies by incident rates, OSHA compliance, and the firm's EMR (Experience Modification Rate). Their job is to keep people safe and keep the company eligible to bid on work — because a bad EMR score can literally disqualify a contractor from major projects. OSHA penalties can run up to $156,764 per willful violation, so the financial stakes are real.\n\nSafety Directors are methodical and documentation-obsessed. They need to prove compliance — toolbox talks happened, inspections were completed, hazards were corrected, training records are current. If your product helps them digitize and automate any of that, they'll listen. But it has to be bulletproof from an audit standpoint. They're not buying convenience — they're buying defensibility.\n\nThis persona often has budget authority for safety-specific purchases, which can be a faster path to a deal than going through the general IT or operations budget. Safety is also the one area where the owner almost never pushes back, because the liability exposure is too high. If your solution has a genuine safety angle, the Safety Director can be your fastest route to a signed contract.",
+    "Estimator / Preconstruction": "Estimators and preconstruction managers are the front end of the business — they're the ones winning (or losing) the work. Their world is bid accuracy, takeoff speed, historical cost data, and understanding project risk before the firm commits. A bad estimate can turn a profitable project into a loss before the first shovel hits dirt.\n\nThis persona is analytical and detail-oriented. They work with massive spreadsheets, RSMeans data, subcontractor quotes, and plan sets. Speed matters — a GC might bid on 10 projects to win 2, so estimating overhead directly impacts profitability. If your product helps them estimate faster, more accurately, or with better historical data from past projects, you're addressing a real pain point.\n\nEstimators are also the earliest warning system for market trends — they see which project types are hot, where pricing is getting competitive, and which owners are actually moving projects forward. Selling to an estimator usually means integrating into their existing workflow (On-Screen Takeoff, Bluebeam, PlanSwift, etc.) rather than replacing it. The key is to make them faster and more accurate without adding steps."
+  },
+  "verticals": {
+    "General Contractor (Commercial)": "General Contractors on commercial projects manage large, complex jobs — think office buildings, hospitals, schools, mixed-use developments. They coordinate dozens of subcontractors, manage GMP or lump-sum contracts, and operate under strict bonding requirements. A typical commercial GC might have $200M-$2B in annual revenue and 50-200+ active projects at any time.\n\nBonding capacity is a limiting factor for growth — the surety wants to see financial strength, project controls, and risk management. Anything that improves project visibility, reduces claims, or tightens cost control directly impacts the GC's ability to grow their bonding line. Technology adoption is driven by the need to do more with less and stay competitive against larger national firms.\n\nSelling to a commercial GC means navigating a complex buying committee. The owner or CEO cares about the big picture, the VP of Ops wants process improvement, PMs want tools that help on their specific jobs, and the field wants something that doesn't slow them down. Pilots work well here — start on one project, prove the value, then roll out company-wide.",
+    "Specialty/Subcontractor": "Specialty contractors (electrical, mechanical, plumbing, concrete, steel, drywall, etc.) are trade-specific and labor-intensive. They typically work under a GC and their success depends heavily on labor productivity, material management, and the relationship with the general contractor. Payment terms are a constant headache — subs often wait 60-90 days to get paid, and cash flow management is existential.\n\nThese firms range from $5M to $500M+ in revenue. The larger ones run like businesses; the smaller ones are often owner-operated with minimal back-office staff. Technology buying decisions are usually made by the owner or a VP, and they're extremely value-conscious. If your product can show a clear dollar impact — reduced labor waste, faster billing, fewer punch-list items — you'll get their attention.\n\nField adoption is even more critical for subs because their entire workforce is in the field. The office might be a trailer with two people in it. Any tool you sell has to work for the foreman and the journeyman, not just the project manager. And remember: subs live and die by their GC relationships, so anything that makes them look more professional or easier to work with to the GC is a strong selling point.",
+    "Heavy Civil / Infrastructure": "Heavy civil contractors build roads, bridges, tunnels, water/sewer systems, and other public infrastructure. These are typically government-funded projects with Davis-Bacon prevailing wage requirements, extensive environmental regulations, and long project timelines (2-5+ years). The bidding process is public and competitive, often low-bid, which compresses margins.\n\nThis vertical deals with unique challenges: earthwork quantities, environmental compliance, DOT specifications, utility conflicts, and weather dependency. Equipment fleets are massive and expensive — a single heavy civil contractor might have $50M+ in iron on the ground. Fleet management, fuel tracking, and equipment utilization are constant concerns.\n\nSelling into heavy civil means understanding the government procurement cycle and the unique compliance requirements. These firms are often more conservative about technology adoption, but the ones that do adopt tend to go all-in because the scale of their operations amplifies any efficiency gain. Longer sales cycles here, but also larger and stickier deals once you're in.",
+    "Residential Builder (Production)": "Production homebuilders build volume — sometimes hundreds or thousands of homes per year using standardized plans and processes. This is a speed game: the faster they can complete each unit, the faster they turn lots into revenue. Tight margins (often 5-8% net) mean that even small inefficiencies across hundreds of units add up to millions in lost profit.\n\nThese companies operate on a rhythm: lot development, foundation, framing, MEP rough-in, finishes, punch, close. Any disruption to that cycle — a late trade, a failed inspection, a material shortage — cascades across every subsequent unit. Warranty costs are also a major concern; callbacks eat into margins and damage the brand.\n\nSelling to a production builder means proving you can help them build faster, reduce cycle time, minimize warranty callbacks, or improve trade partner coordination. These buyers are data-driven and will want to see the math. They also have seasonal urgency — spring selling season drives a lot of decisions. Purchasing authority is usually centralized, which can speed up decisions if you get to the right person.",
+    "Industrial / Energy": "Industrial and energy construction covers power plants, refineries, petrochemical facilities, manufacturing plants, and renewable energy installations. These projects are often built during planned shutdowns or turnarounds — which means compressed schedules, 24/7 operations, and extreme urgency. A day of extended downtime at a refinery can cost the owner $1M+, so schedule performance is everything.\n\nSafety is non-negotiable in this vertical. ISNetworld, BROWZ (now Avetta), and other prequalification platforms gate access to jobsites. A contractor's safety record directly determines which projects they can bid on. Per-diem labor is common, especially for large turnarounds, which means managing transient workforces and remote site logistics.\n\nSelling into industrial/energy requires understanding the project lifecycle — FEED, detail engineering, procurement, construction, commissioning. Decision-making often involves the EPC firm, the owner/operator, and the contractor. Longer sales cycles and higher compliance requirements, but also some of the largest contract values in the industry. If your product has a safety or compliance angle, lead with it.",
+    "Design-Build / Developer": "Design-build firms and developers control the entire project lifecycle — from concept and design through construction and sometimes operations. This vertical moves faster than traditional design-bid-build because there's no adversarial relationship between designer and builder. Decisions happen quicker, budgets are more flexible, and the focus is on overall project value rather than lowest bid.\n\nDevelopers who self-perform construction are particularly interesting because they're both the owner and the builder. They think in terms of total project ROI, not just construction cost. This means they're more willing to invest in technology that improves the end product, reduces time to market, or enhances the building's performance.\n\nSelling to design-build firms and developers is often more relationship-driven than in traditional construction. These are sophisticated buyers who understand total cost of ownership. They're less price-sensitive and more value-sensitive. If you can show how your product accelerates their entire delivery model — not just the construction phase — you're having the right conversation. Get to the principal or development manager early; they make decisions fast and don't usually have the bureaucratic procurement process that large GCs or government-funded projects require."
+  },
+  "industryKnowledge": "Key facts about the construction industry that inform sales conversations:\n\n1. The construction labor shortage is severe: over 500,000 unfilled positions across the US, with the skilled trades (electricians, plumbers, welders, operators) hit hardest. The average age of a skilled tradeworker is 55+, and retirements are outpacing new entrants.\n\n2. Rework costs the industry 5-10% of total project value on average. Poor coordination, unclear documentation, and miscommunication between trades are the primary drivers.\n\n3. OSHA penalties are substantial: up to $156,764 per willful violation and $15,625 per serious violation. Repeat violations can multiply these amounts. Construction accounts for the most OSHA citations of any industry.\n\n4. EMR (Experience Modification Rate) directly affects a contractor's ability to bid and win work. An EMR above 1.0 can disqualify a firm from many project opportunities and raises insurance premiums significantly.\n\n5. Average construction company profit margins are razor-thin: 2-5% net for most firms. A single bad project can wipe out an entire year's profit. This makes contractors extremely cost-conscious but also motivated by anything that protects margins.\n\n6. Technology adoption in construction lags other industries by 10-15 years. Only about 30% of contractors have adopted modern project management software. Many still rely on paper, spreadsheets, and whiteboards for critical workflows.\n\n7. The construction industry is a $1.8 trillion market in the US. Infrastructure spending under the Bipartisan Infrastructure Law and CHIPS Act is injecting hundreds of billions in new project opportunities.\n\n8. Payment cycles in construction are notoriously slow. Average DSO (Days Sales Outstanding) is 60-90 days, and cash flow problems are the #1 cause of contractor failure. Retainage (5-10% held back until project completion) compounds the problem.\n\n9. Bonding capacity is the growth throttle for most contractors. Surety companies evaluate a contractor's financials, work-in-progress, and risk management to determine how much work they can take on. Better project controls = more bonding capacity = more revenue.\n\n10. The average construction project is delivered 20% over budget and 80% of projects run behind schedule. Owners are increasingly demanding real-time visibility and accountability, which is creating a technology pull from the buy side.\n\n11. Subcontractor default is a major risk. When a sub goes under mid-project, the GC absorbs the cost of finding a replacement and making up lost time. Pre-qualification and financial vetting of subs is becoming more rigorous.\n\n12. Modular and prefab construction is growing at 6%+ annually as contractors look for ways to offset labor shortages and compress schedules. This shift creates new technology needs around manufacturing integration and logistics coordination.",
+  "healthFactors": [
+    {
+      "key": "hbiz",
+      "name": "Business Case",
+      "description": "Has the prospect quantified the problem with real cost, safety, or productivity data? A documented business case with hard numbers is the difference between a deal that closes and one that stalls in 'evaluation' forever."
+    },
+    {
+      "key": "hbuyer",
+      "name": "Budget Authority",
+      "description": "Do you have access to the person who actually signs the contract and allocates budget? In construction, this is usually the owner/principal for big purchases or the VP of Ops for operational tools. If you're stuck at the PM or super level, you haven't reached power yet."
+    },
+    {
+      "key": "hchamp",
+      "name": "Champion Strength",
+      "description": "Do you have someone inside the account who is actively selling for you when you're not in the room? A real champion has influence, feels the pain personally, and is willing to spend political capital to get this done."
+    },
+    {
+      "key": "hproject",
+      "name": "Project Fit / Pipeline",
+      "description": "Does the prospect have active projects or a strong backlog where your solution would create immediate value? Contractors with a full pipeline and growing backlog have both the urgency and the budget to invest. A slow pipeline means slower decisions."
+    },
+    {
+      "key": "hsafety",
+      "name": "Safety/Compliance Alignment",
+      "description": "Does your solution address a safety, OSHA compliance, or EMR improvement need? Safety-driven purchases face less internal resistance and often have their own budget. A recent incident or rising EMR creates urgency that accelerates deals."
+    },
+    {
+      "key": "hcomp",
+      "name": "Competitive Position",
+      "description": "How well-positioned are you against whatever the prospect is using today — whether that's a competitor, spreadsheets, paper, or nothing? Understanding the status quo and why they'd switch (or buy for the first time) is critical to your win strategy."
+    },
+    {
+      "key": "hprocess",
+      "name": "Decision Process",
+      "description": "Do you understand who's involved in the decision, what steps they need to take, and what the timeline looks like? Construction buying committees are messy — owner, VP of Ops, PM, super, and sometimes IT all have opinions. If you can't map the process, you can't control it."
+    }
+  ],
+  "scoringRules": {
+    "bizcase": {
+      "field": "bizcase",
+      "factor": "hbiz",
+      "scores": {
+        "Yes — documented with cost/safety data": 3,
+        "Rough estimates discussed": 2,
+        "They know it's a problem but no numbers": 1,
+        "No — still in awareness stage": 0
+      }
+    },
+    "confidence": {
+      "field": "confidence",
+      "factor": "hprocess",
+      "scores": {
+        "High — we're in final negotiations or procurement": 3,
+        "Medium — strong engagement but steps remain": 2,
+        "Low — interested but no real momentum yet": 1,
+        "Uncertain — too early to call": 0
+      }
+    },
+    "adoption": {
+      "field": "adoption",
+      "factor": "hchamp",
+      "scores": {
+        "Both office and field bought in": 3,
+        "Office supports it but field hasn't seen it": 2,
+        "Field wants it but office hasn't approved": 1,
+        "Neither has seen it yet": 0
+      }
+    },
+    "safety": {
+      "field": "safety",
+      "factor": "hsafety",
+      "scores": {
+        "Strong safety/compliance driver": 3,
+        "Some safety relevance": 2,
+        "Not a safety play": 1,
+        "Unknown": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,351 @@
+{
+  "industry": "manufacturing",
+  "label": "Manufacturing",
+  "questionCount": 14,
+  "healthFactorCount": 7,
+  "playCount": 3,
+  "tagline": "For Reps Who Sell to Manufacturers",
+  "headline": "Is this deal<br><em>real</em> or just<br>wishful thinking?",
+  "description": "Answer 14 quick questions about your manufacturing deal. Get a health check on what's working and what's missing — then receive three specific actions you can take this week to move the deal forward.",
+  "questions": [
+    {
+      "section": "The Basics",
+      "text": "What are you selling, and who is the target account?",
+      "hint": "Be specific — name the product, the plant or division, and the company. 'Predictive maintenance sensors to the Dearborn stamping plant at Ford Tier 1 supplier XYZ' is way more useful than 'our software to a big manufacturer.'",
+      "type": "textarea",
+      "placeholder": "e.g. We're selling our vibration monitoring system to the Greenville plant at Parker Hannifin. They run 14 CNC lines and currently have no real-time condition monitoring.",
+      "key": "ctx"
+    },
+    {
+      "section": "The Basics",
+      "text": "What is the deal size and how long have you been working it?",
+      "hint": "Include the annual contract value or total project cost. Mention when you first engaged — was it an inbound lead, a cold outreach, or a referral? How many meetings deep are you?",
+      "type": "textarea",
+      "placeholder": "e.g. $120K first-year deal ($85K hardware + $35K annual software license). Been working it 8 weeks — started from a LinkedIn connection with their maintenance manager. Had 3 calls and one plant visit.",
+      "key": "size"
+    },
+    {
+      "section": "The Basics",
+      "text": "Who is your primary contact, and what is their title?",
+      "hint": "Name, title, and what they actually own. A 'Director of Engineering' who controls capex is very different from one who only specs equipment. How engaged are they — responding same day or ghosting you for a week?",
+      "type": "textarea",
+      "placeholder": "e.g. Mike Torres, Maintenance Director. He owns the PM budget and reports directly to the VP of Ops. Very responsive — replies within a few hours and proactively shares internal docs with me.",
+      "key": "contact"
+    },
+    {
+      "section": "The Buyer",
+      "text": "Who is the economic buyer — the person who signs the check?",
+      "hint": "This is the person who can say yes and make the money appear. Not the recommender, not the influencer — the actual signer. Do you have direct access to them, or are you relying on your champion to carry the message upstairs?",
+      "type": "textarea",
+      "placeholder": "e.g. Sarah Kim, VP of Operations. She controls capex up to $200K. I haven't met her directly yet — Mike says he'll bring me into her quarterly planning review next month.",
+      "key": "buyer"
+    },
+    {
+      "section": "The Buyer",
+      "text": "What persona best describes your main contact?",
+      "hint": "Pick the closest match. This helps us tailor advice to the way your buyer thinks, what keeps them up at night, and what language resonates with them.",
+      "type": "select",
+      "placeholder": "Select a persona…",
+      "key": "persona",
+      "options": [
+        "Plant Manager / Site Leader",
+        "VP or Director of Operations",
+        "Maintenance Director",
+        "Procurement / Supply Chain",
+        "C-Suite (CEO/CFO)"
+      ]
+    },
+    {
+      "section": "The Buyer",
+      "text": "What manufacturing vertical is this account in?",
+      "hint": "Different verticals have wildly different buying patterns, compliance requirements, and pain thresholds. An aerospace shop and a food plant might both need your product but for completely different reasons.",
+      "type": "select",
+      "placeholder": "Select a vertical…",
+      "key": "vertical",
+      "options": [
+        "Automotive (OEM or Tier supplier)",
+        "Aerospace & Defense",
+        "Food & Beverage",
+        "Metals & Heavy Industry",
+        "Plastics & Packaging",
+        "General / Job Shop"
+      ]
+    },
+    {
+      "section": "The Problem",
+      "text": "What specific problem or pain is driving this opportunity?",
+      "hint": "Dig past the surface. 'They want to reduce downtime' is generic. 'They had two unplanned press failures in Q2 that cost them $340K in missed shipments and a late-delivery penalty from their OEM customer' — that's a real pain with teeth.",
+      "type": "textarea",
+      "placeholder": "e.g. They lost a $2M annual contract with their largest automotive customer after three late shipments caused by unplanned breakdowns on their stamping line. The plant manager is under pressure from corporate to get OEE above 75% by year-end.",
+      "key": "pain"
+    },
+    {
+      "section": "The Problem",
+      "text": "Have they quantified the cost of inaction — in dollars, downtime, scrap, or risk?",
+      "hint": "A deal without a quantified business case is a deal that stalls in procurement. If they haven't put numbers to the pain, you're selling a nice-to-have, not a must-have.",
+      "type": "select",
+      "placeholder": "Select the best description…",
+      "key": "bizcase",
+      "options": [
+        "Yes — built and documented",
+        "Rough numbers discussed",
+        "Vague sense of need",
+        "No — haven't discussed costs"
+      ]
+    },
+    {
+      "section": "The Process",
+      "text": "What is their decision process, and who else is involved?",
+      "hint": "Map the buying committee. In manufacturing, it's almost never one person. Operations wants it, maintenance specs it, procurement negotiates it, finance approves it, and IT has to bless it. Who are the names, and where does each one stand?",
+      "type": "textarea",
+      "placeholder": "e.g. Mike (Maintenance Dir) is the champion. He needs sign-off from Sarah Kim (VP Ops) for anything over $50K. Procurement will get involved for vendor qualification and will want 2 competing quotes. IT has to approve any network/connectivity requirements. No formal committee — more like a chain of approvals.",
+      "key": "process"
+    },
+    {
+      "section": "The Process",
+      "text": "What is the timeline — is there a compelling event or deadline?",
+      "hint": "Real timelines are tied to something concrete: a budget cycle, a production ramp, an audit, a customer mandate, a plant expansion. 'They want it soon' is not a timeline. 'They need it installed before the new automotive program launches in September' — that's real urgency.",
+      "type": "textarea",
+      "placeholder": "e.g. They need to have a solution in place before their IATF 16949 surveillance audit in October. Also, their fiscal year ends in December and Mike says unspent capex budget gets clawed back. So the window is really the next 90 days.",
+      "key": "timeline"
+    },
+    {
+      "section": "The Competition",
+      "text": "Who else are they evaluating, or what's the status quo alternative?",
+      "hint": "Your biggest competitor is often 'do nothing' or 'keep doing it the way we always have.' If there's a named competitor, what's their angle — cheaper, incumbent, broader platform? Don't forget internal solutions: the maintenance team's homegrown spreadsheet system counts.",
+      "type": "textarea",
+      "placeholder": "e.g. They got a demo from Fluke Reliability last month. Also looking at building something in-house using off-the-shelf vibration sensors and a PI historian they already have. The maintenance guys prefer our UX but procurement likes that Fluke is already an approved vendor.",
+      "key": "competition"
+    },
+    {
+      "section": "The Competition",
+      "text": "Why would they choose you over the alternative?",
+      "hint": "Be honest. What's genuinely different about your solution in this specific deal? Not your marketing pitch — the actual reason this buyer, in this plant, with this problem, would pick you. If you can't articulate it clearly, neither can your champion when they pitch you internally.",
+      "type": "textarea",
+      "placeholder": "e.g. Our sensor accuracy on low-RPM equipment is 3x better than Fluke's — and that's exactly what their stamping presses need. Plus we include on-site installation and calibration, which matters because they don't have a reliability engineer on staff. The in-house option would take 6+ months to build and they don't have the bandwidth.",
+      "key": "differentiator"
+    },
+    {
+      "section": "The Close",
+      "text": "What is the next concrete step, and when is it happening?",
+      "hint": "A real next step has a date, a participant, and a purpose. 'I'll follow up next week' is not a next step. 'Plant tour with the VP of Ops on Thursday at 2pm to review the pilot scope' — that's a next step. If you don't have one scheduled, that tells us something.",
+      "type": "textarea",
+      "placeholder": "e.g. On-site pilot scoping meeting next Tuesday at 10am with Mike and two of his maintenance techs. Goal is to identify the first 3 machines for the proof-of-concept and agree on success criteria. Mike is trying to get Sarah (VP Ops) to join for the first 30 minutes.",
+      "key": "nextstep"
+    },
+    {
+      "section": "The Close",
+      "text": "On a gut level, how confident are you this deal closes in the next 90 days?",
+      "hint": "Trust your instincts here. Reps usually know in their gut whether a deal is real or not. This isn't about being optimistic — it's about being honest so we can coach you effectively.",
+      "type": "select",
+      "placeholder": "Be honest with yourself…",
+      "key": "confidence",
+      "options": [
+        "Very confident — 80%+",
+        "Cautiously optimistic — 50-80%",
+        "Uncertain — 25-50%",
+        "Not confident — under 25%"
+      ]
+    }
+  ],
+  "personas": {
+    "Plant Manager / Site Leader": "The Plant Manager lives and dies by the daily production number. Their world is OEE, uptime, throughput, and making sure product ships on time and in spec. They manage an hourly workforce, deal with union rules at some sites, and juggle maintenance windows against production schedules. They hate surprises — an unplanned line stoppage at 2am means phone calls, scramble crews, and missed shipments that trigger customer penalties.\n\nPlant Managers think in shifts and weeks, not quarters. They want solutions that are proven, low-risk to implement, and won't disrupt the floor. They're skeptical of technology that sounds great in a demo but falls apart when it hits a dirty, hot, 24/7 production environment. If your pilot goes wrong and takes down a line, you're done — not just at that plant, but across the entire company.\n\nTo sell to a Plant Manager, show them proof from a similar environment. They trust other plant managers more than salespeople. Case studies from their industry, their type of equipment, their scale — that's what moves them. And respect their time: they're not sitting in an office reading whitepapers. Catch them between shift changes or during a scheduled downtime window.",
+    "VP or Director of Operations": "The VP or Director of Operations sees across multiple plants or the entire manufacturing network. Where a Plant Manager thinks about today's output, Operations leadership thinks about standardization, scalability, and total cost of ownership. They're the ones corporate asks to justify capex spend, report on operational KPIs, and drive continuous improvement programs like lean or Six Sigma.\n\nThis persona cares about whether your solution can scale. Piloting at one plant is fine, but they're mentally modeling what a 10-plant rollout looks like — cost, integration with existing MES/ERP systems, training requirements, and ongoing support. They also care deeply about data: dashboards, benchmarking across facilities, and executive reporting that makes them look good to the C-suite.\n\nThe risk with this buyer is 'analysis paralysis.' They'll want to see extensive ROI models, competitive comparisons, and reference customers. They'll loop in IT, procurement, and finance. The upside is that if you win at this level, you're not winning a single deal — you're winning a platform decision that can grow for years. Build your business case with hard numbers and make the multi-site story easy to tell.",
+    "Maintenance Director": "The Maintenance Director owns equipment health, preventive maintenance schedules, spare parts inventory, and the team of technicians who keep the plant running. They track metrics like MTBF (Mean Time Between Failures), MTTR (Mean Time To Repair), PM compliance rates, and maintenance cost per unit produced. They are almost always underbudgeted and understaffed.\n\nThis persona is deeply technical and highly skeptical. They've seen dozens of vendors promise 'predictive maintenance' only to deliver dashboards full of false alarms that their techs learn to ignore. They want to know: What sensors? What data protocol? How does it integrate with our CMMS? Who installs it? What happens when a sensor fails in a 140°F environment with coolant spray?\n\nThe Maintenance Director is often your strongest internal champion — they feel the pain of unplanned downtime more than anyone. But they typically don't control the budget for large purchases. They recommend, spec, and validate, but the PO comes from Operations or Finance. Win this person technically and they'll fight for you internally. Disappoint them in a pilot and they'll kill the deal quietly. Give them a hands-on demo, not a slideshow.",
+    "Procurement / Supply Chain": "Procurement's job is to get the best deal at the lowest cost with the least risk. They are process-driven: vendor qualification forms, insurance certificates, three competing bids, payment term negotiations. They will use competition as leverage even if the technical team has already chosen you. Never assume a deal is done until procurement says it's done.\n\nThis persona measures success by cost savings, supplier consolidation, and contract terms — not by the technical merits of your solution. They'll push for longer payment terms (Net 60 or Net 90), volume discounts, and service-level agreements with penalties. They may also require you to be set up in their vendor management system, which can add 2-6 weeks to the timeline.\n\nThe key to handling Procurement is preparation. Have your standard terms ready but know where you have flexibility. Arm your internal champion with a value summary they can share before procurement takes over. If procurement is engaged early, it's actually a buying signal — it means the project is real enough to go through the formal process. If they never appear, the deal may be a tire-kick that never reaches the buying stage.",
+    "C-Suite (CEO/CFO)": "The C-Suite in a manufacturing company thinks about competitive positioning, margin improvement, capital allocation, and shareholder value. A CEO wants to know how your solution makes the company more competitive — faster to market, higher quality, lower cost per unit. A CFO is modeling capex vs. opex, depreciation schedules, and ROI timeline. Neither one wants to sit through a product demo.\n\nC-level executives get involved in two scenarios: very large deals (over $250K-$500K depending on company size) and strategic initiatives where the board or investors are watching. If a CEO is in your deal, it's either very good (executive sponsorship) or very bad (your champion couldn't sell it internally and escalated). Know which situation you're in.\n\nWhen you get the C-Suite meeting, make it count. Lead with business outcomes, not features. Use their language: IRR, payback period, competitive advantage, risk mitigation. Have a crisp one-page executive summary ready. Respect that their time is scarce — if they gave you 30 minutes, plan for 20 and leave room for questions. A CFO who asks tough ROI questions is engaged. A CEO who nods politely and says 'interesting' is about to delegate it into oblivion."
+  },
+  "verticals": {
+    "Automotive (OEM or Tier supplier)": "Automotive manufacturing operates on razor-thin margins where every cent per part matters. OEMs like Ford, GM, Toyota, and Stellantis push relentless cost-down pressure to their Tier 1 and Tier 2 suppliers. If you sell to auto suppliers, understand that their margins are often 3-8% and every purchase you propose must show hard ROI or it won't survive the annual cost-down negotiations their customers impose.\n\nQuality standards are non-negotiable. IATF 16949 certification is table stakes. A quality escape — defective parts reaching the OEM assembly line — can result in chargebacks, containment costs, and even loss of the program. Late deliveries trigger premium freight charges ($5K-$50K per incident) and can put the supplier on 'new business hold,' effectively freezing future revenue. The pressure is relentless and personal — plant managers in auto supply know that a bad quarter can end their career.\n\nSelling into automotive means dealing with just-in-time delivery requirements, PPAP (Production Part Approval Process) for any changes, and a buying process where procurement has enormous power. Lead times for decisions can be fast when there's a line-down situation, or painfully slow during program planning. The sweet spot is tying your solution to a new program launch or a quality mandate from the OEM customer.",
+    "Aerospace & Defense": "Aerospace and defense manufacturing is defined by long sales cycles, heavy compliance requirements, and zero tolerance for defects. Certifications like AS9100 (quality management) and ITAR (International Traffic in Arms Regulations) govern not just how parts are made but how information is shared, who can access data, and where components can be shipped. Violating ITAR isn't just a fine — it's a federal criminal matter.\n\nThis vertical is typically high-mix, low-volume. A shop might produce 50 different part numbers in a month, each with unique specs, material certifications, and traceability requirements. Every part has a paper trail from raw material to final inspection. This creates a documentation burden that drives interest in digital solutions — but also creates procurement friction because any new tool that touches quality data or production records must be validated and audited.\n\nBudget cycles in aerospace are long. Defense contracts are funded by government programs that plan 1-3 years out. Commercial aerospace follows aircraft build rates set by Boeing and Airbus. Deals here can take 6-18 months to close, but once you're in, switching costs are high and contracts tend to be sticky. Relationships matter enormously — this is a small world where everyone knows everyone. A reference from the right program manager can open doors across the entire supply chain.",
+    "Food & Beverage": "Food and beverage manufacturing carries unique stakes: consumer safety. FDA regulations, FSMA (Food Safety Modernization Act), HACCP plans, and allergen control protocols govern every aspect of production. A contamination event doesn't just cost money — it can kill people, trigger recalls that cost millions, and destroy brand trust overnight. This makes food manufacturers both risk-averse and heavily motivated by anything that improves traceability and reduces contamination risk.\n\nSanitation requirements dominate the production environment. Equipment must be washdown-rated (often IP67 or IP69K). Production lines shut down for cleaning between product changeovers, especially for allergen transitions. Any technology you sell into a food plant must survive aggressive cleaning chemicals, high-pressure water, and extreme temperature swings. If your sensor or device can't handle a caustic washdown cycle, don't bother proposing it.\n\nThe buying process in food manufacturing often includes quality assurance, food safety, operations, and maintenance. SQF and BRC auditors may need to approve changes to production systems. The good news: food companies spend heavily on food safety and compliance — it's a budget line that rarely gets cut. The urgency trigger is often an audit finding, a near-miss contamination event, or a new customer (like a major retailer) imposing stricter requirements as a condition of the supply agreement.",
+    "Metals & Heavy Industry": "Metals and heavy industry — steel mills, foundries, forges, aluminum smelters — operate some of the most demanding production environments on Earth. Temperatures routinely exceed 1,000°F, equipment weighs hundreds of tons, and energy costs can represent 20-40% of operating expenses. A single blast furnace reline can cost $10M+ and take weeks, making uptime planning absolutely critical.\n\nSafety is paramount and deeply cultural. OSHA recordable rates, lost-time incidents, and near-miss reporting are tracked obsessively. Any technology deployment must demonstrate that it improves or at minimum doesn't compromise worker safety. Capital equipment decisions are slow and deliberate — these companies operate assets with 20-40 year lifecycles and think in decades, not quarters.\n\nSelling into metals and heavy industry requires patience and credibility. These buyers have seen technologies come and go while their basic processes haven't changed fundamentally in generations. Prove that your solution works in harsh environments with extreme heat, dust, vibration, and electromagnetic interference. Reference sites matter enormously — a success story at another steel mill or foundry carries ten times the weight of a case study from an electronics assembly plant. Budget often comes from energy efficiency programs, safety improvement funds, or major planned outage capital pools.",
+    "Plastics & Packaging": "Plastics and packaging manufacturing runs at high speeds with thin margins. Injection molding, blow molding, extrusion, and thermoforming operations measure efficiency in seconds per cycle and scrap in fractions of a percent. A 2% improvement in cycle time or a 1% reduction in scrap can translate to hundreds of thousands of dollars annually on a high-volume line. This makes ROI calculations relatively straightforward — and that's your advantage when building a business case.\n\nMold changeovers are a major pain point. A complex injection mold change can take 2-8 hours, and SMED (Single Minute Exchange of Die) programs are common but inconsistently executed. Color changes, material purges, and process re-qualification between runs add up. Manufacturers in this space are always looking for ways to reduce changeover time and improve first-article quality after a switch.\n\nSustainability pressure is reshaping this industry. Brand owners (CPG companies like P&G, Unilever, Nestlé) are pushing recycled content mandates, PCR (post-consumer resin) requirements, and packaging waste reduction targets down to their suppliers. This creates both pressure and opportunity — any solution that helps a plastics manufacturer track sustainability metrics, reduce material waste, or qualify recycled materials has a strong tailwind. Budget owners here are typically the plant manager or VP of operations, with procurement heavily involved in vendor selection.",
+    "General / Job Shop": "Job shops and general manufacturing facilities are the backbone of American manufacturing — thousands of small to mid-size shops running short production runs of diverse parts. A typical job shop might produce 200+ different part numbers a month across 5-15 machines, with run sizes from 10 to 5,000 pieces. They compete on responsiveness, flexibility, and relationships rather than scale.\n\nQuoting speed is a critical differentiator. The shop that returns an accurate quote in 24 hours wins the job over the shop that takes a week. This makes anything that accelerates quoting, scheduling, and job tracking extremely valuable. Many job shops still run on a combination of Excel spreadsheets, whiteboards, and tribal knowledge — creating a greenfield opportunity but also meaning you're selling against 'the way we've always done it.'\n\nThe owner or general manager is often the decision maker in a job shop, making the buying process simpler but also more personal. These are entrepreneurs who built their business with their own hands. They're frugal, skeptical of overpromising, and they want to see a demo on their machines with their parts before they'll commit. Payment terms and financing matter more here than at a large corporation — a $50K purchase is a significant investment for a 40-person shop. Build the relationship first, prove the value small, then grow. Word of mouth in the local manufacturing community is your best marketing channel."
+  },
+  "industryKnowledge": "MANUFACTURING INDUSTRY — KEY FACTS FOR SALES COACHING\n\nDOWNTIME & PRODUCTIVITY:\n• Unplanned downtime costs manufacturers an average of $5,000–$50,000+ per hour depending on the operation; automotive stamping lines can exceed $100,000/hour when OEM penalties are included.\n• Overall Equipment Effectiveness (OEE) benchmarks: World-class is 85%+. The average manufacturer runs at about 60%. Most plants have 15–25% of available capacity hidden in downtime, speed losses, and quality defects.\n• The top three causes of unplanned downtime are equipment failure (42%), operator error (18%), and material shortages (15%).\n\nMAINTENANCE ECONOMICS:\n• Predictive maintenance programs can reduce unplanned downtime by 30–50% and lower total maintenance costs by 25–30%, according to McKinsey and Deloitte studies.\n• Average manufacturers spend 2–5% of total asset replacement value annually on maintenance. World-class operations target under 2%.\n• Reactive maintenance (run-to-failure) costs 3–5x more per incident than planned preventive maintenance.\n• The average age of a maintenance technician in the U.S. is 52 years old. The skilled trades labor shortage is the number one operational concern cited by manufacturing executives in NAM surveys.\n\nBUDGET & BUYING PATTERNS:\n• Common budget cycles: Most manufacturers plan capital budgets in Q4 for the following fiscal year. Mid-year capex reviews in Q2 sometimes unlock unspent funds.\n• Typical capex approval thresholds: Plant Manager $25K–$75K; VP of Operations $75K–$250K; C-Suite/Board $250K+.\n• Decision committees in manufacturing almost always include Operations, Maintenance, Finance, and (increasingly) IT. Procurement enters after technical selection.\n• Average B2B manufacturing sales cycle is 3–9 months, with complex or multi-site deals stretching to 12–18 months.\n\nTECHNOLOGY ADOPTION:\n• Only 25–30% of manufacturers have adopted predictive maintenance tools, despite proven ROI. The primary barriers are upfront cost, lack of internal expertise, and skepticism about AI/analytics accuracy.\n• IIoT (Industrial Internet of Things) spending in manufacturing is growing 15–20% annually, driven by labor shortages and margin pressure.\n• Legacy equipment (10–30+ years old) represents the majority of installed assets in North American manufacturing. Integration with older machines and proprietary PLCs is a consistent barrier.\n\nINDUSTRY TRENDS:\n• Nearshoring and reshoring are driving new plant construction and expansion in the U.S. and Mexico, creating greenfield buying opportunities.\n• Sustainability and ESG reporting requirements are pushing manufacturers to invest in energy monitoring, waste reduction, and emissions tracking.\n• The skilled labor shortage means manufacturers are investing more in automation and decision-support tools to do more with fewer experienced workers.\n• Supply chain volatility since 2020 has made inventory management, supplier diversification, and production flexibility top-of-mind priorities.",
+  "healthFactors": [
+    {
+      "key": "hbiz",
+      "name": "Business Case",
+      "scoringRules": {
+        "green": {
+          "match": "Yes — built and documented",
+          "label": "Solid"
+        },
+        "amber": {
+          "match": "Rough numbers discussed",
+          "label": "Partial"
+        },
+        "red": {
+          "default": true,
+          "label": "Gap"
+        }
+      }
+    },
+    {
+      "key": "hbuyer",
+      "name": "Economic Buyer Access",
+      "scoringRules": {
+        "green": {
+          "match": "direct access",
+          "label": "Solid"
+        },
+        "amber": {
+          "match": "indirect|through champion|trying to get",
+          "label": "Partial"
+        },
+        "red": {
+          "default": true,
+          "label": "Gap"
+        }
+      }
+    },
+    {
+      "key": "hchamp",
+      "name": "Champion Strength",
+      "scoringRules": {
+        "green": {
+          "match": "responsive|proactive|fight|advocate|champion|pushing",
+          "label": "Solid"
+        },
+        "amber": {
+          "match": "interested|supportive|positive|engaged",
+          "label": "Partial"
+        },
+        "red": {
+          "default": true,
+          "label": "Gap"
+        }
+      }
+    },
+    {
+      "key": "hprocess",
+      "name": "Decision Process",
+      "scoringRules": {
+        "green": {
+          "match": "mapped|identified|committee|approval chain|sign-off",
+          "label": "Solid"
+        },
+        "amber": {
+          "match": "think|probably|not sure who|still figuring",
+          "label": "Partial"
+        },
+        "red": {
+          "default": true,
+          "label": "Gap"
+        }
+      }
+    },
+    {
+      "key": "htimeline",
+      "name": "Timeline & Urgency",
+      "scoringRules": {
+        "green": {
+          "match": "deadline|audit|launch|mandate|budget expires|fiscal year|compelling event",
+          "label": "Solid"
+        },
+        "amber": {
+          "match": "soon|next quarter|sometime|planning",
+          "label": "Partial"
+        },
+        "red": {
+          "default": true,
+          "label": "Gap"
+        }
+      }
+    },
+    {
+      "key": "hcomp",
+      "name": "Competitive Position",
+      "scoringRules": {
+        "green": {
+          "match": "prefer us|chose us|only option|sole source|clear advantage|differentiator",
+          "label": "Solid"
+        },
+        "amber": {
+          "match": "evaluating|comparing|also looking|competitor",
+          "label": "Partial"
+        },
+        "red": {
+          "default": true,
+          "label": "Gap"
+        }
+      }
+    },
+    {
+      "key": "hnext",
+      "name": "Next Steps",
+      "scoringRules": {
+        "green": {
+          "match": "scheduled|confirmed|calendar|on-site|Tuesday|Wednesday|Thursday|Monday|Friday|date set|booked",
+          "label": "Solid"
+        },
+        "amber": {
+          "match": "planning to|will schedule|trying to|hope to|tentative",
+          "label": "Partial"
+        },
+        "red": {
+          "default": true,
+          "label": "Gap"
+        }
+      }
+    }
+  ],
+  "scoringRules": [
+    {
+      "field": "bizcase",
+      "strong": "Yes — built and documented",
+      "strongPoints": 15,
+      "weak": "Rough numbers discussed",
+      "weakPoints": 5,
+      "bad": ["Vague sense of need", "No — haven't discussed costs"],
+      "badPoints": -10
+    },
+    {
+      "field": "confidence",
+      "strong": "Very confident — 80%+",
+      "strongPoints": 10,
+      "weak": "Cautiously optimistic — 50-80%",
+      "weakPoints": 3,
+      "bad": ["Uncertain — 25-50%", "Not confident — under 25%"],
+      "badPoints": -10
+    },
+    {
+      "field": "buyer",
+      "strong": "direct access|met with|meeting with the buyer|I have a relationship",
+      "strongPoints": 12,
+      "weak": "indirect|champion will introduce|trying to get access",
+      "weakPoints": 4,
+      "bad": ["no access|haven't identified|don't know who"],
+      "badPoints": -15
+    },
+    {
+      "field": "timeline",
+      "strong": "deadline|audit|launch date|mandate|budget expires|must be done by",
+      "strongPoints": 12,
+      "weak": "next quarter|planning|sometime this year|hoping",
+      "weakPoints": 3,
+      "bad": ["no timeline|no urgency|whenever|no rush|not urgent"],
+      "badPoints": -10
+    },
+    {
+      "field": "competition",
+      "strong": "sole source|no competition|only option|preferred vendor|chose us",
+      "strongPoints": 10,
+      "weak": "evaluating others|competitor involved|also looking at",
+      "weakPoints": 3,
+      "bad": ["incumbent is strong|losing to|behind|they prefer the competitor"],
+      "badPoints": -12
+    },
+    {
+      "field": "nextstep",
+      "strong": "scheduled|confirmed|on the calendar|booked|date set",
+      "strongPoints": 10,
+      "weak": "planning to|will set up|tentative|working on scheduling",
+      "weakPoints": 3,
+      "bad": ["no next step|waiting to hear|ghosted|no response|nothing scheduled"],
+      "badPoints": -15
+    }
+  ]
+}

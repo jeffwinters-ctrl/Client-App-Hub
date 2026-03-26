@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{COMPANY_NAME}} — Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: {{PRIMARY_COLOR}};
+      --accent: {{ACCENT_COLOR}};
+      --bg: #F8F7F4;
+      --surface: #FFFFFF;
+      --ink: #1A1A1A;
+      --ink-light: #6B6B6B;
+      --rule: #E5E2DC;
+    }
+    body {
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+    }
+    /* Header */
+    .hub-header {
+      background: var(--primary);
+      color: #fff;
+      padding: 0 32px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .hub-header .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hub-header .brand img {
+      height: 28px;
+      filter: brightness(0) invert(1);
+    }
+    .hub-header .brand h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .hub-header .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.85rem;
+    }
+    .btn-logout {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-logout:hover { background: rgba(255,255,255,0.25); }
+
+    /* Main content */
+    .hub-main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+    .welcome {
+      margin-bottom: 40px;
+    }
+    .welcome h2 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      margin-bottom: 8px;
+    }
+    .welcome p {
+      color: var(--ink-light);
+      font-size: 1.05rem;
+      font-family: 'Source Serif 4', serif;
+      font-style: italic;
+    }
+    .section-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink-light);
+      margin-bottom: 16px;
+    }
+
+    /* App Grid */
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .app-card {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 12px;
+      padding: 28px 24px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      position: relative;
+      overflow: hidden;
+    }
+    .app-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .app-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent);
+    }
+    .app-card .app-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--primary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 1.3rem;
+    }
+    .app-card h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      margin-bottom: 8px;
+    }
+    .app-card p {
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      line-height: 1.5;
+    }
+    .app-card .app-arrow {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      color: var(--accent);
+      font-size: 1.2rem;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .app-card:hover .app-arrow {
+      opacity: 1;
+      transform: translateX(4px);
+    }
+
+    /* Footer */
+    .hub-footer {
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.8rem;
+      color: var(--ink-light);
+      border-top: 1px solid var(--rule);
+      margin-top: 64px;
+    }
+
+    @media (max-width: 600px) {
+      .hub-header { padding: 0 16px; }
+      .hub-main { padding: 32px 16px; }
+      .welcome h2 { font-size: 1.6rem; }
+      .app-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hub-header">
+    <div class="brand">
+      <img src="{{LOGO_URL}}" alt="" onerror="this.style.display='none'">
+      <h1>{{COMPANY_NAME}}</h1>
+    </div>
+    <div class="header-right">
+      <button class="btn-logout" onclick="logout()">Sign Out</button>
+    </div>
+  </header>
+
+  <main class="hub-main">
+    <div class="welcome">
+      <h2>Welcome back</h2>
+      <p>Your sales acceleration tools, ready when you are.</p>
+    </div>
+    <div class="section-label">Your Tools</div>
+    <div class="app-grid" id="appGrid"></div>
+  </main>
+
+  <footer class="hub-footer">
+    Powered by {{POWERED_BY}}
+  </footer>
+
+  <script>
+    const CLIENT_CONFIG = {{CLIENT_CONFIG}};
+    const SLUG = '{{SLUG}}';
+    const APPS = {{APPS_JSON}};
+
+    const APP_META = {
+      'dealcheck': {
+        name: 'DealCheck',
+        icon: '\u{1F3AF}',
+        description: 'Get an AI-powered health check on any active deal. Answer a few questions, get a score, specific findings, and three plays to move it forward.'
+      },
+      'business-case': {
+        name: 'Business Case Builder',
+        icon: '\u{1F4CA}',
+        description: 'Generate a professional ROI business case your prospect can take to their CFO. Enter the deal details, get a polished document in minutes.'
+      },
+      'linkedin-post': {
+        name: 'LinkedIn Post Writer',
+        icon: '\u{1F4DD}',
+        description: 'Create engaging LinkedIn posts that position you as a thought leader. Get three different styles — story, insight, and hot take — ready to post.'
+      }
+    };
+
+    const grid = document.getElementById('appGrid');
+    APPS.forEach(appId => {
+      const meta = APP_META[appId];
+      if (!meta) return;
+      const card = document.createElement('a');
+      card.className = 'app-card';
+      card.href = `/${SLUG}/${appId}`;
+      card.innerHTML = `
+        <div class="app-icon">${meta.icon}</div>
+        <h3>${meta.name}</h3>
+        <p>${meta.description}</p>
+        <span class="app-arrow">\u2192</span>
+      `;
+      grid.appendChild(card);
+    });
+
+    async function logout() {
+      await fetch('/api/logout', { method: 'POST' });
+      window.location.href = `/${SLUG}/login`;
+    }
+  </script>
+</body>
+</html>

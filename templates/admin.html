@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Sapper Client Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: #1A1A1A;
+      --accent: #E8A020;
+      --bg: #F8F7F4;
+      --surface: #FFFFFF;
+      --ink: #1A1A1A;
+      --ink-light: #6B6B6B;
+      --rule: #E5E2DC;
+      --green: #2E7D32;
+      --amber: #F57F17;
+      --red: #C62828;
+    }
+    body { font-family: 'Source Sans 3', system-ui, sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+    /* Header */
+    .admin-header {
+      background: var(--ink);
+      color: #fff;
+      padding: 0 32px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .admin-header h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .admin-header .header-actions { display: flex; gap: 12px; align-items: center; }
+    .btn-sm {
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+      color: #fff; padding: 6px 16px; border-radius: 6px; font-size: 0.8rem; cursor: pointer;
+      font-family: 'Source Sans 3', sans-serif;
+    }
+    .btn-sm:hover { background: rgba(255,255,255,0.25); }
+
+    /* Layout */
+    .admin-layout { display: flex; min-height: calc(100vh - 56px); }
+    .admin-sidebar {
+      width: 220px; background: var(--surface); border-right: 1px solid var(--rule);
+      padding: 24px 0; flex-shrink: 0;
+    }
+    .sidebar-nav a {
+      display: block; padding: 10px 24px; font-size: 0.9rem; color: var(--ink-light);
+      text-decoration: none; border-left: 3px solid transparent; transition: all 0.15s;
+    }
+    .sidebar-nav a:hover, .sidebar-nav a.active {
+      color: var(--ink); background: var(--bg); border-left-color: var(--accent);
+    }
+    .admin-main { flex: 1; padding: 32px; overflow-x: auto; }
+
+    /* Panels */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* Stats row */
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--rule); border-radius: 10px;
+      padding: 20px; text-align: center;
+    }
+    .stat-card .stat-num { font-family: 'Oswald', sans-serif; font-size: 2rem; font-weight: 600; color: var(--accent); }
+    .stat-card .stat-label { font-size: 0.8rem; color: var(--ink-light); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+
+    /* Table */
+    .data-table {
+      width: 100%; border-collapse: collapse; background: var(--surface);
+      border: 1px solid var(--rule); border-radius: 10px; overflow: hidden;
+    }
+    .data-table th {
+      background: var(--bg); font-family: 'Oswald', sans-serif; font-size: 0.75rem;
+      text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-light);
+      padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--rule);
+    }
+    .data-table td { padding: 12px 16px; border-bottom: 1px solid var(--rule); font-size: 0.9rem; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: var(--bg); }
+
+    .badge {
+      display: inline-block; padding: 2px 10px; border-radius: 4px;
+      font-size: 0.75rem; font-weight: 500;
+    }
+    .badge-green { background: #E8F5E9; color: var(--green); }
+    .badge-amber { background: #FFF8E1; color: #E65100; }
+
+    /* Client detail */
+    .client-detail { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 24px; margin-bottom: 24px; }
+    .client-detail h3 { font-family: 'Oswald', sans-serif; font-size: 1.2rem; margin-bottom: 16px; }
+    .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+    .detail-item .detail-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-light); margin-bottom: 4px; }
+    .detail-item .detail-value { font-size: 0.95rem; font-weight: 500; }
+    .color-swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: middle; margin-right: 6px; border: 1px solid var(--rule); }
+
+    /* Password form */
+    .pw-form { display: flex; gap: 8px; align-items: end; margin-top: 16px; }
+    .pw-form input {
+      padding: 8px 12px; border: 1px solid var(--rule); border-radius: 6px;
+      font-size: 0.9rem; font-family: inherit; width: 200px;
+    }
+    .pw-form input:focus { outline: none; border-color: var(--primary); }
+    .btn-set-pw {
+      padding: 8px 20px; background: var(--primary); color: #fff; border: none;
+      border-radius: 6px; font-size: 0.85rem; cursor: pointer; white-space: nowrap;
+    }
+    .btn-set-pw:hover { opacity: 0.9; }
+    .pw-msg { font-size: 0.85rem; margin-top: 8px; }
+
+    /* Filters */
+    .filters { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+    .filters select, .filters input {
+      padding: 8px 12px; border: 1px solid var(--rule); border-radius: 6px;
+      font-size: 0.9rem; font-family: inherit; background: var(--surface);
+    }
+    .filters select:focus, .filters input:focus { outline: none; border-color: var(--primary); }
+    .btn-filter {
+      padding: 8px 20px; background: var(--accent); color: var(--ink); border: none;
+      border-radius: 6px; font-family: 'Oswald', sans-serif; font-size: 0.85rem;
+      text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer;
+    }
+
+    /* Chart area */
+    .chart-area {
+      background: var(--surface); border: 1px solid var(--rule); border-radius: 10px;
+      padding: 24px; margin-bottom: 24px;
+    }
+    .chart-area h3 { font-family: 'Oswald', sans-serif; font-size: 1rem; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-light); }
+    .bar-chart { display: flex; align-items: end; gap: 8px; height: 160px; padding-top: 16px; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+    .bar { width: 100%; max-width: 48px; background: var(--accent); border-radius: 4px 4px 0 0; transition: height 0.4s; min-height: 2px; }
+    .bar-label { font-size: 0.7rem; color: var(--ink-light); margin-top: 6px; text-align: center; }
+    .bar-value { font-size: 0.7rem; font-weight: 600; margin-bottom: 4px; }
+
+    @media (max-width: 768px) {
+      .admin-layout { flex-direction: column; }
+      .admin-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--rule); padding: 12px 0; }
+      .sidebar-nav { display: flex; overflow-x: auto; }
+      .sidebar-nav a { white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; padding: 8px 16px; }
+      .sidebar-nav a.active { border-bottom-color: var(--accent); border-left: none; }
+      .admin-main { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="admin-header">
+    <h1>Sapper Admin</h1>
+    <div class="header-actions">
+      <button class="btn-sm" onclick="logout()">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="admin-layout">
+    <nav class="admin-sidebar">
+      <div class="sidebar-nav">
+        <a href="#" class="active" data-panel="overview">Overview</a>
+        <a href="#" data-panel="clients">Clients</a>
+        <a href="#" data-panel="analytics">Analytics</a>
+        <a href="#" data-panel="activity">Activity Log</a>
+      </div>
+    </nav>
+
+    <main class="admin-main">
+      <!-- Overview Panel -->
+      <div class="panel active" id="panelOverview">
+        <div class="stats-row" id="overviewStats"></div>
+        <div class="chart-area">
+          <h3>Activity — Last 30 Days</h3>
+          <div class="bar-chart" id="activityChart"></div>
+        </div>
+        <div class="chart-area">
+          <h3>App Usage</h3>
+          <div class="bar-chart" id="appChart"></div>
+        </div>
+      </div>
+
+      <!-- Clients Panel -->
+      <div class="panel" id="panelClients">
+        <table class="data-table" id="clientsTable">
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Slug</th>
+              <th>Industry</th>
+              <th>Apps</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="clientsBody"></tbody>
+        </table>
+        <div id="clientDetail" style="margin-top: 24px;"></div>
+      </div>
+
+      <!-- Analytics Panel -->
+      <div class="panel" id="panelAnalytics">
+        <div class="filters">
+          <select id="filterClient"><option value="">All Clients</option></select>
+          <select id="filterApp">
+            <option value="">All Apps</option>
+            <option value="dealcheck">DealCheck</option>
+            <option value="business-case">Business Case</option>
+            <option value="linkedin-post">LinkedIn Post</option>
+            <option value="hub">Hub</option>
+          </select>
+          <select id="filterDays">
+            <option value="7">Last 7 Days</option>
+            <option value="30" selected>Last 30 Days</option>
+            <option value="90">Last 90 Days</option>
+          </select>
+          <button class="btn-filter" onclick="loadAnalytics()">Apply</button>
+        </div>
+        <div id="analyticsContent"></div>
+      </div>
+
+      <!-- Activity Log Panel -->
+      <div class="panel" id="panelActivity">
+        <div class="filters">
+          <select id="logFilterClient"><option value="">All Clients</option></select>
+          <select id="logFilterDays">
+            <option value="7" selected>Last 7 Days</option>
+            <option value="30">Last 30 Days</option>
+          </select>
+          <button class="btn-filter" onclick="loadActivity()">Load</button>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Time</th><th>Client</th><th>App</th><th>Event</th></tr></thead>
+          <tbody id="activityBody"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const CLIENTS = {{CLIENTS_JSON}};
+    let analyticsCache = [];
+
+    // Navigation
+    document.querySelectorAll('.sidebar-nav a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        link.classList.add('active');
+        document.getElementById('panel' + capitalize(link.dataset.panel)).classList.add('active');
+      });
+    });
+
+    function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    // Init
+    async function init() {
+      populateClientFilters();
+      renderClientsTable();
+      await loadOverview();
+    }
+
+    function populateClientFilters() {
+      const selects = [document.getElementById('filterClient'), document.getElementById('logFilterClient')];
+      selects.forEach(sel => {
+        CLIENTS.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.slug;
+          opt.textContent = c.companyName;
+          sel.appendChild(opt);
+        });
+      });
+    }
+
+    // Overview
+    async function loadOverview() {
+      try {
+        const res = await fetch('/api/admin/analytics?days=30');
+        const data = await res.json();
+        analyticsCache = data.events || [];
+      } catch (e) {
+        analyticsCache = [];
+      }
+
+      const events = analyticsCache;
+      const logins = events.filter(e => e.event_type === 'login').length;
+      const appOpens = events.filter(e => e.event_type === 'app_open').length;
+      const completions = events.filter(e => e.event_type.includes('complete')).length;
+      const uniqueClients = new Set(events.map(e => e.client_slug)).size;
+
+      document.getElementById('overviewStats').innerHTML = `
+        <div class="stat-card"><div class="stat-num">${CLIENTS.length}</div><div class="stat-label">Total Clients</div></div>
+        <div class="stat-card"><div class="stat-num">${logins}</div><div class="stat-label">Logins (30d)</div></div>
+        <div class="stat-card"><div class="stat-num">${appOpens}</div><div class="stat-label">App Opens (30d)</div></div>
+        <div class="stat-card"><div class="stat-num">${completions}</div><div class="stat-label">Completions (30d)</div></div>
+        <div class="stat-card"><div class="stat-num">${uniqueClients}</div><div class="stat-label">Active Clients (30d)</div></div>
+      `;
+
+      renderActivityChart(events);
+      renderAppChart(events);
+    }
+
+    function renderActivityChart(events) {
+      const chart = document.getElementById('activityChart');
+      const days = {};
+      for (let i = 29; i >= 0; i--) {
+        const d = new Date(Date.now() - i * 86400000);
+        const key = d.toISOString().split('T')[0];
+        days[key] = 0;
+      }
+      events.forEach(e => {
+        const key = e.created_at.split('T')[0];
+        if (days[key] !== undefined) days[key]++;
+      });
+      const max = Math.max(1, ...Object.values(days));
+      chart.innerHTML = Object.entries(days).map(([date, count]) => {
+        const pct = (count / max * 100);
+        const label = new Date(date).toLocaleDateString('en', { month: 'short', day: 'numeric' });
+        return `<div class="bar-col"><div class="bar-value">${count || ''}</div><div class="bar" style="height:${Math.max(2, pct)}%"></div><div class="bar-label">${label}</div></div>`;
+      }).filter((_, i) => i % 3 === 0).join('');
+    }
+
+    function renderAppChart(events) {
+      const chart = document.getElementById('appChart');
+      const apps = {};
+      events.filter(e => e.event_type === 'app_open').forEach(e => {
+        apps[e.app_name] = (apps[e.app_name] || 0) + 1;
+      });
+      const names = { 'dealcheck': 'DealCheck', 'business-case': 'Biz Case', 'linkedin-post': 'LinkedIn', 'hub': 'Hub' };
+      const max = Math.max(1, ...Object.values(apps));
+      chart.innerHTML = Object.entries(apps).map(([app, count]) => {
+        const pct = (count / max * 100);
+        return `<div class="bar-col"><div class="bar-value">${count}</div><div class="bar" style="height:${Math.max(2, pct)}%"></div><div class="bar-label">${names[app] || app}</div></div>`;
+      }).join('') || '<p style="color:var(--ink-light);font-size:0.9rem;">No data yet</p>';
+    }
+
+    // Clients
+    function renderClientsTable() {
+      const body = document.getElementById('clientsBody');
+      body.innerHTML = CLIENTS.map(c => `
+        <tr>
+          <td><strong>${c.companyName}</strong></td>
+          <td><code>${c.slug}</code></td>
+          <td>${c.industry}</td>
+          <td>${c.apps.map(a => `<span class="badge badge-green">${a}</span> `).join('')}</td>
+          <td>
+            <button class="btn-set-pw" style="font-size:0.75rem;padding:4px 12px;" onclick="showClientDetail('${c.slug}')">Manage</button>
+            <a href="/${c.slug}" target="_blank" style="font-size:0.8rem;margin-left:8px;">Visit</a>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function showClientDetail(slug) {
+      const c = CLIENTS.find(cl => cl.slug === slug);
+      if (!c) return;
+      const detail = document.getElementById('clientDetail');
+      detail.innerHTML = `
+        <div class="client-detail">
+          <h3>${c.companyName}</h3>
+          <div class="detail-grid">
+            <div class="detail-item"><div class="detail-label">Slug</div><div class="detail-value">${c.slug}</div></div>
+            <div class="detail-item"><div class="detail-label">Industry</div><div class="detail-value">${c.industry}</div></div>
+            <div class="detail-item"><div class="detail-label">Primary Color</div><div class="detail-value"><span class="color-swatch" style="background:${c.primaryColor}"></span>${c.primaryColor}</div></div>
+            <div class="detail-item"><div class="detail-label">Accent Color</div><div class="detail-value"><span class="color-swatch" style="background:${c.accentColor}"></span>${c.accentColor}</div></div>
+            <div class="detail-item"><div class="detail-label">Apps</div><div class="detail-value">${c.apps.join(', ')}</div></div>
+            <div class="detail-item"><div class="detail-label">Hub URL</div><div class="detail-value"><a href="/${c.slug}" target="_blank">/${c.slug}</a></div></div>
+          </div>
+          <div style="margin-top:16px;">
+            <div class="detail-label">Context</div>
+            <p style="font-size:0.9rem;line-height:1.6;margin-top:4px;">${c.context}</p>
+          </div>
+          <div class="pw-form">
+            <input type="password" id="pw_${c.slug}" placeholder="New password">
+            <button class="btn-set-pw" onclick="setPassword('${c.slug}')">Set Password</button>
+          </div>
+          <div class="pw-msg" id="pwMsg_${c.slug}"></div>
+        </div>
+      `;
+    }
+
+    async function setPassword(slug) {
+      const input = document.getElementById('pw_' + slug);
+      const msg = document.getElementById('pwMsg_' + slug);
+      const pw = input.value.trim();
+      if (!pw || pw.length < 6) { msg.textContent = 'Password must be at least 6 characters.'; msg.style.color = 'var(--red)'; return; }
+      try {
+        const res = await fetch('/api/admin/set-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug, password: pw })
+        });
+        const data = await res.json();
+        if (data.success) { msg.textContent = 'Password updated.'; msg.style.color = 'var(--green)'; input.value = ''; }
+        else { msg.textContent = data.error || 'Failed.'; msg.style.color = 'var(--red)'; }
+      } catch (e) { msg.textContent = 'Error: ' + e.message; msg.style.color = 'var(--red)'; }
+    }
+
+    // Analytics
+    async function loadAnalytics() {
+      const client = document.getElementById('filterClient').value;
+      const app = document.getElementById('filterApp').value;
+      const days = document.getElementById('filterDays').value;
+      const params = new URLSearchParams({ days });
+      if (client) params.set('client', client);
+      if (app) params.set('app', app);
+
+      const container = document.getElementById('analyticsContent');
+      container.innerHTML = '<p style="color:var(--ink-light)">Loading...</p>';
+
+      try {
+        const res = await fetch('/api/admin/analytics?' + params);
+        const data = await res.json();
+        const events = data.events || [];
+
+        if (events.length === 0) {
+          container.innerHTML = '<p style="color:var(--ink-light)">No events found for this period.</p>';
+          return;
+        }
+
+        // Summary stats
+        const byType = {};
+        const byClient = {};
+        const byApp = {};
+        events.forEach(e => {
+          byType[e.event_type] = (byType[e.event_type] || 0) + 1;
+          byClient[e.client_slug] = (byClient[e.client_slug] || 0) + 1;
+          byApp[e.app_name] = (byApp[e.app_name] || 0) + 1;
+        });
+
+        let html = `<div class="stats-row">
+          <div class="stat-card"><div class="stat-num">${events.length}</div><div class="stat-label">Total Events</div></div>
+          <div class="stat-card"><div class="stat-num">${Object.keys(byClient).length}</div><div class="stat-label">Unique Clients</div></div>
+          <div class="stat-card"><div class="stat-num">${byType['login'] || 0}</div><div class="stat-label">Logins</div></div>
+          <div class="stat-card"><div class="stat-num">${(byType['analysis_complete'] || 0) + (byType['generation_complete'] || 0)}</div><div class="stat-label">Completions</div></div>
+        </div>`;
+
+        // Events by type
+        html += `<div class="chart-area"><h3>Events by Type</h3>`;
+        const maxType = Math.max(1, ...Object.values(byType));
+        html += `<div class="bar-chart">${Object.entries(byType).map(([t, n]) =>
+          `<div class="bar-col"><div class="bar-value">${n}</div><div class="bar" style="height:${n/maxType*100}%"></div><div class="bar-label">${t.replace(/_/g, ' ')}</div></div>`
+        ).join('')}</div></div>`;
+
+        // Client breakdown
+        html += `<div class="chart-area"><h3>Events by Client</h3>`;
+        const maxClient = Math.max(1, ...Object.values(byClient));
+        html += `<div class="bar-chart">${Object.entries(byClient).map(([c, n]) =>
+          `<div class="bar-col"><div class="bar-value">${n}</div><div class="bar" style="height:${n/maxClient*100}%"></div><div class="bar-label">${c}</div></div>`
+        ).join('')}</div></div>`;
+
+        container.innerHTML = html;
+      } catch (e) {
+        container.innerHTML = `<p style="color:var(--red)">Error: ${e.message}</p>`;
+      }
+    }
+
+    // Activity Log
+    async function loadActivity() {
+      const client = document.getElementById('logFilterClient').value;
+      const days = document.getElementById('logFilterDays').value;
+      const params = new URLSearchParams({ days });
+      if (client) params.set('client', client);
+
+      const body = document.getElementById('activityBody');
+      body.innerHTML = '<tr><td colspan="4" style="color:var(--ink-light)">Loading...</td></tr>';
+
+      try {
+        const res = await fetch('/api/admin/analytics?' + params);
+        const data = await res.json();
+        const events = data.events || [];
+
+        if (events.length === 0) {
+          body.innerHTML = '<tr><td colspan="4" style="color:var(--ink-light)">No events.</td></tr>';
+          return;
+        }
+
+        body.innerHTML = events.slice(0, 200).map(e => {
+          const time = new Date(e.created_at).toLocaleString();
+          return `<tr>
+            <td>${time}</td>
+            <td>${e.client_slug}</td>
+            <td><span class="badge badge-green">${e.app_name}</span></td>
+            <td>${e.event_type.replace(/_/g, ' ')}</td>
+          </tr>`;
+        }).join('');
+      } catch (e) {
+        body.innerHTML = `<tr><td colspan="4" style="color:var(--red)">Error: ${e.message}</td></tr>`;
+      }
+    }
+
+    async function logout() {
+      await fetch('/api/logout', { method: 'POST' });
+      window.location.href = '/admin/login';
+    }
+
+    init();
+  </script>
+</body>
+</html>

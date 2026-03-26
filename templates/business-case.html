@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{PAGE_TITLE}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: {{PRIMARY_COLOR}};
+      --accent: {{ACCENT_COLOR}};
+      --bg: #F8F7F4;
+      --surface: #FFFFFF;
+      --ink: #1A1A1A;
+      --ink-light: #6B6B6B;
+      --rule: #E5E2DC;
+      --green: #2E7D32;
+    }
+    body { font-family: 'Source Sans 3', system-ui, sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+    .bc-header {
+      background: var(--ink);
+      color: #fff;
+      padding: 0 32px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .bc-header a { color: rgba(255,255,255,0.7); text-decoration: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem; text-transform: none; letter-spacing: 0.02em; }
+    .bc-header a:hover { color: #fff; }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* Input Form */
+    .form-screen { max-width: 640px; margin: 0 auto; padding: 48px 24px 80px; }
+    .form-screen h2 { font-family: 'Oswald', sans-serif; font-size: 2rem; font-weight: 600; margin-bottom: 8px; }
+    .form-screen .subtitle { font-family: 'Source Serif 4', serif; font-style: italic; color: var(--ink-light); margin-bottom: 32px; font-size: 1.05rem; }
+    .field { margin-bottom: 24px; }
+    .field label {
+      display: block; font-weight: 600; font-size: 0.8rem; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--ink-light); margin-bottom: 8px;
+    }
+    .field textarea, .field input, .field select {
+      width: 100%; padding: 12px 16px; border: 1px solid var(--rule); border-radius: 8px;
+      font-family: inherit; font-size: 1rem; background: var(--surface);
+    }
+    .field textarea { min-height: 80px; resize: vertical; line-height: 1.5; }
+    .field textarea:focus, .field input:focus, .field select:focus { outline: none; border-color: var(--primary); }
+    .field .hint { font-size: 0.85rem; color: var(--ink-light); margin-top: 4px; font-style: italic; }
+    .btn-generate {
+      width: 100%; padding: 16px; background: var(--primary); color: #fff; border: none;
+      border-radius: 8px; font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s;
+    }
+    .btn-generate:hover { opacity: 0.9; }
+    .btn-generate:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Processing */
+    .processing-screen { max-width: 480px; margin: 0 auto; padding: 80px 24px; text-align: center; }
+    .processing-screen h3 { font-family: 'Oswald', sans-serif; font-size: 1.3rem; margin-bottom: 32px; }
+    .spinner { width: 48px; height: 48px; border: 3px solid var(--rule); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 24px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Results */
+    .results-screen { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+    .bc-doc {
+      background: var(--surface); border: 1px solid var(--rule); border-radius: 12px;
+      padding: 40px 36px; box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .bc-doc h2 {
+      font-family: 'Oswald', sans-serif; font-size: 1.6rem; font-weight: 600;
+      color: var(--primary); margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid var(--accent);
+    }
+    .bc-section { margin-bottom: 28px; }
+    .bc-section h3 {
+      font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 500; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--accent); margin-bottom: 12px;
+    }
+    .bc-section p { line-height: 1.7; font-family: 'Source Serif 4', serif; }
+    .bc-section ul { list-style: none; padding: 0; }
+    .bc-section ul li {
+      padding: 8px 0; padding-left: 20px; position: relative; line-height: 1.5;
+      border-bottom: 1px solid var(--bg);
+    }
+    .bc-section ul li::before { content: '\u25B8'; position: absolute; left: 0; color: var(--accent); }
+
+    /* ROI Box */
+    .roi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px; }
+    .roi-item {
+      background: var(--bg); border-radius: 8px; padding: 16px; text-align: center;
+    }
+    .roi-item .roi-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-light); margin-bottom: 4px; }
+    .roi-item .roi-value { font-family: 'Oswald', sans-serif; font-size: 1.4rem; font-weight: 600; color: var(--green); }
+
+    /* Timeline */
+    .timeline { border-left: 2px solid var(--accent); padding-left: 20px; margin-top: 12px; }
+    .timeline-phase { margin-bottom: 16px; }
+    .timeline-phase .phase-name { font-family: 'Oswald', sans-serif; font-size: 0.85rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+    .timeline-phase .phase-dur { font-size: 0.8rem; color: var(--ink-light); margin-bottom: 4px; }
+    .timeline-phase .phase-desc { font-size: 0.95rem; line-height: 1.5; }
+
+    .bc-recommendation {
+      background: var(--primary); color: #fff; border-radius: 8px; padding: 20px 24px;
+      margin-top: 24px; font-family: 'Source Serif 4', serif; line-height: 1.7; font-size: 1.05rem;
+    }
+
+    .actions-bar { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+    .btn-action {
+      padding: 12px 28px; border-radius: 8px; font-family: 'Oswald', sans-serif; font-size: 0.9rem;
+      font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; text-decoration: none;
+    }
+    .btn-primary { background: var(--primary); color: #fff; border: none; }
+    .btn-outline { background: transparent; border: 1px solid var(--rule); color: var(--ink); }
+    .btn-action:hover { opacity: 0.85; }
+
+    .bc-footer { background: var(--ink); color: rgba(255,255,255,0.5); text-align: center; padding: 16px; font-size: 0.8rem; }
+
+    @media (max-width: 600px) {
+      .bc-header { padding: 0 16px; }
+      .form-screen { padding: 32px 16px 60px; }
+      .bc-doc { padding: 24px 20px; }
+      .roi-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="bc-header">
+    <span>BUSINESS CASE BUILDER</span>
+    <a href="/{{SLUG}}">Back to Hub</a>
+  </header>
+
+  <div class="screen active" id="screenForm">
+    <div class="form-screen">
+      <h2>Build Your Business Case</h2>
+      <p class="subtitle">Enter the details below and get a professional ROI document in minutes.</p>
+      <form id="bcForm">
+        <div class="field">
+          <label>Your Product / Solution</label>
+          <textarea id="f_solution" placeholder="What are you selling? Be specific about the product/service." required></textarea>
+        </div>
+        <div class="field">
+          <label>Target Company</label>
+          <input type="text" id="f_company" placeholder="Company name and brief description" required>
+        </div>
+        <div class="field">
+          <label>Who Will Read This?</label>
+          <input type="text" id="f_audience" placeholder="e.g. CFO and VP of Operations at Acme Corp">
+          <div class="hint">The decision makers who need to approve this purchase.</div>
+        </div>
+        <div class="field">
+          <label>Current Situation / Problem</label>
+          <textarea id="f_problem" placeholder="What problem does the prospect face today? What are they doing instead?" required></textarea>
+        </div>
+        <div class="field">
+          <label>Estimated Deal Size</label>
+          <input type="text" id="f_dealsize" placeholder="e.g. $120,000/year or $500,000 one-time">
+        </div>
+        <div class="field">
+          <label>Known Pain Points or Costs</label>
+          <textarea id="f_painpoints" placeholder="Any specific numbers, complaints, or inefficiencies you've uncovered."></textarea>
+        </div>
+        <div class="field">
+          <label>Key Competitors or Status Quo</label>
+          <input type="text" id="f_competitors" placeholder="What are they comparing you against?">
+        </div>
+        <div class="field">
+          <label>Industry</label>
+          <input type="text" id="f_industry" placeholder="e.g. Manufacturing, Healthcare, SaaS, Financial Services">
+        </div>
+        <button type="submit" class="btn-generate" id="btnGenerate">Generate Business Case</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="screen" id="screenProcessing">
+    <div class="processing-screen">
+      <div class="spinner"></div>
+      <h3>Building your business case...</h3>
+      <p style="color:var(--ink-light)">This usually takes 15-30 seconds.</p>
+    </div>
+  </div>
+
+  <div class="screen" id="screenResults">
+    <div class="results-screen">
+      <div class="bc-doc" id="bcDocument"></div>
+      <div class="actions-bar">
+        <button class="btn-action btn-primary" onclick="copyDocument()">Copy to Clipboard</button>
+        <a href="/{{SLUG}}/business-case" class="btn-action btn-outline">Build Another</a>
+        <a href="/{{SLUG}}" class="btn-action btn-outline">Back to Hub</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bc-footer">Presented by {{POWERED_BY}}</footer>
+
+  <script>
+    const CLIENT = {{CLIENT_CONFIG}};
+    const SLUG = '{{SLUG}}';
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    document.getElementById('bcForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnGenerate');
+      btn.disabled = true;
+
+      const answers = {
+        solution: document.getElementById('f_solution').value,
+        company: document.getElementById('f_company').value,
+        audience: document.getElementById('f_audience').value,
+        problem: document.getElementById('f_problem').value,
+        dealsize: document.getElementById('f_dealsize').value,
+        painpoints: document.getElementById('f_painpoints').value,
+        competitors: document.getElementById('f_competitors').value,
+        industry: document.getElementById('f_industry').value
+      };
+
+      showScreen('screenProcessing');
+
+      try {
+        const res = await fetch('/api/business-case', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers, clientConfig: CLIENT })
+        });
+        const data = await res.json();
+        let result;
+        try {
+          const raw = typeof data.result === 'string' ? data.result : JSON.stringify(data.result);
+          result = JSON.parse(raw.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim());
+        } catch (pe) {
+          console.error('Parse error', pe);
+          alert('Failed to parse response. Please try again.');
+          showScreen('screenForm');
+          btn.disabled = false;
+          return;
+        }
+        renderDocument(result);
+      } catch (err) {
+        console.error(err);
+        alert('Generation failed: ' + err.message);
+        showScreen('screenForm');
+        btn.disabled = false;
+      }
+    });
+
+    function renderDocument(r) {
+      const doc = document.getElementById('bcDocument');
+      let html = `<h2>${r.title || 'Business Case'}</h2>`;
+
+      // Executive Summary
+      html += `<div class="bc-section"><h3>Executive Summary</h3><p>${r.executive_summary || ''}</p></div>`;
+
+      // Current State
+      if (r.current_state) {
+        html += `<div class="bc-section"><h3>${r.current_state.headline || 'Current State'}</h3><ul>${(r.current_state.points || []).map(p => `<li>${p}</li>`).join('')}</ul></div>`;
+      }
+
+      // Proposed Solution
+      if (r.proposed_solution) {
+        html += `<div class="bc-section"><h3>${r.proposed_solution.headline || 'Proposed Solution'}</h3><ul>${(r.proposed_solution.points || []).map(p => `<li>${p}</li>`).join('')}</ul></div>`;
+      }
+
+      // ROI Analysis
+      if (r.roi_analysis) {
+        const roi = r.roi_analysis;
+        html += `<div class="bc-section"><h3>${roi.headline || 'ROI Analysis'}</h3>
+          <div class="roi-grid">
+            <div class="roi-item"><div class="roi-label">Investment</div><div class="roi-value">${roi.investment || '-'}</div></div>
+            <div class="roi-item"><div class="roi-label">Annual Savings</div><div class="roi-value">${roi.annual_savings || '-'}</div></div>
+            <div class="roi-item"><div class="roi-label">Payback Period</div><div class="roi-value">${roi.payback_period || '-'}</div></div>
+            <div class="roi-item"><div class="roi-label">3-Year Value</div><div class="roi-value">${roi.three_year_value || '-'}</div></div>
+          </div>
+          <ul>${(roi.assumptions || []).map(a => `<li>${a}</li>`).join('')}</ul>
+        </div>`;
+      }
+
+      // Risk Mitigation
+      if (r.risk_mitigation) {
+        html += `<div class="bc-section"><h3>${r.risk_mitigation.headline || 'Risk Mitigation'}</h3><ul>${(r.risk_mitigation.points || []).map(p => `<li>${p}</li>`).join('')}</ul></div>`;
+      }
+
+      // Timeline
+      if (r.implementation_timeline) {
+        html += `<div class="bc-section"><h3>${r.implementation_timeline.headline || 'Implementation Timeline'}</h3><div class="timeline">${
+          (r.implementation_timeline.phases || []).map(p => `
+            <div class="timeline-phase">
+              <div class="phase-name">${p.phase}</div>
+              <div class="phase-dur">${p.duration}</div>
+              <div class="phase-desc">${p.description}</div>
+            </div>`).join('')
+        }</div></div>`;
+      }
+
+      // Recommendation
+      if (r.recommendation) {
+        html += `<div class="bc-recommendation">${r.recommendation}</div>`;
+      }
+
+      doc.innerHTML = html;
+      showScreen('screenResults');
+    }
+
+    function copyDocument() {
+      const doc = document.getElementById('bcDocument');
+      const text = doc.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = event.target;
+        btn.textContent = 'COPIED!';
+        setTimeout(() => btn.textContent = 'COPY TO CLIPBOARD', 1500);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "acme-industrial",
+    "companyName": "Acme Industrial Supply",
+    "industry": "manufacturing",
+    "logo": "/public/logos/acme-industrial.png",
+    "primaryColor": "#1B3A5C",
+    "accentColor": "#E8A020",
+    "poweredBy": "Sapper",
+    "apps": ["dealcheck", "business-case", "linkedin-post"],
+    "formspreeUrl": "",
+    "context": "Acme Industrial sells vibration monitoring sensors and predictive maintenance systems to automotive Tier 1 and Tier 2 suppliers. Their reps typically sell to plant managers and maintenance directors. Average deal size is $80K-$150K annually. Sales cycles run 3-6 months. Key differentiator is their proprietary sensor accuracy and on-site installation support."
+  },
+  {
+    "slug": "brightpath-health",
+    "companyName": "BrightPath Health Solutions",
+    "industry": "healthcare",
+    "logo": "/public/logos/brightpath.png",
+    "primaryColor": "#2E5C8A",
+    "accentColor": "#4CAF50",
+    "poweredBy": "Sapper",
+    "apps": ["dealcheck", "business-case"],
+    "formspreeUrl": "",
+    "context": "BrightPath sells patient engagement and intake automation software to mid-size hospital systems and specialty clinic networks. Their reps call on CIOs, VP of Patient Experience, and clinic administrators. Average deal size $200K-$500K. They compete primarily against Epic's built-in modules and manual paper processes."
+  },
+  {
+    "slug": "summit-saas",
+    "companyName": "Summit Analytics",
+    "industry": "saas",
+    "logo": "/public/logos/summit.png",
+    "primaryColor": "#6C3CE0",
+    "accentColor": "#FF6B35",
+    "poweredBy": "Sapper",
+    "apps": ["dealcheck", "linkedin-post"],
+    "formspreeUrl": "",
+    "context": "Summit sells a BI and analytics platform to mid-market companies (500-5000 employees). Their reps sell to VP of Data, CFOs, and heads of operations. Average ACV is $60K-$120K. Compete against Tableau, Looker, and the 'we'll just use Excel' crowd. Key differentiator is speed to insight and no-code setup."
+  }
+]

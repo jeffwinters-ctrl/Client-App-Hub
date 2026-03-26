@@ -1,0 +1,259 @@
+{
+  "industry": "saas",
+  "label": "SaaS / Software",
+  "questionCount": 14,
+  "healthFactorCount": 7,
+  "playCount": 3,
+  "tagline": "For Reps Who Sell Software",
+  "headline": "Is this deal<br><em>real</em> or just<br>a free trial?",
+  "description": "Answer 14 quick questions about your SaaS deal. Get a health check on what's working and what's missing — then receive three specific plays to move it forward.",
+  "questions": [
+    {
+      "section": "The Basics",
+      "text": "What are you selling and who's the target account?",
+      "hint": "Product name, module, or SKU — and the company you're selling into. Include what tier or package if relevant.",
+      "type": "textarea",
+      "placeholder": "e.g. Acme Analytics Platform (Enterprise tier) into Contoso Corp, a 2,000-person fintech company...",
+      "key": "ctx"
+    },
+    {
+      "section": "The Basics",
+      "text": "What's the ACV and how long have you been working this deal?",
+      "hint": "Annual contract value (or total deal value if multi-year) and when the opportunity was created or first contact was made.",
+      "type": "textarea",
+      "placeholder": "e.g. $85K ACV on a 3-year commit ($255K TCV). First call was mid-January, so about 10 weeks in...",
+      "key": "size"
+    },
+    {
+      "section": "The Basics",
+      "text": "Who's your primary contact and what's their role?",
+      "hint": "Name, title, and how engaged they've been. Are they your champion or just a gatekeeper?",
+      "type": "textarea",
+      "placeholder": "e.g. Sarah Chen, Director of Data Engineering. She ran the eval, attends every call, and introduced us to her VP...",
+      "key": "contact"
+    },
+    {
+      "section": "The Buyer",
+      "text": "Who's the economic buyer — the person who signs off on budget?",
+      "hint": "Name and title of whoever can actually approve this spend. Have you met them? Presented to them? Or are you still trying to get access?",
+      "type": "textarea",
+      "placeholder": "e.g. Marcus Lee, VP of Engineering. I presented to him in Week 4 and he asked about our SOC 2 status. Haven't had a 1-on-1 yet...",
+      "key": "buyer"
+    },
+    {
+      "section": "The Buyer",
+      "text": "Which persona best describes your main contact?",
+      "hint": "Pick the closest match — this helps tailor the coaching to how that persona typically buys.",
+      "type": "select",
+      "options": [
+        "CTO / VP Engineering",
+        "Head of IT / IT Director",
+        "CFO / Finance",
+        "VP of Operations / Business Leader",
+        "Procurement",
+        "End User / Team Lead"
+      ],
+      "key": "persona"
+    },
+    {
+      "section": "The Buyer",
+      "text": "What kind of company are you selling into?",
+      "hint": "Company size and type — this changes the playbook significantly.",
+      "type": "select",
+      "options": [
+        "Mid-Market (500-5000 employees)",
+        "Enterprise (5000+ employees)",
+        "Startup / Scale-up",
+        "Financial Services",
+        "Healthcare / Life Sciences",
+        "General B2B"
+      ],
+      "key": "vertical"
+    },
+    {
+      "section": "The Problem",
+      "text": "What problem or pain is driving this evaluation?",
+      "hint": "Why are they looking at your product now? What broke, what changed, or what's costing them money? The more specific, the better the coaching.",
+      "type": "textarea",
+      "placeholder": "e.g. Their homegrown dashboards take 3 weeks to build and nobody trusts the numbers. The CEO called out bad data in a board meeting and the VP got the mandate to fix it...",
+      "key": "pain"
+    },
+    {
+      "section": "The Problem",
+      "text": "Have they quantified the cost of doing nothing?",
+      "hint": "Is there an actual dollar figure or business impact tied to the problem? Or is it still 'we should probably fix this someday'?",
+      "type": "select",
+      "options": [
+        "Yes — built and documented",
+        "Rough ROI discussed",
+        "Vague sense it would help",
+        "No — it's still a nice-to-have"
+      ],
+      "key": "bizcase"
+    },
+    {
+      "section": "The Process",
+      "text": "What's their decision process and who's involved?",
+      "hint": "Walk me through how they buy. Is there a formal evaluation? A committee? Legal and security reviews? Or is one person calling the shots?",
+      "type": "textarea",
+      "placeholder": "e.g. Sarah owns the technical eval, Marcus (VP Eng) has budget authority, and everything over $50K needs CFO sign-off and a security review from their InfoSec team...",
+      "key": "process"
+    },
+    {
+      "section": "The Process",
+      "text": "What's the timeline — is there a compelling event or renewal deadline?",
+      "hint": "Is something forcing a decision by a specific date? Contract renewal, budget cycle, product launch, exec mandate? Or is this open-ended?",
+      "type": "textarea",
+      "placeholder": "e.g. Their current Tableau licenses renew August 1 and they told us they want to make a decision by June 15 to allow migration time...",
+      "key": "timeline"
+    },
+    {
+      "section": "The Competition",
+      "text": "Who else are they evaluating, or what's the status quo?",
+      "hint": "Other vendors in the mix, internal build options, or the 'do nothing and keep using what we have' path. Be honest about where you stand.",
+      "type": "textarea",
+      "placeholder": "e.g. They're also looking at Looker and have an internal team that built a prototype in Metabase. I think we're ahead on ease of use but Looker has the brand recognition...",
+      "key": "competition"
+    },
+    {
+      "section": "The Competition",
+      "text": "POC or trial status — have they tested your product hands-on?",
+      "hint": "Have they actually used it, or just seen a demo? POC and trial results are the single biggest predictor of SaaS deal conversion.",
+      "type": "select",
+      "options": [
+        "Successful POC/trial completed",
+        "POC/trial in progress",
+        "Demo only — no hands-on yet",
+        "No product exposure"
+      ],
+      "key": "poc"
+    },
+    {
+      "section": "The Close",
+      "text": "Multi-threading — how many contacts are engaged on their side?",
+      "hint": "Single-threaded deals in SaaS die constantly. If your champion leaves or goes dark, is there anyone else who'd push this forward?",
+      "type": "select",
+      "options": [
+        "4+ contacts across departments",
+        "2-3 contacts in the same team",
+        "Single-threaded — one contact only"
+      ],
+      "key": "threads"
+    },
+    {
+      "section": "The Close",
+      "text": "Gut check — how confident are you this closes in 90 days?",
+      "hint": "Be real. Not what you told your manager on the forecast call — what you actually think when nobody's listening.",
+      "type": "select",
+      "options": [
+        "Very confident — 80%+",
+        "Cautiously optimistic — 50-80%",
+        "Uncertain — 25-50%",
+        "Not confident — under 25%"
+      ],
+      "key": "confidence"
+    }
+  ],
+  "personas": {
+    "CTO / VP Engineering": "The CTO or VP Engineering is the technical decision-maker who evaluates your product through the lens of architecture, scalability, and long-term maintainability. They'll ask about your API design, data model, uptime SLAs, and how you handle multi-tenancy. They care deeply about whether your product will create technical debt or reduce it.\n\nExpect them to push hard on integration points — they want to know exactly how your product fits into their existing stack (data warehouse, CI/CD pipeline, SSO provider, monitoring tools). If your product requires ripping out something they built internally, you need to frame the migration path clearly or you'll lose them. They're also the most likely persona to veto a deal over security gaps or architectural red flags.\n\nTo win this persona, speak their language. Don't hand-wave past technical questions with 'our team can follow up on that.' Have your SE ready with architecture diagrams, and be prepared to discuss your deployment model (single-tenant vs. multi-tenant), SOC 2 compliance, data residency, and disaster recovery. They respect honesty about limitations more than slick marketing.",
+    "Head of IT / IT Director": "The Head of IT or IT Director owns the vendor management process, security reviews, and the overall technology governance for the organization. They're the ones who will run your product through their security questionnaire, evaluate your SSO and SCIM support, and decide whether you meet their compliance requirements (SOC 2 Type II, GDPR, HIPAA if applicable).\n\nThis persona is often a gatekeeper rather than a champion — they rarely initiate a purchase, but they can absolutely block one. Their primary concerns are: Will this create more work for my team? Does it integrate with our identity provider? Can we enforce our data retention and access control policies? What happens to our data if we churn? They've been burned by SaaS vendors who promised easy onboarding and delivered six months of integration headaches.\n\nTo navigate this persona, get ahead of their objections. Share your security whitepaper, SOC 2 report, and data processing agreement proactively. Show them you support their IdP (Okta, Azure AD, etc.) and that you have a real offboarding/data export process. Make their life easier, not harder, and they'll green-light you. Make them chase you for basic security docs and they'll stall your deal for months.",
+    "CFO / Finance": "The CFO or finance stakeholder evaluates your deal through a pure ROI lens. They want to see total cost of ownership — not just your license fee, but implementation costs, training time, migration effort, and the cost of switching if it doesn't work out. They think in terms of budget cycles, cash flow impact, and payback periods.\n\nExpect heavy scrutiny on pricing structure. Annual vs. monthly billing matters to them — annual upfront commitment gives them predictability and they may trade a longer term for a lower rate. They'll want to understand your renewal model: Are you going to hit them with a 10% uplift in Year 2? What's the cost if they need to add seats mid-term? They've seen SaaS pricing games before and they're allergic to surprises.\n\nTo win this persona, arm your champion with a clean ROI model. Quantify the cost of the problem — hours wasted, revenue leaked, compliance risk — and make the math obvious. If you can show a 3-6 month payback period with conservative assumptions, you've got their attention. Don't lead with features; lead with dollars saved and revenue unlocked. And have a straight answer on 'What does Year 2 and Year 3 pricing look like?' ready before they ask.",
+    "VP of Operations / Business Leader": "The VP of Operations or business unit leader is typically the end-user champion — the person whose team will actually use your product day-to-day. They're evaluating you based on workflow impact, adoption risk, and how quickly they can show results to their leadership. Time-to-value is everything for this persona.\n\nThey care less about architecture and more about outcomes. Can my team use this without a PhD in data science? How long until we see real dashboards / real insights / real automation? What does the first 30 days look like? They've been promised 'easy implementation' before and ended up with a six-month project that their team resented. They want references from companies their size with similar use cases.\n\nTo win this persona, sell the experience, not the technology. Show them what their first week looks like. Bring case studies with specific metrics — 'Company X reduced report-building time from 3 weeks to 2 hours' is gold. Offer a structured onboarding plan with named resources and a timeline. And understand that this persona's biggest fear is buying software that their team refuses to adopt. Address change management head-on and you'll have a champion who fights for your deal internally.",
+    "Procurement": "Procurement's job is to get the best deal, reduce organizational risk, and make sure the contract protects the company. They enter the deal late, often after the decision has been made, and their arrival can add 3-6 weeks to your close timeline. They'll ask for competitive bids (even if the team already chose you), request redlines to your MSA, and push for discounts on principle.\n\nExpect them to challenge list price, ask for extended payment terms (Net-60 or Net-90), and want to negotiate on auto-renewal clauses, liability caps, data ownership, and SLA penalties. They may not understand your product at all — they're evaluating the commercial and legal terms, not the technology. If you've never negotiated with procurement before, this is where deals go to die from delays.\n\nTo manage procurement, get ahead of the process. Ask your champion early: 'What does procurement need to approve this? Can we start the MSA review in parallel with the technical evaluation?' Give procurement a minor win early — a small discount or an extended payment term — so they can show their boss they negotiated. Never negotiate with procurement without your champion's air cover, and never give a concession without getting something in return (longer commitment, case study rights, earlier signature date). Have your order form and MSA redline-ready before they ask.",
+    "End User / Team Lead": "The End User or Team Lead is the person who will live in your product every day. They don't care about enterprise architecture or ROI models — they care about whether this thing actually works, whether it's better than what they have now, and how painful the transition will be. Their buy-in (or resistance) will make or break adoption.\n\nThis persona evaluates you during the POC or trial. They're testing whether the UI is intuitive, whether the features match their real workflow (not the demo workflow you showed), and whether it plays nice with their existing tools. They'll find the edge cases and the bugs. They'll compare you to the tool they've been using for three years and know inside-out. If your product requires them to change how they work with no clear upside, they'll quietly sabotage adoption.\n\nTo win this persona, make them the hero. Let them own the POC and show results to their leadership. Give them hands-on training, not a PDF. Assign them a dedicated CSM or onboarding specialist who responds fast. Acknowledge that switching tools is painful and show them exactly how you'll make the migration smooth. If they become your internal advocate, they'll sell harder than any rep could — because they're telling their boss 'I used it and it's better.'"
+  },
+  "verticals": {
+    "Mid-Market (500-5000 employees)": "Mid-market companies are the sweet spot for SaaS sales. They're big enough to have real budget and real problems, but small enough that deals don't take 9 months to close. Typical buying cycle is 60-120 days. These companies are usually growing fast and feeling pain from outgrowing their current tools — they started on spreadsheets or a cheap point solution and now need something scalable.\n\nDecision-making is concentrated: usually 2-4 people involved. The VP or director who owns the problem area has budget authority, and they may need a brief sign-off from the CFO for anything over $50K-$75K. Security reviews exist but are less formal — they'll want SOC 2 and basic security docs but probably don't have a dedicated InfoSec team running a 200-question questionnaire.\n\nThe risk with mid-market deals is that they can stall when priorities shift. These companies are resource-constrained, so 'the team got pulled into a fire drill' is a real reason your deal goes dark for 3 weeks. Keep momentum high, keep the buying process simple, and don't over-engineer your proposal. They want fast time-to-value and a vendor who won't make them feel like a small fish.",
+    "Enterprise (5000+ employees)": "Enterprise deals are high-reward, high-complexity. Average sales cycle is 170+ days and involves 6-10 stakeholders across IT, security, legal, procurement, and the business unit. Budget isn't usually the constraint — process is. These companies have formal vendor evaluation frameworks, security review boards, and procurement teams that will redline every clause in your MSA.\n\nExpect multiple rounds: technical evaluation, security review, business case review, legal review, and commercial negotiation. Each round has its own timeline and its own stakeholders. The deal can stall at any stage — a security finding that needs remediation, a legal term that your team won't agree to, a budget cycle that doesn't align with your timeline.\n\nEnterprise agreements are typically 3-year terms with annual billing, volume discounts, and custom SLAs. Expect requests for dedicated support, custom integrations, and professional services. The upside is massive ACV ($200K-$1M+), strong NRR if you land and expand, and logo value. The downside is that losing an enterprise deal after 6 months of work is devastating to your pipeline and your quota. Multi-thread aggressively, build a champion who has executive access, and map the entire buying committee in your first 30 days.",
+    "Startup / Scale-up": "Startups and scale-ups buy fast but cheap. Decisions are often made by the founder or a single VP — there's no procurement team, no 200-question security review, and no formal evaluation process. The upside is speed: you can go from first call to signed contract in 2-4 weeks. The downside is small ACV, high churn risk, and extreme price sensitivity.\n\nThese companies care about flexibility: monthly contracts, ability to scale up and down, and no long-term lock-in. They'll ask for startup discounts and will compare you to free or open-source alternatives. They value product experience over sales polish — they want to see the product, try it, and decide quickly. Heavy sales process turns them off.\n\nThe play with startups is land-and-expand. Get them in on a small deal, make them successful, and grow with them. Today's 50-person startup at $15K ACV could be a 500-person scale-up at $150K ACV in two years. Build relationships early, offer genuine help, and don't nickel-and-dime them on features. But also qualify hard: if they don't have funding or revenue to sustain the subscription, you'll churn them in 6 months.",
+    "Financial Services": "Financial services companies (banks, insurance, fintech, asset management) are the most process-heavy buyers in SaaS. Security and compliance aren't just checkboxes — they're existential. Expect SOC 2 Type II as table stakes, plus additional requirements around SOX compliance, data residency, encryption at rest and in transit, penetration testing results, and third-party risk assessment questionnaires that can run 300+ questions.\n\nBuying cycles in financial services average 6-12 months. Every vendor goes through a third-party risk management (TPRM) process that involves InfoSec, compliance, legal, and often a risk committee. If you don't have your security documentation buttoned up — SOC 2 report, penetration test results, data processing agreement, business continuity plan — you'll be dead on arrival.\n\nThe upside is significant: financial services companies have budget, they pay on time, and they tend to be sticky once they commit (switching costs are high due to compliance re-certification). Deal sizes are typically 30-50% higher than other verticals. They also care about vendor stability — they want to know you'll be around in 5 years. Show them your funding, your customer logos, and your retention metrics.",
+    "Healthcare / Life Sciences": "Healthcare and life sciences companies require HIPAA compliance and a signed Business Associate Agreement (BAA) before they'll even run a pilot. If your product touches patient data, protected health information (PHI), or clinical workflows, the compliance bar is non-negotiable. This immediately disqualifies many SaaS vendors and narrows the competitive field.\n\nBuying cycles in healthcare run 4-9 months, driven by IT review committees, compliance teams, and often clinical leadership who need to validate that the product fits their workflow. These organizations have slow IT departments that manage dozens of vendor relationships and are perpetually understaffed. Getting on their 'approved vendor' list is the hard part — once you're in, they renew consistently.\n\nThe key to selling into healthcare is patience and documentation. Have your HIPAA compliance posture documented, your BAA ready to execute, and your security certifications current. Understand the difference between health systems, payer organizations, and life sciences companies — they buy differently. And expect clinical end users to be skeptical of any technology that adds steps to their workflow. Show them how your product saves time per patient encounter, or reduce admin burden, and you'll win adoption.",
+    "General B2B": "General B2B companies span a wide range of industries and buying behaviors. Procurement processes vary significantly based on company maturity — a 200-person company that just hired its first VP of Finance buys very differently from a 2,000-person company with established vendor management.\n\nThe typical B2B SaaS purchase involves 3-5 stakeholders and takes 60-90 days for deals under $100K. Above that threshold, expect more formal evaluation with a business case requirement, additional approvals, and possibly a procurement team getting involved. Standard considerations include integration with existing tools (CRM, ERP, HRIS), SSO support, and data export capabilities.\n\nWhen selling into general B2B, focus on understanding their specific buying process early. Ask in the first call: 'Walk me through how you've purchased software like this before. Who needs to be involved and what does the approval process look like?' This question alone will save you weeks of surprises later. Don't assume — every company has its own quirks, and the rep who maps the process early closes faster than the one who discovers procurement exists in Week 8."
+  },
+  "industryKnowledge": "Average SaaS sales cycle length is 84 days for mid-market deals ($25K-$100K ACV) and 170+ days for enterprise deals ($100K+ ACV). These benchmarks come from analysis of thousands of closed-won opportunities across the industry. If your deal is significantly exceeding these averages without a clear reason (like a compliance review in financial services), it's likely stalled, not 'still in progress.'\n\nThe average B2B technology purchase now involves 6.8 stakeholders (Gartner). In enterprise SaaS, that number climbs to 8-11. Single-threaded deals — where you're relying on one champion — have a close rate roughly 40% lower than multi-threaded deals with 3+ engaged contacts.\n\n60% of forecast deals that are lost are lost to 'no decision,' not to a competitor. The biggest enemy isn't the other vendor — it's inertia, competing priorities, and budget reallocation. This is why a quantified business case and a compelling event are so critical.\n\nPOC and trial conversion rates are the strongest leading indicator in SaaS sales. Deals with a successful POC close at 55-65% rates. Deals with only a demo (no hands-on) close at 15-25%. Getting a prospect into a trial or POC should be the #1 priority in mid-funnel.\n\nAverage discount rates in SaaS: 15-20% off list price is standard for mid-market annual deals. Enterprise deals with 3-year commitments often see 25-35% discounts. Discounting beyond 35% signals desperation and erodes your pricing integrity. Always trade a discount for something — longer commitment, case study rights, referral agreement, or faster signature date.\n\nEnterprise agreement patterns: 3-year terms with annual billing are the norm. Expect 5-10% annual uplift clauses. True-up provisions for seat-based models. Volume discount tiers. Custom SLA addendums. Professional services SOWs for onboarding. The average enterprise MSA redline cycle takes 3-5 weeks with two rounds of legal review.\n\nCommon procurement objections in SaaS: 'We need three competitive bids' (even if they've already chosen you), 'Our standard payment terms are Net-60,' 'We can't accept auto-renewal clauses,' 'Liability cap must be 12 months of fees,' and 'We need the right to audit your security controls.' Prepare responses to each of these before procurement enters the picture.\n\nSecurity review timelines: Mid-market companies typically complete security reviews in 1-3 weeks. Enterprise companies take 4-8 weeks. Financial services and healthcare can run 8-16 weeks. If you don't have SOC 2 Type II, many enterprise buyers won't engage at all. Having your security documentation (SOC 2 report, pentest results, DPA, data flow diagrams) ready to share in the first meeting accelerates the entire process.\n\nNet Revenue Retention (NRR) benchmarks: Top-performing SaaS companies run 120-130% NRR, meaning they grow revenue from existing customers by 20-30% annually through expansion. Median is around 110%. Gross churn above 10% annually is a red flag. When selling, understand your prospect's likely expansion path — can you grow this account 2-3x over three years? If so, you can justify a more aggressive initial discount.\n\nThe 'free trial trap': Giving a prospect unlimited free access without a defined evaluation timeline or success criteria leads to ghosting 70% of the time. Always attach a trial to a mutual evaluation plan: defined start and end dates, specific use cases to test, named stakeholders, and a scheduled decision meeting. A 14-day structured trial outperforms a 30-day unstructured trial every time.\n\nChampion risk: In SaaS deals, your champion changes roles or leaves the company in roughly 20% of active deals (average tenure for a VP in tech is 2.5 years). This is why multi-threading isn't optional — it's insurance. If your champion left tomorrow, would anyone else at the account pick up the phone and push this deal forward?",
+  "healthFactors": [
+    {
+      "key": "hbiz",
+      "name": "Business Case",
+      "description": "Is there a quantified, documented business case with real dollar impact? Or is this still a 'nice-to-have' with no urgency?",
+      "weight": 20
+    },
+    {
+      "key": "hbuyer",
+      "name": "Economic Buyer Access",
+      "description": "Have you identified and engaged the person who controls budget? Have they expressed support or are you still pitching through a proxy?",
+      "weight": 18
+    },
+    {
+      "key": "hchamp",
+      "name": "Champion Strength",
+      "description": "Do you have an internal champion who's actively selling for you when you're not in the room? Can they navigate their own organization?",
+      "weight": 16
+    },
+    {
+      "key": "htech",
+      "name": "Technical Fit / POC Status",
+      "description": "Has the prospect validated your product through a POC or trial? Were the results positive? Are there unresolved technical blockers?",
+      "weight": 16
+    },
+    {
+      "key": "hprocess",
+      "name": "Decision Process Clarity",
+      "description": "Do you know exactly who's involved, what the steps are, and what timeline they're working against? Or are you guessing?",
+      "weight": 12
+    },
+    {
+      "key": "hcomp",
+      "name": "Competitive Position",
+      "description": "Where do you stand versus alternatives (other vendors, internal build, status quo)? Are you the frontrunner or fighting from behind?",
+      "weight": 10
+    },
+    {
+      "key": "hmomentum",
+      "name": "Deal Velocity / Momentum",
+      "description": "Is this deal moving forward with consistent next steps, or has it gone dark? Are meetings happening on schedule or getting rescheduled?",
+      "weight": 8
+    }
+  ],
+  "scoringRules": {
+    "bizcase": {
+      "field": "bizcase",
+      "label": "Business Case Strength",
+      "rules": [
+        { "value": "Yes — built and documented", "points": 20, "factor": "hbiz", "note": "Strong quantified business case in place" },
+        { "value": "Rough ROI discussed", "points": 12, "factor": "hbiz", "note": "Directional ROI but not fully documented" },
+        { "value": "Vague sense it would help", "points": 5, "factor": "hbiz", "note": "No concrete business case — deal is vulnerable to 'no decision'" },
+        { "value": "No — it's still a nice-to-have", "points": 0, "factor": "hbiz", "note": "No business urgency — this deal will stall without intervention" }
+      ]
+    },
+    "confidence": {
+      "field": "confidence",
+      "label": "Rep Confidence Level",
+      "rules": [
+        { "value": "Very confident — 80%+", "points": 10, "factor": "hmomentum", "note": "High confidence — verify this isn't happy ears" },
+        { "value": "Cautiously optimistic — 50-80%", "points": 6, "factor": "hmomentum", "note": "Moderate confidence — identify and address the gap" },
+        { "value": "Uncertain — 25-50%", "points": 3, "factor": "hmomentum", "note": "Low confidence — deal needs a reset or qualification check" },
+        { "value": "Not confident — under 25%", "points": 0, "factor": "hmomentum", "note": "Very low confidence — consider whether this belongs in pipeline" }
+      ]
+    },
+    "poc": {
+      "field": "poc",
+      "label": "POC / Trial Status",
+      "rules": [
+        { "value": "Successful POC/trial completed", "points": 16, "factor": "htech", "note": "Validated technical fit — strong close indicator" },
+        { "value": "POC/trial in progress", "points": 10, "factor": "htech", "note": "In evaluation — focus on driving a positive outcome and defined success criteria" },
+        { "value": "Demo only — no hands-on yet", "points": 4, "factor": "htech", "note": "No product validation yet — push for a trial or POC to de-risk" },
+        { "value": "No product exposure", "points": 0, "factor": "htech", "note": "Prospect hasn't seen the product — deal is early stage regardless of what they say" }
+      ]
+    },
+    "threads": {
+      "field": "threads",
+      "label": "Multi-threading Depth",
+      "rules": [
+        { "value": "4+ contacts across departments", "points": 12, "factor": "hchamp", "note": "Well multi-threaded — deal has organizational support and champion insurance" },
+        { "value": "2-3 contacts in the same team", "points": 6, "factor": "hchamp", "note": "Partially threaded — expand to other stakeholders and the economic buyer's orbit" },
+        { "value": "Single-threaded — one contact only", "points": 0, "factor": "hchamp", "note": "Single-threaded — highest risk factor in SaaS deals. Expand immediately." }
+      ]
+    }
+  }
+}

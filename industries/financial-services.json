@@ -1,0 +1,256 @@
+{
+  "industry": "financial-services",
+  "label": "Financial Services",
+  "questionCount": 14,
+  "healthFactorCount": 7,
+  "playCount": 3,
+  "tagline": "For Reps Who Sell to Banks & Financial Institutions",
+  "headline": "Is this deal<br><em>real</em> or just<br>in compliance review?",
+  "description": "Answer 14 quick questions about your financial services deal. Get a health check on what's working and what's missing — then receive three specific plays to move it forward.",
+  "questions": [
+    {
+      "section": "The Basics",
+      "key": "ctx",
+      "label": "What are you selling and who is the target?",
+      "type": "textarea",
+      "placeholder": "e.g. Fraud detection platform to a top-20 commercial bank, or cloud migration services targeting a regional insurer, or API gateway for a Series C fintech…"
+    },
+    {
+      "section": "The Basics",
+      "key": "size",
+      "label": "What's the deal size and expected contract duration?",
+      "type": "textarea",
+      "placeholder": "e.g. $400K ACV, 3-year term with annual renewals. Potential to expand to two additional business lines."
+    },
+    {
+      "section": "The Basics",
+      "key": "contact",
+      "label": "Who is your primary contact and what's their role?",
+      "type": "textarea",
+      "placeholder": "e.g. Sarah Kim, VP of Digital Transformation at First National. She reports to the CTO and owns the vendor evaluation."
+    },
+    {
+      "section": "The Buyer",
+      "key": "buyer",
+      "label": "Who is the economic buyer — the person who actually signs or approves the spend?",
+      "type": "textarea",
+      "placeholder": "e.g. CFO has final sign-off on anything over $250K. CTO co-signs on technology purchases. Haven't met either yet."
+    },
+    {
+      "section": "The Buyer",
+      "key": "persona",
+      "label": "Which persona best describes your primary buyer?",
+      "type": "select",
+      "options": [
+        "CTO / Head of Technology",
+        "CISO / Head of Information Security",
+        "VP/Head of Operations",
+        "VP of Risk / Chief Risk Officer",
+        "Procurement / Vendor Management",
+        "Business Line Leader (Lending/Wealth/Insurance)"
+      ]
+    },
+    {
+      "section": "The Buyer",
+      "key": "vertical",
+      "label": "Which financial services vertical is the target organization?",
+      "type": "select",
+      "options": [
+        "Commercial / Retail Banking",
+        "Insurance (P&C or Life)",
+        "Wealth Management / Asset Management",
+        "Fintech / Neobank",
+        "Credit Union",
+        "Capital Markets / Investment Banking"
+      ]
+    },
+    {
+      "section": "The Problem",
+      "key": "pain",
+      "label": "What pain point or trigger is driving this opportunity?",
+      "type": "textarea",
+      "placeholder": "e.g. Failed OCC exam forced them to rethink vendor risk management. Or: manual reconciliation is costing them 40 FTEs and the new COO wants it fixed.",
+      "hint": "Think about regulatory pressure, operational bottlenecks, competitive threats, audit findings, or technology obsolescence."
+    },
+    {
+      "section": "The Problem",
+      "key": "bizcase",
+      "label": "Has a business case or ROI analysis been built?",
+      "type": "select",
+      "options": [
+        "Yes — ROI documented with compliance benefits",
+        "Rough cost-benefit discussed",
+        "Vague — they know they need something",
+        "No — still exploring"
+      ]
+    },
+    {
+      "section": "The Process",
+      "key": "process",
+      "label": "What does their decision and procurement process look like?",
+      "type": "textarea",
+      "placeholder": "e.g. Formal RFP issued, three vendors shortlisted. Must pass vendor risk assessment before contract. Board approval needed for multi-year commitments.",
+      "hint": "Financial institutions often have formal RFP processes, vendor risk assessments, and multi-layer governance. The more you know here, the better the coaching."
+    },
+    {
+      "section": "The Process",
+      "key": "security",
+      "label": "Where are you in their security and compliance review?",
+      "type": "select",
+      "options": [
+        "Fully approved — infosec/compliance cleared",
+        "In progress — security review underway",
+        "Not started — haven't entered review",
+        "Potential blocker — failed initial assessment"
+      ]
+    },
+    {
+      "section": "The Competition",
+      "key": "competition",
+      "label": "Who else are they evaluating — or what's the incumbent solution?",
+      "type": "textarea",
+      "placeholder": "e.g. They're comparing us to FIS and a Deloitte custom-build option. Currently using a legacy mainframe system they've had for 15 years."
+    },
+    {
+      "section": "The Competition",
+      "key": "integration",
+      "label": "How complex is the IT integration with their existing systems?",
+      "type": "select",
+      "options": [
+        "Simple — API/cloud, minimal IT effort",
+        "Moderate — some integration work needed",
+        "Complex — deep core system integration",
+        "Unknown — haven't scoped IT requirements"
+      ]
+    },
+    {
+      "section": "The Close",
+      "key": "nextstep",
+      "label": "What is the agreed-upon next step and when does it happen?",
+      "type": "textarea",
+      "placeholder": "e.g. POC kicks off March 15 with their fraud analytics team. Or: waiting for legal to finish MSA redlines, expected back next week."
+    },
+    {
+      "section": "The Close",
+      "key": "confidence",
+      "label": "How confident are you this deal closes within 90 days?",
+      "type": "select",
+      "options": [
+        "High — timeline confirmed, budget approved",
+        "Medium — strong interest but process still in motion",
+        "Low — interest is there but no urgency or clear path",
+        "Very Low — stalled, ghosted, or stuck in committee"
+      ]
+    }
+  ],
+  "personas": {
+    "CTO / Head of Technology": "This buyer cares about architecture fit, modernization roadmaps, and build-versus-buy decisions. They're under pressure to retire legacy systems while keeping the lights on. They'll grill you on scalability, cloud-native architecture, and total cost of ownership. Speak to their technology vision but ground it in business outcomes — CTOs in financial services answer to boards that care about risk, not just uptime. They often have a 3-5 year modernization plan and they need you to fit into it, not disrupt it.",
+    "CISO / Head of Information Security": "This buyer lives and breathes threat landscape, vendor risk, and regulatory compliance. They'll want SOC 2 Type II reports before they'll even take a second meeting. Expect questions about penetration testing, data residency, encryption at rest and in transit, and incident response SLAs. They're not trying to block the deal — they're trying to protect the institution. Make their job easier by coming prepared with your compliance documentation, and never oversell your security posture. One misrepresentation and you're done.",
+    "VP/Head of Operations": "This buyer is focused on operational efficiency, straight-through processing, and eliminating manual handoffs. They quantify everything in FTEs saved, error rates reduced, and processing time cut. They're pragmatic — show them a before-and-after workflow and they'll champion the deal. But they'll also push hard on implementation timelines because they can't afford disruption to daily operations. Migration and cutover plans matter as much as the product itself.",
+    "VP of Risk / Chief Risk Officer": "This buyer is laser-focused on regulatory compliance, audit trails, model risk, and third-party risk management. They've been through FDIC exams, OCC consent orders, or state insurance audits and they don't want surprises. They need to know exactly how your solution impacts their risk register. Speak their language — cite specific regulations (FFIEC, GLBA, SOX, Basel III) and show how you reduce their compliance burden, not add to it. They often have de facto veto power on technology decisions.",
+    "Procurement / Vendor Management": "This buyer manages RFP processes, MSA negotiations, and preferred vendor lists. They care about contract terms, SLA commitments, and total cost of ownership — not your product demo. They'll benchmark you against every vendor they've ever evaluated. Come prepared for lengthy redline processes, security questionnaire marathons, and pricing pressure. Build a relationship here early — a friendly procurement contact can tell you exactly what hoops to jump through and in what order.",
+    "Business Line Leader (Lending/Wealth/Insurance)": "This buyer cares about revenue impact, client experience, and competitive differentiation within their specific business line. They think in terms of loan origination speed, advisor productivity, claims cycle time, or policy issuance rates. They're closer to the customer than anyone else in the decision chain and they'll evaluate your solution based on how it makes their team faster and their clients happier. They can be a powerful internal champion but they often lack direct budget authority — you'll need them to sell upward."
+  },
+  "verticals": {
+    "Commercial / Retail Banking": "Banks are in the middle of a generational technology shift — branch transformation, digital banking, and lending modernization are top priorities. Expect rigorous vendor risk assessment, IT architecture review, and multi-committee governance. Budget cycles typically run Q4 planning for January 1 fiscal year start. Regulatory bodies (OCC, FDIC, state regulators) have outsized influence on technology spending. Core banking replacement deals can run 18-36 months. Digital channel deals are faster but still require infosec and compliance approval.",
+    "Insurance (P&C or Life)": "Insurance carriers are modernizing claims automation, underwriting engines, and agent/broker experience platforms. Legacy policy administration systems are often decades old and deeply entrenched. Deals here require understanding their distribution model (captive agents, independent brokers, direct-to-consumer). State-by-state regulatory requirements add complexity. Budget authority often sits with the business line (Head of Claims, Chief Underwriting Officer) but IT and compliance have strong veto power.",
+    "Wealth Management / Asset Management": "Wealth firms are investing in client reporting, portfolio management tools, and advisor productivity platforms. The buyer cares about fiduciary compliance, client experience, and advisor retention. Custodial relationships and data integration with existing portfolio systems are critical. Firms range from independent RIAs to large wirehouses — sales cycles and complexity vary dramatically. SEC and FINRA regulations create specific compliance requirements around data handling and client communications.",
+    "Fintech / Neobank": "Fintechs move fast, favor API-first architecture, and make decisions in weeks not months. But don't mistake speed for simplicity — they're under increasing regulatory pressure as they scale, and many are playing catch-up on compliance infrastructure. They value developer experience, clean documentation, and rapid onboarding. Procurement is informal, budgets are VC-funded and scrutinized for burn rate impact. Champion is usually a technical co-founder or VP of Engineering. Expect a technical evaluation before any business discussion.",
+    "Credit Union": "Credit unions are member-focused, community-driven, and operate on smaller budgets than banks. Decision-making is committee-driven and consensus-oriented — expect longer timelines and more stakeholders than the org size would suggest. They value relationships and references from peer credit unions heavily. Technology decisions often go through leagues or CUSOs for vetting. The CEO and CFO are usually directly involved. Cloud adoption is accelerating but many still run on-premise core systems.",
+    "Capital Markets / Investment Banking": "Capital markets firms deal in high-frequency trading, complex compliance requirements (Dodd-Frank, MiFID II, Volcker Rule), and massive IT budgets. Technology is a competitive weapon here, not a cost center. Buyers are sophisticated, technical, and will push hard on latency, throughput, and reliability SLAs. Security requirements are extreme. Sales cycles are long but deal sizes are large. Your primary competition is often an internal build team with significant resources. Prove you can do it faster and better than they can build it themselves."
+  },
+  "industryKnowledge": "Key facts about selling into financial services:\n\n1. Average vendor risk assessment takes 60-120 days at mid-to-large financial institutions. Some Tier 1 banks take 6+ months. Never quote a close date without accounting for this.\n\n2. SOC 2 Type II certification is table stakes for any technology vendor selling to banks or insurers. Many institutions also require ISO 27001, and increasingly SOC 2 + HITRUST for health-adjacent financial data.\n\n3. Budget cycles at most banks and insurers run on a calendar fiscal year — planning starts in Q3/Q4 for January 1 allocation. If you're not in the budget by October, you're likely waiting until next year unless you find discretionary spend.\n\n4. Regulatory exams (OCC, FDIC, state insurance departments) frequently drive emergency spending. A consent order or MRA (Matter Requiring Attention) can unlock budget that didn't exist the week before. Track regulatory actions on your target accounts.\n\n5. Average sales cycle for core banking or insurance platform technology is 12-18 months. Digital channel, analytics, and point solutions can close in 3-6 months if security/compliance is pre-cleared.\n\n6. Financial institutions average 7-12 decision-makers on technology purchases over $100K. Mapping the full buying committee early is critical — the person you're talking to almost never has sole authority.\n\n7. Procurement teams at banks are professional negotiators. They will benchmark your pricing against every comparable vendor, push for multi-year discounts, and require extensive SLA commitments. Build pricing flexibility into your initial proposal.\n\n8. Third-party risk management (TPRM) programs at banks are driven by OCC Bulletin 2013-29 and updated FFIEC guidance. Expect to fill out detailed questionnaires covering business continuity, data handling, subcontractor management, and financial stability.\n\n9. Many financial institutions have 'approved vendor lists' managed by procurement. Getting on the list can take months but once you're approved, subsequent deals move significantly faster. Ask early if they have a preferred vendor program.\n\n10. Proof of concept (POC) requests are common but dangerous — they can extend timelines by 60-90 days with no guarantee of a deal. Push for paid POCs or time-boxed evaluations with clear success criteria.\n\n11. The CISO or Head of Information Security has effective veto power at most financial institutions. A failed security review kills the deal regardless of business sponsorship. Engage infosec early and proactively.\n\n12. Reference checks in financial services carry more weight than in any other industry. Prospects will call your references unprompted, ask detailed technical questions, and compare notes with peers. One bad reference can sink a deal.",
+  "healthFactors": [
+    {
+      "key": "hbiz",
+      "name": "Business Case",
+      "description": "Has a compelling business case with documented ROI and compliance benefits been established?",
+      "weight": 0.18,
+      "source": "bizcase"
+    },
+    {
+      "key": "hbuyer",
+      "name": "Economic Buyer Access",
+      "description": "Is there direct access to the person who controls the budget and can sign the deal?",
+      "weight": 0.18,
+      "source": "buyer"
+    },
+    {
+      "key": "hsecurity",
+      "name": "Security/Compliance Clearance",
+      "description": "Has the deal cleared — or is it on track to clear — the institution's infosec and compliance review?",
+      "weight": 0.16,
+      "source": "security"
+    },
+    {
+      "key": "hprocess",
+      "name": "Decision Process Clarity",
+      "description": "Is the procurement process, governance structure, and decision timeline clearly understood?",
+      "weight": 0.14,
+      "source": "process"
+    },
+    {
+      "key": "hintegration",
+      "name": "IT/Integration Alignment",
+      "description": "Is there clarity and alignment on how the solution integrates with existing core systems and IT architecture?",
+      "weight": 0.12,
+      "source": "integration"
+    },
+    {
+      "key": "hcomp",
+      "name": "Competitive Position",
+      "description": "Is the competitive landscape understood and is there a clear differentiation story against incumbents and alternatives?",
+      "weight": 0.10,
+      "source": "competition"
+    },
+    {
+      "key": "hmomentum",
+      "name": "Deal Momentum",
+      "description": "Is the deal progressing with urgency, clear next steps, and active engagement from the buying committee?",
+      "weight": 0.12,
+      "source": "confidence"
+    }
+  ],
+  "scoringRules": {
+    "bizcase": {
+      "field": "bizcase",
+      "type": "select",
+      "scores": {
+        "Yes — ROI documented with compliance benefits": 10,
+        "Rough cost-benefit discussed": 6,
+        "Vague — they know they need something": 3,
+        "No — still exploring": 1
+      }
+    },
+    "confidence": {
+      "field": "confidence",
+      "type": "select",
+      "scores": {
+        "High — timeline confirmed, budget approved": 10,
+        "Medium — strong interest but process still in motion": 6,
+        "Low — interest is there but no urgency or clear path": 3,
+        "Very Low — stalled, ghosted, or stuck in committee": 1
+      }
+    },
+    "security": {
+      "field": "security",
+      "type": "select",
+      "scores": {
+        "Fully approved — infosec/compliance cleared": 10,
+        "In progress — security review underway": 6,
+        "Not started — haven't entered review": 3,
+        "Potential blocker — failed initial assessment": 1
+      }
+    },
+    "integration": {
+      "field": "integration",
+      "type": "select",
+      "scores": {
+        "Simple — API/cloud, minimal IT effort": 10,
+        "Moderate — some integration work needed": 7,
+        "Complex — deep core system integration": 4,
+        "Unknown — haven't scoped IT requirements": 2
+      }
+    }
+  }
+}

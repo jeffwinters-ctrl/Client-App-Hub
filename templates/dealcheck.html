@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{PAGE_TITLE}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: {{PRIMARY_COLOR}};
+      --accent: {{ACCENT_COLOR}};
+      --bg: #F8F7F4;
+      --surface: #FFFFFF;
+      --ink: #1A1A1A;
+      --ink-light: #6B6B6B;
+      --rule: #E5E2DC;
+      --green: #2E7D32;
+      --amber: #F57F17;
+      --red: #C62828;
+      --green-bg: #E8F5E9;
+      --amber-bg: #FFF8E1;
+      --red-bg: #FFEBEE;
+    }
+    body { font-family: 'Source Sans 3', system-ui, sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+    /* Header */
+    .dc-header {
+      background: var(--ink);
+      color: #fff;
+      padding: 0 32px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .dc-header a { color: rgba(255,255,255,0.7); text-decoration: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem; letter-spacing: 0.02em; text-transform: none; }
+    .dc-header a:hover { color: #fff; }
+
+    /* Screens */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* Landing */
+    .landing-screen { text-align: center; padding: 80px 24px 60px; max-width: 640px; margin: 0 auto; }
+    .landing-screen .stats { display: flex; justify-content: center; gap: 32px; margin: 32px 0; }
+    .landing-screen .stat { text-align: center; }
+    .landing-screen .stat-num { font-family: 'Oswald', sans-serif; font-size: 2.2rem; font-weight: 600; color: var(--primary); }
+    .landing-screen .stat-label { font-size: 0.8rem; color: var(--ink-light); text-transform: uppercase; letter-spacing: 0.05em; }
+    .landing-screen h2 { font-family: 'Oswald', sans-serif; font-size: 2.8rem; font-weight: 600; line-height: 1.15; margin-bottom: 16px; }
+    .landing-screen h2 em { font-family: 'Source Serif 4', serif; font-style: italic; color: var(--accent); }
+    .landing-screen .tagline { font-family: 'Oswald', sans-serif; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-light); margin-bottom: 16px; }
+    .landing-screen .desc { font-size: 1.05rem; color: var(--ink-light); line-height: 1.6; margin-bottom: 32px; font-family: 'Source Serif 4', serif; }
+    .btn-start {
+      display: inline-block; padding: 16px 48px; background: var(--primary); color: #fff; border: none;
+      font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 500; letter-spacing: 0.06em;
+      text-transform: uppercase; border-radius: 8px; cursor: pointer; transition: opacity 0.2s;
+    }
+    .btn-start:hover { opacity: 0.9; }
+
+    /* Questions */
+    .questions-screen { max-width: 640px; margin: 0 auto; padding: 40px 24px 60px; }
+    .progress-bar-wrap { background: var(--rule); height: 4px; border-radius: 2px; margin-bottom: 32px; }
+    .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
+    .q-section { font-family: 'Oswald', sans-serif; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 8px; }
+    .q-counter { font-size: 0.8rem; color: var(--ink-light); margin-bottom: 16px; }
+    .q-text { font-family: 'Oswald', sans-serif; font-size: 1.4rem; font-weight: 500; margin-bottom: 8px; }
+    .q-hint { font-size: 0.9rem; color: var(--ink-light); margin-bottom: 16px; font-family: 'Source Serif 4', serif; font-style: italic; }
+    .q-input textarea {
+      width: 100%; min-height: 100px; padding: 14px 16px; border: 1px solid var(--rule);
+      border-radius: 8px; font-family: inherit; font-size: 1rem; resize: vertical; line-height: 1.5;
+    }
+    .q-input textarea:focus { outline: none; border-color: var(--primary); }
+    .q-input select {
+      width: 100%; padding: 14px 16px; border: 1px solid var(--rule); border-radius: 8px;
+      font-family: inherit; font-size: 1rem; background: var(--surface); appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B6B6B' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 16px center;
+    }
+    .q-input select:focus { outline: none; border-color: var(--primary); }
+    .q-nav { display: flex; justify-content: space-between; margin-top: 24px; gap: 12px; }
+    .btn-q {
+      padding: 12px 28px; border-radius: 8px; font-family: 'Oswald', sans-serif; font-size: 0.9rem;
+      font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s;
+    }
+    .btn-back { background: transparent; border: 1px solid var(--rule); color: var(--ink-light); }
+    .btn-next { background: var(--primary); border: none; color: #fff; }
+    .btn-skip { background: transparent; border: none; color: var(--ink-light); text-decoration: underline; font-family: 'Source Sans 3', sans-serif; text-transform: none; letter-spacing: 0; }
+    .btn-q:hover { opacity: 0.85; }
+
+    /* Processing */
+    .processing-screen { max-width: 480px; margin: 0 auto; padding: 80px 24px; text-align: center; }
+    .processing-screen h3 { font-family: 'Oswald', sans-serif; font-size: 1.3rem; margin-bottom: 32px; }
+    .proc-bar { background: var(--rule); height: 6px; border-radius: 3px; margin-bottom: 32px; overflow: hidden; }
+    .proc-fill { height: 100%; background: var(--accent); border-radius: 3px; width: 0%; transition: width 0.5s; }
+    .proc-steps { text-align: left; }
+    .proc-step {
+      padding: 10px 0; font-size: 0.95rem; color: var(--ink-light); display: flex; align-items: center; gap: 10px;
+      opacity: 0.4; transition: opacity 0.4s;
+    }
+    .proc-step.active { opacity: 1; color: var(--ink); }
+    .proc-step.done { opacity: 0.6; }
+    .proc-step .check { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--rule); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; }
+    .proc-step.done .check { background: var(--green); border-color: var(--green); color: #fff; }
+    .proc-step.active .check { border-color: var(--accent); }
+
+    /* Results */
+    .results-screen { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+    .score-badge {
+      text-align: center; padding: 32px; margin-bottom: 32px; border-radius: 12px; border: 1px solid var(--rule);
+      background: var(--surface);
+    }
+    .score-badge .score-label { font-family: 'Oswald', sans-serif; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-light); margin-bottom: 8px; }
+    .score-badge .score-value { font-family: 'Oswald', sans-serif; font-size: 3.5rem; font-weight: 600; }
+    .score-badge .score-status { font-family: 'Oswald', sans-serif; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+    .score-strong { color: var(--green); }
+    .score-risk { color: var(--amber); }
+    .score-critical { color: var(--red); }
+
+    .bottom-line {
+      background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 24px;
+      margin-bottom: 32px; font-family: 'Source Serif 4', serif; font-size: 1.05rem; line-height: 1.7;
+    }
+    .section-title {
+      font-family: 'Oswald', sans-serif; font-size: 0.8rem; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--ink-light); margin-bottom: 16px;
+    }
+
+    /* Health factors */
+    .health-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 32px; }
+    .health-pill {
+      background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 14px 16px;
+      display: flex; align-items: center; gap: 10px; cursor: pointer; transition: box-shadow 0.2s;
+    }
+    .health-pill:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .health-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .dot-green { background: var(--green); }
+    .dot-amber { background: var(--amber); }
+    .dot-red { background: var(--red); }
+    .health-pill .hf-name { font-size: 0.9rem; font-weight: 500; }
+    .health-pill .hf-label { font-size: 0.75rem; color: var(--ink-light); }
+
+    /* Health modal */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100;
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-card {
+      background: var(--surface); border-radius: 12px; max-width: 520px; width: 100%;
+      max-height: 80vh; overflow-y: auto; padding: 32px;
+    }
+    .modal-card h4 { font-family: 'Oswald', sans-serif; font-size: 1.1rem; margin-bottom: 16px; }
+    .modal-card .finding { font-family: 'Source Serif 4', serif; line-height: 1.7; margin-bottom: 16px; }
+    .modal-card .user-said { background: var(--bg); border-radius: 8px; padding: 14px; font-size: 0.9rem; color: var(--ink-light); }
+    .modal-card .user-said strong { color: var(--ink); }
+    .modal-close { background: none; border: 1px solid var(--rule); padding: 8px 24px; border-radius: 6px; cursor: pointer; font-family: 'Oswald', sans-serif; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; margin-top: 16px; }
+
+    /* Play cards */
+    .play-card {
+      background: var(--surface); border: 1px solid var(--rule); border-radius: 12px;
+      margin-bottom: 16px; overflow: hidden; animation: fadeUp 0.4s ease both;
+    }
+    .play-card:nth-child(2) { animation-delay: 0.1s; }
+    .play-card:nth-child(3) { animation-delay: 0.2s; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .play-header {
+      padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; user-select: none;
+    }
+    .play-header .play-meta { display: flex; align-items: center; gap: 12px; }
+    .play-mode {
+      font-family: 'Oswald', sans-serif; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em;
+      padding: 3px 10px; border-radius: 4px; font-weight: 500;
+    }
+    .mode-aggressive { background: #FFEBEE; color: var(--red); }
+    .mode-moderate { background: var(--amber-bg); color: #E65100; }
+    .mode-passive { background: var(--green-bg); color: var(--green); }
+    .play-title { font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 500; }
+    .play-timing { font-size: 0.8rem; color: var(--ink-light); }
+    .play-chevron { font-size: 1.2rem; color: var(--ink-light); transition: transform 0.2s; }
+    .play-card.open .play-chevron { transform: rotate(180deg); }
+    .play-body { display: none; padding: 0 20px 20px; border-top: 1px solid var(--rule); }
+    .play-card.open .play-body { display: block; }
+    .play-body p { margin-top: 14px; line-height: 1.6; }
+    .play-body .script-block {
+      background: var(--bg); border-radius: 8px; padding: 16px; margin-top: 14px;
+      font-family: 'Source Serif 4', serif; line-height: 1.7; position: relative;
+    }
+    .btn-copy {
+      position: absolute; top: 8px; right: 8px; background: var(--surface); border: 1px solid var(--rule);
+      padding: 4px 12px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-family: 'Source Sans 3', sans-serif;
+    }
+    .btn-copy:hover { background: var(--bg); }
+
+    .play-instruction { font-family: 'Source Serif 4', serif; font-style: italic; color: var(--ink-light); margin-bottom: 16px; }
+
+    .btn-back-hub {
+      display: inline-block; margin-top: 32px; padding: 12px 32px; background: var(--primary); color: #fff;
+      border: none; border-radius: 8px; font-family: 'Oswald', sans-serif; font-size: 0.9rem; font-weight: 500;
+      letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; text-decoration: none;
+    }
+
+    /* Footer */
+    .dc-footer {
+      background: var(--ink); color: rgba(255,255,255,0.5); text-align: center; padding: 16px;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 600px) {
+      .dc-header { padding: 0 16px; font-size: 0.7rem; }
+      .landing-screen { padding: 48px 16px; }
+      .landing-screen h2 { font-size: 2rem; }
+      .landing-screen .stats { gap: 20px; }
+      .questions-screen { padding: 24px 16px 48px; }
+      .results-screen { padding: 24px 16px 60px; }
+      .health-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="dc-header">
+    <span>DEALCHECK &mdash; {{INDUSTRY_LABEL}}</span>
+    <a href="/{{SLUG}}">Back to Hub</a>
+  </header>
+
+  <!-- Landing Screen -->
+  <div class="screen active" id="screenLanding">
+    <div class="landing-screen">
+      <div class="tagline" id="tagline"></div>
+      <h2 id="headline"></h2>
+      <div class="stats" id="stats"></div>
+      <p class="desc" id="landingDesc"></p>
+      <button class="btn-start" onclick="startQuestions()">Check Your Deal</button>
+    </div>
+  </div>
+
+  <!-- Questions Screen -->
+  <div class="screen" id="screenQuestions">
+    <div class="questions-screen">
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill"></div></div>
+      <div class="q-section" id="qSection"></div>
+      <div class="q-counter" id="qCounter"></div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-hint" id="qHint"></div>
+      <div class="q-input" id="qInput"></div>
+      <div class="q-nav">
+        <button class="btn-q btn-back" id="btnBack" onclick="prevQuestion()">Back</button>
+        <div>
+          <button class="btn-q btn-skip" id="btnSkip" onclick="skipQuestion()">Skip</button>
+          <button class="btn-q btn-next" id="btnNext" onclick="nextQuestion()">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Processing Screen -->
+  <div class="screen" id="screenProcessing">
+    <div class="processing-screen">
+      <h3>Analyzing your deal...</h3>
+      <div class="proc-bar"><div class="proc-fill" id="procFill"></div></div>
+      <div class="proc-steps" id="procSteps"></div>
+    </div>
+  </div>
+
+  <!-- Results Screen -->
+  <div class="screen" id="screenResults">
+    <div class="results-screen">
+      <div class="score-badge" id="scoreBadge">
+        <div class="score-label">Deal Health Score</div>
+        <div class="score-value" id="scoreValue"></div>
+        <div class="score-status" id="scoreStatus"></div>
+      </div>
+      <div class="section-title">Coach's Bottom Line</div>
+      <div class="bottom-line" id="bottomLine"></div>
+      <div class="section-title">Health Factors</div>
+      <div class="health-grid" id="healthGrid"></div>
+      <div class="section-title">Your Plays</div>
+      <div class="play-instruction" id="playInstruction"></div>
+      <div id="playsContainer"></div>
+      <a href="/{{SLUG}}" class="btn-back-hub">Back to Hub</a>
+    </div>
+  </div>
+
+  <!-- Health Factor Modal -->
+  <div class="modal-overlay" id="healthModal">
+    <div class="modal-card">
+      <h4 id="modalTitle"></h4>
+      <div class="finding" id="modalFinding"></div>
+      <div class="user-said" id="modalUserSaid"></div>
+      <button class="modal-close" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+
+  <footer class="dc-footer">Presented by {{POWERED_BY}}</footer>
+
+  <script>
+    const CLIENT = {{CLIENT_CONFIG}};
+    const INDUSTRY = {{INDUSTRY_CONFIG}};
+    const SLUG = '{{SLUG}}';
+    let currentQ = 0;
+    let answers = {};
+
+    // Landing
+    document.getElementById('tagline').textContent = INDUSTRY.tagline;
+    document.getElementById('headline').innerHTML = INDUSTRY.headline;
+    document.getElementById('landingDesc').textContent = INDUSTRY.description;
+    const statsEl = document.getElementById('stats');
+    statsEl.innerHTML = `
+      <div class="stat"><div class="stat-num">${INDUSTRY.questionCount}</div><div class="stat-label">Questions</div></div>
+      <div class="stat"><div class="stat-num">${INDUSTRY.healthFactorCount}</div><div class="stat-label">Health Factors</div></div>
+      <div class="stat"><div class="stat-num">${INDUSTRY.playCount}</div><div class="stat-label">Plays</div></div>
+    `;
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    function startQuestions() {
+      currentQ = 0;
+      answers = {};
+      showScreen('screenQuestions');
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = INDUSTRY.questions[currentQ];
+      const total = INDUSTRY.questions.length;
+      document.getElementById('progressFill').style.width = ((currentQ + 1) / total * 100) + '%';
+      document.getElementById('qSection').textContent = q.section;
+      document.getElementById('qCounter').textContent = `Question ${currentQ + 1} of ${total}`;
+      document.getElementById('qText').textContent = q.text;
+      document.getElementById('qHint').textContent = q.hint || '';
+
+      const inputEl = document.getElementById('qInput');
+      if (q.type === 'textarea') {
+        inputEl.innerHTML = `<textarea id="qField" placeholder="${q.placeholder || ''}">${answers[q.key] || ''}</textarea>`;
+      } else if (q.type === 'select') {
+        const opts = (q.options || Object.keys(INDUSTRY.personas || {})).map(o =>
+          `<option value="${o}" ${answers[q.key] === o ? 'selected' : ''}>${o}</option>`
+        ).join('');
+        inputEl.innerHTML = `<select id="qField"><option value="">Select...</option>${opts}</select>`;
+      }
+
+      document.getElementById('btnBack').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+      document.getElementById('btnNext').textContent = currentQ === total - 1 ? 'ANALYZE' : 'NEXT';
+      setTimeout(() => { const f = document.getElementById('qField'); if (f && f.focus) f.focus(); }, 50);
+    }
+
+    function saveCurrentAnswer() {
+      const q = INDUSTRY.questions[currentQ];
+      const field = document.getElementById('qField');
+      if (field) answers[q.key] = field.value;
+    }
+
+    function nextQuestion() {
+      saveCurrentAnswer();
+      if (currentQ < INDUSTRY.questions.length - 1) {
+        currentQ++;
+        renderQuestion();
+      } else {
+        runAnalysis();
+      }
+    }
+
+    function prevQuestion() {
+      saveCurrentAnswer();
+      if (currentQ > 0) { currentQ--; renderQuestion(); }
+    }
+
+    function skipQuestion() {
+      if (currentQ < INDUSTRY.questions.length - 1) {
+        currentQ++;
+        renderQuestion();
+      } else {
+        runAnalysis();
+      }
+    }
+
+    // Scoring
+    function calculateScore() {
+      let score = 50;
+      const rules = INDUSTRY.scoringRules || {};
+      for (const [ruleKey, rule] of Object.entries(rules)) {
+        const val = answers[rule.field] || '';
+        if (rule.strong && val.includes(rule.strong)) { score += (rule.strongPoints || 10); }
+        else if (rule.weak && val.includes(rule.weak)) { score += (rule.weakPoints || 3); }
+        else if (rule.bad && rule.bad.some(b => val.includes(b))) { score += (rule.badPoints || -8); }
+      }
+      return Math.max(10, Math.min(94, score));
+    }
+
+    function getHealthColor(hf) {
+      const val = answers[hf.sourceField || hf.key] || '';
+      const rules = hf.scoringRules || {};
+      if (rules.green && rules.green.match && val.includes(rules.green.match)) return 'green';
+      if (rules.amber && rules.amber.match && val.includes(rules.amber.match)) return 'amber';
+      return 'red';
+    }
+
+    function getHealthLabel(hf, color) {
+      const rules = hf.scoringRules || {};
+      if (color === 'green' && rules.green) return rules.green.label || 'Solid';
+      if (color === 'amber' && rules.amber) return rules.amber.label || 'Partial';
+      return (rules.red && rules.red.label) || 'Gap';
+    }
+
+    // Processing
+    async function runAnalysis() {
+      showScreen('screenProcessing');
+      const steps = [
+        'Reading deal context...',
+        `Loading ${INDUSTRY.label} benchmarks...`,
+        'Scoring health factors...',
+        'Generating coaching plays...',
+        'Building your report...'
+      ];
+      const stepsEl = document.getElementById('procSteps');
+      stepsEl.innerHTML = steps.map((s, i) => `<div class="proc-step" id="step${i}"><span class="check">\u2713</span><span>${s}</span></div>`).join('');
+      const procFill = document.getElementById('procFill');
+
+      let stepIdx = 0;
+      const stepInterval = setInterval(() => {
+        if (stepIdx > 0) document.getElementById(`step${stepIdx - 1}`).classList.replace('active', 'done');
+        if (stepIdx < steps.length) {
+          document.getElementById(`step${stepIdx}`).classList.add('active');
+          procFill.style.width = ((stepIdx + 1) / steps.length * 100) + '%';
+          stepIdx++;
+        } else {
+          clearInterval(stepInterval);
+        }
+      }, 800);
+
+      try {
+        const res = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers, clientConfig: CLIENT, industryConfig: INDUSTRY })
+        });
+        const data = await res.json();
+        clearInterval(stepInterval);
+
+        // Finish remaining steps quickly
+        for (let i = 0; i < steps.length; i++) {
+          const el = document.getElementById(`step${i}`);
+          el.classList.remove('active');
+          el.classList.add('done');
+        }
+        procFill.style.width = '100%';
+
+        let result;
+        try {
+          const raw = typeof data.result === 'string' ? data.result : JSON.stringify(data.result);
+          const cleaned = raw.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+          result = JSON.parse(cleaned);
+        } catch (e) {
+          console.error('Parse error', e, data.result);
+          alert('Failed to parse AI response. Please try again.');
+          showScreen('screenLanding');
+          return;
+        }
+
+        setTimeout(() => renderResults(result), 600);
+      } catch (e) {
+        clearInterval(stepInterval);
+        console.error(e);
+        alert('Analysis failed: ' + e.message);
+        showScreen('screenLanding');
+      }
+    }
+
+    // Results
+    function renderResults(result) {
+      const score = calculateScore();
+      const scoreEl = document.getElementById('scoreValue');
+      const statusEl = document.getElementById('scoreStatus');
+      scoreEl.textContent = score;
+      let cls, label;
+      if (score >= 68) { cls = 'score-strong'; label = 'STRONG'; }
+      else if (score >= 42) { cls = 'score-risk'; label = 'AT RISK'; }
+      else { cls = 'score-critical'; label = 'CRITICAL'; }
+      scoreEl.className = 'score-value ' + cls;
+      statusEl.className = 'score-status ' + cls;
+      statusEl.textContent = label;
+
+      document.getElementById('bottomLine').textContent = result.bottom_line || '';
+
+      // Health factors
+      const grid = document.getElementById('healthGrid');
+      grid.innerHTML = '';
+      (INDUSTRY.healthFactors || []).forEach(hf => {
+        const color = getHealthColor(hf);
+        const label = getHealthLabel(hf, color);
+        const finding = result.health_findings ? result.health_findings[hf.key] : '';
+        const pill = document.createElement('div');
+        pill.className = 'health-pill';
+        pill.innerHTML = `<span class="health-dot dot-${color}"></span><div><div class="hf-name">${hf.name}</div><div class="hf-label">${label}</div></div>`;
+        pill.onclick = () => openModal(hf, finding, color);
+        grid.appendChild(pill);
+      });
+
+      // Plays
+      document.getElementById('playInstruction').textContent = result.play_instruction || '';
+      const container = document.getElementById('playsContainer');
+      container.innerHTML = '';
+      (result.plays || []).forEach((play, i) => {
+        const card = document.createElement('div');
+        card.className = 'play-card';
+        card.innerHTML = `
+          <div class="play-header" onclick="this.parentElement.classList.toggle('open')">
+            <div class="play-meta">
+              <span class="play-mode mode-${play.mode}">${play.mode}</span>
+              <span class="play-title">${play.title}</span>
+            </div>
+            <div>
+              <span class="play-timing">${play.channel} \u00B7 ${play.timing}</span>
+              <span class="play-chevron">\u25BC</span>
+            </div>
+          </div>
+          <div class="play-body">
+            <p>${play.body}</p>
+            <div class="script-block">
+              <button class="btn-copy" onclick="event.stopPropagation();copyScript(this)">Copy</button>
+              ${play.script}
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      showScreen('screenResults');
+    }
+
+    function openModal(hf, finding, color) {
+      document.getElementById('modalTitle').textContent = hf.name;
+      document.getElementById('modalFinding').textContent = finding || 'No finding available.';
+      const relatedKey = hf.sourceField || hf.key;
+      const userAnswer = answers[relatedKey] || 'No answer provided.';
+      document.getElementById('modalUserSaid').innerHTML = `<strong>What you said:</strong> ${userAnswer}`;
+      document.getElementById('healthModal').classList.add('open');
+    }
+
+    function closeModal() { document.getElementById('healthModal').classList.remove('open'); }
+    document.getElementById('healthModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
+    function copyScript(btn) {
+      const text = btn.parentElement.textContent.replace('Copy', '').trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 1500);
+      });
+    }
+  </script>
+</body>
+</html>

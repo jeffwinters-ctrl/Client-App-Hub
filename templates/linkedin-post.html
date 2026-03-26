@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{PAGE_TITLE}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: {{PRIMARY_COLOR}};
+      --accent: {{ACCENT_COLOR}};
+      --bg: #F8F7F4;
+      --surface: #FFFFFF;
+      --ink: #1A1A1A;
+      --ink-light: #6B6B6B;
+      --rule: #E5E2DC;
+      --linkedin: #0A66C2;
+    }
+    body { font-family: 'Source Sans 3', system-ui, sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+    .lp-header {
+      background: var(--ink);
+      color: #fff;
+      padding: 0 32px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .lp-header a { color: rgba(255,255,255,0.7); text-decoration: none; font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem; text-transform: none; }
+    .lp-header a:hover { color: #fff; }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* Form */
+    .form-screen { max-width: 640px; margin: 0 auto; padding: 48px 24px 80px; }
+    .form-screen h2 { font-family: 'Oswald', sans-serif; font-size: 2rem; font-weight: 600; margin-bottom: 8px; }
+    .form-screen .subtitle { font-family: 'Source Serif 4', serif; font-style: italic; color: var(--ink-light); margin-bottom: 32px; font-size: 1.05rem; }
+    .field { margin-bottom: 24px; }
+    .field label {
+      display: block; font-weight: 600; font-size: 0.8rem; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--ink-light); margin-bottom: 8px;
+    }
+    .field textarea, .field input, .field select {
+      width: 100%; padding: 12px 16px; border: 1px solid var(--rule); border-radius: 8px;
+      font-family: inherit; font-size: 1rem; background: var(--surface);
+    }
+    .field textarea { min-height: 80px; resize: vertical; line-height: 1.5; }
+    .field textarea:focus, .field input:focus, .field select:focus { outline: none; border-color: var(--primary); }
+    .field .hint { font-size: 0.85rem; color: var(--ink-light); margin-top: 4px; font-style: italic; }
+    .btn-generate {
+      width: 100%; padding: 16px; background: var(--primary); color: #fff; border: none;
+      border-radius: 8px; font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+    }
+    .btn-generate:hover { opacity: 0.9; }
+    .btn-generate:disabled { opacity: 0.5; }
+
+    /* Processing */
+    .processing-screen { max-width: 480px; margin: 0 auto; padding: 80px 24px; text-align: center; }
+    .processing-screen h3 { font-family: 'Oswald', sans-serif; font-size: 1.3rem; margin-bottom: 32px; }
+    .spinner { width: 48px; height: 48px; border: 3px solid var(--rule); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 24px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Results */
+    .results-screen { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+    .results-screen h2 { font-family: 'Oswald', sans-serif; font-size: 1.6rem; margin-bottom: 8px; }
+    .results-screen .subtitle { font-family: 'Source Serif 4', serif; font-style: italic; color: var(--ink-light); margin-bottom: 32px; }
+
+    .post-card {
+      background: var(--surface); border: 1px solid var(--rule); border-radius: 12px;
+      margin-bottom: 24px; overflow: hidden; animation: fadeUp 0.4s ease both;
+    }
+    .post-card:nth-child(2) { animation-delay: 0.12s; }
+    .post-card:nth-child(3) { animation-delay: 0.24s; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    .post-card-header {
+      padding: 16px 20px; border-bottom: 1px solid var(--rule);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .post-style-badge {
+      font-family: 'Oswald', sans-serif; font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.08em; padding: 3px 10px; border-radius: 4px; font-weight: 500;
+      background: rgba(10, 102, 194, 0.1); color: var(--linkedin);
+    }
+    .post-timing { font-size: 0.8rem; color: var(--ink-light); }
+
+    .post-card-body { padding: 20px; }
+    .post-hook {
+      font-family: 'Oswald', sans-serif; font-size: 1.15rem; font-weight: 500;
+      margin-bottom: 16px; line-height: 1.4; color: var(--primary);
+    }
+    .post-content {
+      font-size: 0.95rem; line-height: 1.7; white-space: pre-wrap; margin-bottom: 16px;
+      font-family: 'Source Sans 3', sans-serif;
+    }
+    .post-hashtags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .hashtag {
+      font-size: 0.8rem; color: var(--linkedin); background: rgba(10, 102, 194, 0.06);
+      padding: 3px 10px; border-radius: 4px;
+    }
+    .post-tip {
+      font-size: 0.85rem; color: var(--ink-light); font-family: 'Source Serif 4', serif;
+      font-style: italic; padding-top: 12px; border-top: 1px solid var(--rule);
+    }
+
+    .post-card-footer { padding: 0 20px 16px; display: flex; gap: 10px; }
+    .btn-copy-post {
+      padding: 8px 20px; background: var(--linkedin); color: #fff; border: none; border-radius: 6px;
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer;
+    }
+    .btn-copy-post:hover { opacity: 0.9; }
+
+    .actions-bar { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-action {
+      padding: 12px 28px; border-radius: 8px; font-family: 'Oswald', sans-serif; font-size: 0.9rem;
+      font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; text-decoration: none;
+    }
+    .btn-outline { background: transparent; border: 1px solid var(--rule); color: var(--ink); }
+    .btn-action:hover { opacity: 0.85; }
+
+    .lp-footer { background: var(--ink); color: rgba(255,255,255,0.5); text-align: center; padding: 16px; font-size: 0.8rem; }
+
+    @media (max-width: 600px) {
+      .lp-header { padding: 0 16px; }
+      .form-screen { padding: 32px 16px 60px; }
+      .results-screen { padding: 24px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="lp-header">
+    <span>LINKEDIN POST WRITER</span>
+    <a href="/{{SLUG}}">Back to Hub</a>
+  </header>
+
+  <div class="screen active" id="screenForm">
+    <div class="form-screen">
+      <h2>Write LinkedIn Posts That Land</h2>
+      <p class="subtitle">Tell us what you want to post about and get three ready-to-publish options.</p>
+      <form id="lpForm">
+        <div class="field">
+          <label>What's the Topic?</label>
+          <textarea id="f_topic" placeholder="What do you want to post about? A deal you closed, a lesson learned, an industry trend, a contrarian opinion..." required></textarea>
+        </div>
+        <div class="field">
+          <label>Your Role / Title</label>
+          <input type="text" id="f_role" placeholder="e.g. Senior Account Executive at Acme Industrial">
+        </div>
+        <div class="field">
+          <label>Your Target Audience</label>
+          <input type="text" id="f_audience" placeholder="Who do you want reading this? e.g. VP of Operations at manufacturing companies">
+        </div>
+        <div class="field">
+          <label>Tone Preference</label>
+          <select id="f_tone">
+            <option value="professional">Professional but Approachable</option>
+            <option value="bold">Bold and Opinionated</option>
+            <option value="storytelling">Storytelling / Narrative</option>
+            <option value="educational">Educational / How-To</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Any Specific Details to Include?</label>
+          <textarea id="f_details" placeholder="Names, numbers, stories, quotes — the more specific, the better the posts will be."></textarea>
+          <div class="hint">Optional but highly recommended. Specificity is what makes LinkedIn posts stand out.</div>
+        </div>
+        <div class="field">
+          <label>What Should Readers Do After Reading?</label>
+          <input type="text" id="f_cta" placeholder="e.g. Comment with their experience, book a demo, share with their team">
+        </div>
+        <button type="submit" class="btn-generate" id="btnGenerate">Generate 3 Posts</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="screen" id="screenProcessing">
+    <div class="processing-screen">
+      <div class="spinner"></div>
+      <h3>Crafting your posts...</h3>
+      <p style="color:var(--ink-light)">Writing three different angles. About 15-20 seconds.</p>
+    </div>
+  </div>
+
+  <div class="screen" id="screenResults">
+    <div class="results-screen">
+      <h2>Your Posts Are Ready</h2>
+      <p class="subtitle">Three different styles. Pick the one that fits, edit to taste, and post.</p>
+      <div id="postsContainer"></div>
+      <div class="actions-bar">
+        <a href="/{{SLUG}}/linkedin-post" class="btn-action btn-outline">Write More Posts</a>
+        <a href="/{{SLUG}}" class="btn-action btn-outline">Back to Hub</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="lp-footer">Presented by {{POWERED_BY}}</footer>
+
+  <script>
+    const CLIENT = {{CLIENT_CONFIG}};
+    const SLUG = '{{SLUG}}';
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    document.getElementById('lpForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnGenerate');
+      btn.disabled = true;
+
+      const answers = {
+        topic: document.getElementById('f_topic').value,
+        role: document.getElementById('f_role').value,
+        audience: document.getElementById('f_audience').value,
+        tone: document.getElementById('f_tone').value,
+        details: document.getElementById('f_details').value,
+        cta: document.getElementById('f_cta').value
+      };
+
+      showScreen('screenProcessing');
+
+      try {
+        const res = await fetch('/api/linkedin-post', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ answers, clientConfig: CLIENT })
+        });
+        const data = await res.json();
+        let result;
+        try {
+          const raw = typeof data.result === 'string' ? data.result : JSON.stringify(data.result);
+          result = JSON.parse(raw.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim());
+        } catch (pe) {
+          console.error('Parse error', pe);
+          alert('Failed to parse response. Please try again.');
+          showScreen('screenForm');
+          btn.disabled = false;
+          return;
+        }
+        renderPosts(result);
+      } catch (err) {
+        console.error(err);
+        alert('Generation failed: ' + err.message);
+        showScreen('screenForm');
+        btn.disabled = false;
+      }
+    });
+
+    function renderPosts(result) {
+      const container = document.getElementById('postsContainer');
+      container.innerHTML = '';
+      (result.posts || []).forEach((post, i) => {
+        const card = document.createElement('div');
+        card.className = 'post-card';
+        card.innerHTML = `
+          <div class="post-card-header">
+            <span class="post-style-badge">${post.style}</span>
+            <span class="post-timing">${post.best_time || ''}</span>
+          </div>
+          <div class="post-card-body">
+            <div class="post-hook">${post.hook}</div>
+            <div class="post-content">${post.body}</div>
+            <div class="post-hashtags">${(post.hashtags || []).map(h => `<span class="hashtag">${h.startsWith('#') ? h : '#' + h}</span>`).join('')}</div>
+            <div class="post-tip">${post.tip || ''}</div>
+          </div>
+          <div class="post-card-footer">
+            <button class="btn-copy-post" onclick="copyPost(this, ${i})">Copy Post</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      showScreen('screenResults');
+      window._posts = result.posts;
+    }
+
+    function copyPost(btn, idx) {
+      const post = window._posts[idx];
+      const text = post.hook + '\n\n' + post.body + '\n\n' + (post.hashtags || []).map(h => h.startsWith('#') ? h : '#' + h).join(' ');
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy Post', 1500);
+      });
+    }
+  </script>
+</body>
+</html>

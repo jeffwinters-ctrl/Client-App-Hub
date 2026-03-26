@@ -1,0 +1,277 @@
+{
+  "industry": "healthcare",
+  "label": "Healthcare",
+  "questionCount": 14,
+  "healthFactorCount": 7,
+  "playCount": 3,
+  "tagline": "For Reps Who Sell to Healthcare",
+  "headline": "Is this deal<br><em>real</em> or just<br>in committee?",
+  "description": "Answer 14 quick questions about your healthcare deal. Get a health check on what's working and what's missing — then receive three specific plays to move it forward.",
+
+  "questions": [
+    {
+      "section": "The Basics",
+      "key": "ctx",
+      "label": "What are you selling and to which account?",
+      "type": "textarea",
+      "placeholder": "e.g. Patient intake automation platform for Mercy Health, a 12-hospital system in Ohio"
+    },
+    {
+      "section": "The Basics",
+      "key": "size",
+      "label": "What's the deal size, and how long has it been active?",
+      "type": "textarea",
+      "placeholder": "e.g. $350K ACV, been working this since September"
+    },
+    {
+      "section": "The Basics",
+      "key": "contact",
+      "label": "Who's your primary contact and what's their title?",
+      "type": "textarea",
+      "placeholder": "e.g. Sarah Chen, VP of Patient Experience"
+    },
+    {
+      "section": "The Buyer",
+      "key": "buyer",
+      "label": "Who's the economic buyer — the person who actually signs off on budget?",
+      "type": "textarea",
+      "placeholder": "e.g. CFO, CIO, Service Line VP — or 'I don't know yet'"
+    },
+    {
+      "section": "The Buyer",
+      "key": "persona",
+      "label": "Which persona best describes your primary champion or decision-maker?",
+      "type": "select",
+      "options": [
+        "CIO / VP of IT",
+        "CMO / Chief Medical Officer",
+        "VP Clinical Operations / CNO",
+        "Department Head / Service Line Leader",
+        "Procurement / Supply Chain",
+        "Biomedical Engineering / Clinical Engineering"
+      ]
+    },
+    {
+      "section": "The Buyer",
+      "key": "vertical",
+      "label": "What type of facility or organization are you selling into?",
+      "type": "select",
+      "options": [
+        "Large Hospital System (5+ hospitals)",
+        "Community Hospital",
+        "Specialty Clinic Network",
+        "Academic Medical Center",
+        "Post-Acute / Long-Term Care",
+        "Payer / Health Plan"
+      ]
+    },
+    {
+      "section": "The Problem",
+      "key": "pain",
+      "label": "What's the clinical or operational problem driving this deal?",
+      "type": "textarea",
+      "placeholder": "Think patient outcomes, staff burden, compliance gaps, revenue leakage, readmission rates...",
+      "hint": "The best deals tie back to patient outcomes, staff burden, or compliance risk. What's keeping your champion up at night?"
+    },
+    {
+      "section": "The Problem",
+      "key": "bizcase",
+      "label": "Has the business case been quantified?",
+      "type": "select",
+      "options": [
+        "Yes — ROI documented with clinical outcomes",
+        "Rough numbers on cost savings",
+        "Vague — they know it's a problem",
+        "No — still exploring"
+      ]
+    },
+    {
+      "section": "The Process",
+      "key": "process",
+      "label": "What does the committee structure and decision process look like?",
+      "type": "textarea",
+      "placeholder": "e.g. Goes to Value Analysis Committee in April, then IT governance for security review",
+      "hint": "Most hospital systems run purchases through Value Analysis Committees (VACs), IRB panels, or IT governance boards. The more you know about who sits on those, the better you can prepare."
+    },
+    {
+      "section": "The Process",
+      "key": "budget",
+      "label": "What's the budget cycle and funding source?",
+      "type": "textarea",
+      "placeholder": "e.g. FY27 capital budget (July start), funded through operational improvement allocation",
+      "hint": "Most health systems run a July 1 fiscal year. Planning starts in March/April. Know whether this is capital vs. operational, grant-funded, or coming from a departmental discretionary budget."
+    },
+    {
+      "section": "The Compliance",
+      "key": "compliance",
+      "label": "Where do you stand on compliance and security requirements?",
+      "type": "select",
+      "options": [
+        "Fully cleared — HIPAA/security review done",
+        "In progress — BAA/security review underway",
+        "Not started — haven't discussed compliance yet",
+        "Potential blocker — complex requirements"
+      ]
+    },
+    {
+      "section": "The Competition",
+      "key": "competition",
+      "label": "Who or what are you competing against — incumbent vendor, another solution, or the status quo?",
+      "type": "textarea",
+      "placeholder": "e.g. They currently use a manual paper process. Also looked at Epic's built-in module."
+    },
+    {
+      "section": "The Close",
+      "key": "implementation",
+      "label": "How ready are they to implement — IT resources, EHR integration needs, go-live timeline?",
+      "type": "textarea",
+      "placeholder": "e.g. IT team is stretched thin, need Epic integration, hoping for Q1 go-live"
+    },
+    {
+      "section": "The Close",
+      "key": "confidence",
+      "label": "Gut check — how confident are you this closes within 90 days?",
+      "type": "select",
+      "options": [
+        "High — 75%+ it's happening",
+        "Moderate — 50/50 but I see a path",
+        "Low — lots of unknowns still",
+        "Stalled — something's stuck"
+      ]
+    }
+  ],
+
+  "personas": {
+    "CIO / VP of IT": "The CIO or VP of IT owns the technology stack and is the gatekeeper for anything that touches clinical systems. They care deeply about EHR integration — whether that's Epic, Cerner (now Oracle Health), or Meditech — and they'll evaluate you through the lens of interoperability, HL7/FHIR compliance, and cybersecurity posture. They manage vendor sprawl and are under constant pressure to consolidate, so adding another point solution is a hard sell unless you can prove you replace something or integrate seamlessly.\n\nThese buyers think in terms of total cost of ownership, not sticker price. They want to know about implementation burden on their already-stretched IT team, ongoing maintenance requirements, and your SOC 2 / HITRUST certification status. If you can't articulate your security story in the first meeting, you won't get a second one. They're also politically savvy — they need wins that are visible to the C-suite but don't blow up in their face if something goes wrong.\n\nTo sell to a CIO, lead with architecture and integration, not features. Show them you've done this at a comparable health system. Reference implementations by name if you can. And whatever you do, don't surprise them with hidden infrastructure requirements three months into the deal.",
+
+    "CMO / Chief Medical Officer": "The Chief Medical Officer is the clinical authority in the organization. They're a practicing or recently-practicing physician who now oversees clinical quality, patient safety, and evidence-based care delivery. They think in terms of outcomes — mortality rates, readmission scores, HCAHPS, and clinical efficacy. If your solution doesn't connect to a measurable patient outcome, you're wasting their time.\n\nCMOs are deeply skeptical of vendor claims because they're trained in evidence-based medicine. They want peer-reviewed data, clinical validation studies, and references from physicians who've actually used the technology. \"Our AI is cutting-edge\" means nothing to them — \"Our solution reduced sepsis mortality by 18% across 4 academic medical centers\" gets their attention. They also care about physician adoption; if the tool adds clicks or disrupts clinical workflow, the medical staff will revolt and the CMO will hear about it.\n\nThe key to winning a CMO is speaking their language — clinical outcomes, evidence, peer validation. Bring a physician reference early. If you have clinical advisory board members, deploy them. And never oversell the clinical impact — CMOs can smell exaggeration from a mile away and it kills trust instantly.",
+
+    "VP Clinical Operations / CNO": "The VP of Clinical Operations or Chief Nursing Officer manages the largest workforce in the hospital — nurses, clinical support staff, and often the operational flow of patient care. They are laser-focused on staffing levels, nurse burnout, patient throughput, and operational efficiency. With nursing turnover running 20-30% nationally and agency nurse costs through the roof, anything that reduces burden on clinical staff gets their attention fast.\n\nThese leaders think in terms of workflow. They want to know exactly how your solution fits into the minute-by-minute reality of a nurse's shift. Will it save time during handoffs? Reduce documentation burden? Improve bed turnover? They evaluate technology through the eyes of the bedside nurse, not the IT department. If your demo doesn't show the clinical workflow impact, you've lost them.\n\nTo win this buyer, bring workflow diagrams, time-savings data, and testimonials from frontline nurses. Offer a pilot on a single unit — they love low-risk proof of concept. And be honest about the change management required. CNOs know that deploying new tech without proper training and workflow redesign is a recipe for failure, so your implementation plan matters as much as your product.",
+
+    "Department Head / Service Line Leader": "Department heads and service line leaders own a specific clinical or operational domain — cardiology, orthopedics, oncology, emergency medicine, or surgical services. They manage their own P&L (or at least their budget allocation), make purchasing decisions within their authority, and care about outcomes specific to their specialty. They're entrepreneurial by hospital standards and often have more autonomy than people realize.\n\nThese buyers are practical and outcome-oriented. They want to know: will this help my department specifically? They don't care about enterprise-wide transformation stories — they care about their patient volume, their staff, their metrics. A service line leader in orthopedics cares about surgical scheduling efficiency and implant cost management, not the hospital's overall digital transformation roadmap.\n\nThe opportunity with department heads is that they can often approve smaller purchases ($50K-$150K) without full committee review. They're also great internal champions who can pull a deal upward to enterprise level once they see results in their department. Start with a departmental pilot, prove ROI in their specific context, then help them make the case to expand. They'll do your internal selling for you if the results are real.",
+
+    "Procurement / Supply Chain": "Procurement and supply chain professionals in healthcare operate in a world of GPO contracts (Vizient, Premier, HealthTrust), competitive bidding requirements, and value analysis committees. They are process-driven, methodical, and their job is to get the best price and terms while ensuring clinical quality. They are not the decision-maker on whether to buy — they're the decision-maker on how to buy and at what price.\n\nThese buyers evaluate vendors on contract terms, pricing transparency, GPO alignment, and total cost of ownership. They'll want to know if you're on their GPO contract, what your pricing model looks like at scale, and whether you can meet their standard procurement terms (NET 60-90, performance guarantees, SLA commitments). They run everything through the Value Analysis Committee, which includes clinical, IT, finance, and operations stakeholders.\n\nDon't try to sell the vision to procurement — they don't care about your roadmap. Instead, make their process easy. Come prepared with a completed vendor questionnaire, reference customers, pricing tiers, and your standard BAA/contract template. If you can shorten their evaluation process, you become their favorite vendor. The worst thing you can do is be difficult to buy from — unclear pricing, non-standard terms, or missing compliance documentation will put you at the bottom of the pile.",
+
+    "Biomedical Engineering / Clinical Engineering": "Biomedical and clinical engineering teams are responsible for the technical evaluation, integration, and maintenance of medical devices and clinical technology within the hospital. They bridge the gap between IT and clinical departments, and they're the ones who will actually connect your solution to existing medical devices, validate interoperability, and ensure ongoing technical performance.\n\nThese are deeply technical evaluators. They want to see your API documentation, integration architecture, data formats (HL7v2, FHIR, DICOM), and device compatibility matrix. They'll ask about firmware update processes, cybersecurity vulnerability management, and what happens when your cloud goes down. If you're selling anything that touches medical devices or clinical data flows, biomed engineering will have a formal technical evaluation that can take 4-8 weeks.\n\nTo work effectively with clinical engineering, bring your technical team to the table early. Provide sandbox environments for testing. Be transparent about what integrations are native vs. custom. And respect their timeline — rushing a technical evaluation in healthcare can actually backfire because it signals that you don't understand the safety implications. These evaluators can be powerful allies if you invest the time to earn their trust, or they can quietly kill your deal with a negative technical assessment."
+  },
+
+  "verticals": {
+    "Large Hospital System (5+ hospitals)": "Large health systems (HCA, CommonSpirit, Ascension, Providence, regional multi-hospital networks) are enterprise deals with long sales cycles and many stakeholders. Expect 6-18 month timelines, multiple committee reviews, and a formal evaluation process. The upside is deal size — system-wide contracts can be $500K-$5M+ annually. The challenge is that decisions require alignment across IT, clinical leadership, finance, and procurement at both the system level and individual facility level.\n\nThese organizations value standardization. They want one vendor across all facilities, not a patchwork of point solutions. Your value prop needs to work at the system level — enterprise reporting, multi-facility deployment, centralized administration. They'll also have a strong IT governance process, usually including a formal RFP or RFI. Get ahead of the procurement process by engaging early and helping shape the evaluation criteria before the formal process begins.",
+
+    "Community Hospital": "Community hospitals (50-250 beds, independent or loosely affiliated) are relationship-driven environments where the CEO, CFO, and CMO often sit in the same hallway. Decision cycles are faster (3-6 months), but budgets are tighter and IT teams are small — sometimes just 2-5 people. These hospitals are often resource-constrained and looking for solutions that are easy to implement without a massive IT lift.\n\nThe key to selling into community hospitals is demonstrating quick time-to-value and low implementation burden. They don't have six months to dedicate a project team to your rollout. Show them a peer hospital of similar size that went live in 8 weeks. Pricing needs to be right-sized — a community hospital won't pay enterprise pricing. But the advantage is that one champion (often the CEO or CMO) can push a deal through without layers of committee approval.",
+
+    "Specialty Clinic Network": "Specialty clinic networks (orthopedic groups, cardiology practices, oncology centers, multi-location dermatology or ophthalmology) have focused clinical needs and often physician-owned governance. The doctors are both the clinical users and the economic buyers, which can accelerate decisions but also means you need to win physician buy-in directly. These networks care about workflow efficiency specific to their specialty, patient volume throughput, and revenue cycle optimization.\n\nDeal sizes are typically smaller ($50K-$200K) but cycle times are fast if the physician leaders see value. The challenge is that these groups often have minimal IT infrastructure and may not have a dedicated IT team. Your solution needs to be cloud-hosted, easy to configure, and not require heavy technical lift. Also watch for the private equity angle — many specialty networks are PE-backed and under pressure to show growth and margin improvement, which can be a powerful lever for your business case.",
+
+    "Academic Medical Center": "Academic medical centers (Mayo Clinic, Johns Hopkins, Cleveland Clinic, university-affiliated hospitals) are research-driven organizations with complex governance structures. They have separate leadership for clinical operations, research, and education, and purchasing decisions often need buy-in from all three. They're innovation-friendly and often willing to be early adopters, but their procurement process is slow and bureaucratic.\n\nThe advantage of selling into AMCs is that they value innovation and clinical evidence. If you can position your solution as research-worthy or publish outcomes data together, you'll get their attention. They also have larger budgets than community hospitals and more sophisticated IT teams. The challenge is navigating the governance — expect IRB review for anything touching patient data, faculty committees, and a procurement office that's used to buying from established medical device companies. Patience and academic credibility are your best tools here.",
+
+    "Post-Acute / Long-Term Care": "Post-acute and long-term care facilities (skilled nursing facilities, rehabilitation centers, assisted living, home health agencies) operate in a different regulatory environment than acute care hospitals. They're governed by CMS conditions of participation, state survey requirements, and often have razor-thin margins. Staffing is the #1 challenge — CNAs and LPNs are in critical shortage, and turnover can exceed 50% annually.\n\nThese organizations are extremely cost-sensitive and often behind in technology adoption. Many still rely on paper processes or outdated systems. The buying process is simpler (fewer stakeholders, faster decisions) but budgets are small. If you can demonstrate direct impact on staffing efficiency, survey readiness, or reimbursement optimization (especially around PDPM and quality measures), you'll find a receptive audience. Just know that implementation support needs to be hands-on — these facilities don't have IT teams to manage a complex deployment.",
+
+    "Payer / Health Plan": "Health plans and payers (UnitedHealthcare, Anthem, Aetna, Blue Cross affiliates, Medicaid managed care organizations) are not providers — they have a fundamentally different buying process and value proposition. They care about member outcomes, cost containment, network adequacy, and regulatory compliance (CMS Star Ratings, HEDIS measures, NCQA accreditation). Decisions are made by VP-level leaders in clinical operations, medical management, digital health, or IT.\n\nSelling to payers requires a different playbook than selling to hospitals. The ROI conversation centers on per-member-per-month (PMPM) cost reduction, utilization management, and quality measure improvement. Sales cycles can be long (6-12 months) because payers implement on benefit year timelines (January 1 for commercial, varies for Medicaid). The technical bar is high — payers expect enterprise-grade security, data analytics capabilities, and proven scalability across large member populations."
+  },
+
+  "industryKnowledge": "Hospital operating margins average 2-3% nationally — every dollar of cost savings or revenue improvement matters enormously, and CFOs scrutinize every purchase.\n\nHIPAA violations can cost between $50K and $1.5M per incident, and a data breach in healthcare averages $10.9M — the highest of any industry. Compliance isn't optional, it's existential.\n\nEHR integration is the #1 technical gate in healthcare IT sales. If you can't connect to Epic, Cerner (Oracle Health), or Meditech, you're dead on arrival in most hospital systems. Expect integration timelines of 8-16 weeks minimum.\n\nValue Analysis Committees (VACs) evaluate all new clinical technology purchases in most hospital systems. These cross-functional committees include clinical, IT, finance, and procurement — and they meet monthly at best. Missing a VAC cycle can push your deal out 4-8 weeks.\n\nThe average healthcare IT sales cycle runs 6-18 months from first meeting to signed contract. Complex enterprise deals at large health systems can take 18-24 months. Plan your pipeline accordingly.\n\nPhysician adoption is the #1 predictor of whether a healthcare technology deployment succeeds or fails. If doctors won't use it, nobody else will either. Always validate physician workflow fit early.\n\nStaff burnout and workforce shortages drive 60% of healthcare technology purchases today. Hospitals are spending millions on travel nurses — any technology that reduces clinical burden has a built-in business case.\n\nBudget cycles matter: most health systems operate on a July 1 fiscal year. Capital budget planning starts in March/April for the following fiscal year. If you miss the planning window, you wait 12 months.\n\nGroup Purchasing Organizations (GPOs) like Vizient, Premier, and HealthTrust influence over 70% of hospital supply chain spend. Being on a GPO contract can accelerate procurement; not being on one adds friction.\n\nHealthcare buyers expect vendor credibility signals: HITRUST certification, SOC 2 Type II, existing BAA templates, and references from comparable health systems. Missing any of these in an enterprise deal is a red flag.\n\nThe 340B drug pricing program, value-based care models, and CMS reimbursement changes create constant financial pressure that shapes what hospitals buy and when they buy it.\n\nRegulatory requirements (Joint Commission, CMS Conditions of Participation, state licensing) create mandatory spending that competes with discretionary technology purchases for the same budget dollars.",
+
+  "healthFactors": [
+    {
+      "key": "hbiz",
+      "name": "Business Case / ROI",
+      "description": "Has the economic impact been quantified? Healthcare deals without documented ROI — tied to cost savings, revenue uplift, or clinical outcome improvement — stall in committee. Strong business cases include specific dollar amounts, FTE savings, or measurable clinical metrics."
+    },
+    {
+      "key": "hbuyer",
+      "name": "Economic Buyer Access",
+      "description": "Do you have a relationship with the person who controls the budget? In healthcare, this is often the CFO, CIO, or a VP with P&L authority. Deals that live only at the director or manager level rarely close without executive sponsorship pulling them through governance."
+    },
+    {
+      "key": "hclinical",
+      "name": "Clinical Buy-In",
+      "description": "Have physicians, nurses, or clinical leaders validated the need and endorsed the solution? In healthcare, clinical credibility drives adoption. If the medical staff or nursing leadership hasn't weighed in, the Value Analysis Committee will send you back to get their input."
+    },
+    {
+      "key": "hcompliance",
+      "name": "Compliance Readiness",
+      "description": "Is your HIPAA compliance, BAA, security review, and data governance story buttoned up? Healthcare organizations won't sign a contract until legal and compliance have cleared you. Deals die quietly in security review when vendors aren't prepared."
+    },
+    {
+      "key": "hprocess",
+      "name": "Committee / Decision Process",
+      "description": "Do you understand how decisions actually get made — who sits on the Value Analysis Committee, what the approval chain looks like, and what the timeline is? Healthcare has more governance layers than most industries. Mapping the process is the difference between a 6-month and 18-month deal."
+    },
+    {
+      "key": "hcomp",
+      "name": "Competitive Position",
+      "description": "Are you positioned favorably against the incumbent, competing vendors, and the status quo? In healthcare, the biggest competitor is often 'do nothing' — the manual process or built-in EHR module they're already using. You need a clear reason to change."
+    },
+    {
+      "key": "himpl",
+      "name": "Implementation Feasibility",
+      "description": "Is there a realistic path to go-live — IT resources available, EHR integration scoped, clinical workflow redesign planned, training approach defined? Healthcare implementations fail when they're rushed or under-resourced. A credible implementation plan builds buyer confidence."
+    }
+  ],
+
+  "scoringRules": {
+    "bizcase": {
+      "field": "bizcase",
+      "label": "Business Case Strength",
+      "scores": {
+        "Yes — ROI documented with clinical outcomes": { "score": 10, "flag": "green", "note": "Strong — documented ROI with clinical outcomes is exactly what committees want to see." },
+        "Rough numbers on cost savings": { "score": 6, "flag": "yellow", "note": "Decent start, but 'rough numbers' won't survive a CFO review. Tighten the math before committee." },
+        "Vague — they know it's a problem": { "score": 3, "flag": "orange", "note": "Dangerous territory. Without quantified impact, this deal will stall in Value Analysis. Build the business case now." },
+        "No — still exploring": { "score": 1, "flag": "red", "note": "No business case means no budget. You're selling a vitamin, not a painkiller. Fix this before anything else." }
+      }
+    },
+    "confidence": {
+      "field": "confidence",
+      "label": "Rep Confidence Level",
+      "scores": {
+        "High — 75%+ it's happening": { "score": 10, "flag": "green", "note": "You feel good about this one. Let's make sure the fundamentals back up your gut." },
+        "Moderate — 50/50 but I see a path": { "score": 6, "flag": "yellow", "note": "Honest assessment. The plays below should help tip the odds in your favor." },
+        "Low — lots of unknowns still": { "score": 3, "flag": "orange", "note": "Too many unknowns is a red flag. Focus on answering the open questions before pushing forward." },
+        "Stalled — something's stuck": { "score": 1, "flag": "red", "note": "Stalled deals in healthcare often mean you've lost a champion or missed a committee cycle. Diagnose what's stuck." }
+      }
+    },
+    "compliance": {
+      "field": "compliance",
+      "label": "Compliance Readiness",
+      "scores": {
+        "Fully cleared — HIPAA/security review done": { "score": 10, "flag": "green", "note": "Huge advantage. Compliance clearance removes the biggest silent deal-killer in healthcare." },
+        "In progress — BAA/security review underway": { "score": 7, "flag": "yellow", "note": "On track. Stay close to the security team and proactively answer their questions before they ask." },
+        "Not started — haven't discussed compliance yet": { "score": 3, "flag": "orange", "note": "This is a ticking time bomb. Healthcare deals can't close without compliance clearance — start this conversation immediately." },
+        "Potential blocker — complex requirements": { "score": 1, "flag": "red", "note": "Complex compliance requirements can add 2-4 months to a deal. Escalate this internally and get your compliance team engaged now." }
+      }
+    },
+    "budget": {
+      "field": "budget",
+      "label": "Budget Clarity",
+      "rules": [
+        {
+          "condition": "contains_any",
+          "keywords": ["approved", "allocated", "funded", "secured", "committed", "budgeted", "capital approved"],
+          "score": 10,
+          "flag": "green",
+          "note": "Budget is allocated — you're in the execution phase. Don't let procurement slow you down."
+        },
+        {
+          "condition": "contains_any",
+          "keywords": ["FY", "fiscal", "planning", "next year", "budget cycle", "Q1", "Q2", "Q3", "Q4", "capital request"],
+          "score": 6,
+          "flag": "yellow",
+          "note": "Budget is in the planning cycle. Make sure your champion is fighting for this line item — budgets get cut in committee."
+        },
+        {
+          "condition": "contains_any",
+          "keywords": ["don't know", "unclear", "not sure", "no budget", "unfunded", "tbd", "haven't discussed"],
+          "score": 2,
+          "flag": "red",
+          "note": "No clear funding path is the #1 reason healthcare deals die. Find out where the money comes from before investing more time."
+        },
+        {
+          "condition": "default",
+          "score": 5,
+          "flag": "yellow",
+          "note": "Budget picture is murky. Press your champion to clarify: is this capital or operational? Is it in the current fiscal year plan?"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,255 @@
+{
+  "industry": "professional-services",
+  "label": "Professional Services",
+  "questionCount": 14,
+  "healthFactorCount": 7,
+  "playCount": 3,
+  "tagline": "For Reps Who Sell to Law Firms, Accountancies & Consultancies",
+  "headline": "Is this deal<br><em>real</em> or just<br>a partner meeting?",
+  "description": "Answer 14 quick questions about your professional services deal. Get a health check on what's working and what's missing — then receive three specific plays to move it forward.",
+  "questions": [
+    {
+      "section": "The Basics",
+      "label": "What are you selling and who's the target?",
+      "key": "ctx",
+      "type": "textarea",
+      "placeholder": "e.g. Practice management platform for Morrison & Associates, a 200-attorney regional law firm"
+    },
+    {
+      "section": "The Basics",
+      "label": "What's the deal size and contract duration?",
+      "key": "size",
+      "type": "textarea",
+      "placeholder": "e.g. $350K/year, 3-year agreement with annual billing"
+    },
+    {
+      "section": "The Basics",
+      "label": "Who's your primary contact?",
+      "key": "contact",
+      "type": "textarea",
+      "placeholder": "e.g. Sarah Chen, COO — reports directly to the managing partner"
+    },
+    {
+      "section": "The Buyer",
+      "label": "Who's the actual decision maker — the managing partner or someone else?",
+      "key": "buyer",
+      "type": "textarea",
+      "placeholder": "e.g. David Schwartz, Managing Partner — final sign-off on all technology investments over $100K"
+    },
+    {
+      "section": "The Buyer",
+      "label": "Which persona best describes your primary contact?",
+      "key": "persona",
+      "type": "select",
+      "options": [
+        "Managing Partner",
+        "COO / Executive Director",
+        "Practice Group Leader",
+        "IT Director / CTO",
+        "Chief Knowledge Officer / Innovation Partner"
+      ]
+    },
+    {
+      "section": "The Buyer",
+      "label": "What type of firm are you selling into?",
+      "key": "vertical",
+      "type": "select",
+      "options": [
+        "Am Law 200 / Large Law Firm",
+        "Mid-Size Law Firm (20-100 attorneys)",
+        "Big Four / National Accounting Firm",
+        "Regional/Mid-Size Accounting Firm",
+        "Management Consultancy",
+        "Boutique / Specialty Firm"
+      ]
+    },
+    {
+      "section": "The Problem",
+      "label": "What's the core pain point driving this deal?",
+      "key": "pain",
+      "type": "textarea",
+      "placeholder": "e.g. Billable utilization is down to 62%, client confidentiality protocols are manual and error-prone, partners can't agree on a single matter management system",
+      "hint": "Think about billable utilization, client confidentiality gaps, partner alignment issues, or competitive pressure from tech-forward rivals."
+    },
+    {
+      "section": "The Problem",
+      "label": "Is there a documented business case?",
+      "key": "bizcase",
+      "type": "select",
+      "options": [
+        "Yes — documented impact on billable hours/revenue",
+        "Rough ROI discussed",
+        "They know it's a problem but no numbers",
+        "No — still a nice-to-have"
+      ]
+    },
+    {
+      "section": "The Process",
+      "label": "Where are you on partner buy-in?",
+      "key": "partners",
+      "type": "select",
+      "options": [
+        "Full partner consensus",
+        "Key partners on board, some undecided",
+        "One champion partner, rest haven't weighed in",
+        "No partner discussions yet"
+      ]
+    },
+    {
+      "section": "The Process",
+      "label": "What does the decision timeline and process look like?",
+      "key": "timeline",
+      "type": "textarea",
+      "placeholder": "e.g. Next partner meeting is March 15, fiscal year ends June 30, practice group leaders need to approve before it goes to full partnership vote",
+      "hint": "Include details about partner meetings, fiscal year timing, and practice group structure if relevant."
+    },
+    {
+      "section": "The Competition",
+      "label": "What are they using today — or who else are they evaluating?",
+      "key": "competition",
+      "type": "textarea",
+      "placeholder": "e.g. Currently on legacy iManage DMS, also looking at NetDocuments and considering building in-house with their IT team"
+    },
+    {
+      "section": "The Competition",
+      "label": "How would you rate their tech adoption readiness?",
+      "key": "adoption",
+      "type": "select",
+      "options": [
+        "Tech-forward — they embrace new tools",
+        "Cautious — they'll adopt with proof",
+        "Resistant — 'we've always done it this way'",
+        "Unknown"
+      ]
+    },
+    {
+      "section": "The Close",
+      "label": "Have client confidentiality and data security concerns been addressed?",
+      "key": "confidentiality",
+      "type": "select",
+      "options": [
+        "Fully addressed — security review done",
+        "Discussed but not formalized",
+        "Haven't raised it yet",
+        "Potential blocker"
+      ]
+    },
+    {
+      "section": "The Close",
+      "label": "Gut check — how confident are you this deal closes?",
+      "key": "confidence",
+      "type": "select",
+      "options": [
+        "Very confident — it's a matter of when, not if",
+        "Cautiously optimistic — good signs but gaps remain",
+        "Coin flip — could go either way",
+        "Not great — uphill battle from here"
+      ]
+    }
+  ],
+  "personas": {
+    "Managing Partner": "The Managing Partner is the firm's CEO in all but title. They own the P&L, set strategic direction, and influence partner compensation — which means they care deeply about anything that moves revenue, margin, or firm culture. When they evaluate technology, they're thinking about whether it'll help the firm attract top talent, retain clients, and stay competitive with peer firms. They're not going to dig into feature specs; they want to know how it affects the bottom line and whether it'll cause a partner revolt.\n\nManaging Partners make decisions through consensus, not decree. Even if they love your solution, they need political cover to push it through the partnership. Give them ammunition: peer firm references, quantified ROI, and a rollout plan that won't disrupt client service. They'll never admit they're behind — frame everything as \"accelerating your advantage\" rather than \"catching up.\"\n\nTheir calendar is brutal. You'll get 30 minutes if you're lucky. Lead with the business outcome, not the product tour. And remember: their compensation is tied to firm profitability. Speak that language and you'll have their attention.",
+    "COO / Executive Director": "The COO or Executive Director is the operational backbone of the firm. While partners focus on client work and rainmaking, this person keeps the lights on — budgets, technology strategy, facilities, HR, and staff management all roll up to them. They're the most likely person to champion a technology purchase because they live with the operational pain every day.\n\nCOOs think in terms of efficiency ratios, staff utilization, and cost per matter. They've seen plenty of technology projects fail because partners refused to adopt, so they're laser-focused on change management and user adoption. Before they'll back your solution, they need confidence that it won't become shelfware. Show them an adoption curve from a peer firm and a realistic change management plan.\n\nThe COO is often your internal champion, but they're rarely the final decision maker. They need the managing partner's nod and enough partner consensus to proceed. Help them build the internal business case — give them slides they can present at the next partner meeting, not a 40-page proposal that nobody will read.",
+    "Practice Group Leader": "Practice Group Leaders run their group like a business within a business. They care about their group's revenue, realization rates, associate development, and workflow efficiency. They evaluate tools through the lens of \"will this help my team bill more hours and serve clients better?\" If it doesn't move those needles, they're not interested.\n\nThese are practicing attorneys or consultants who happen to have a management role — so they're time-starved and impatient with anything that feels like overhead. They want to see how a tool works in their specific workflow: M&A due diligence, audit fieldwork, or whatever their practice area demands. Generic demos won't cut it. Customize your pitch to their practice area or you've already lost them.\n\nPractice Group Leaders carry disproportionate influence in partner votes. If three of the five PGLs are bought in, the managing partner will usually green-light the deal. Conversely, if even one influential PGL actively opposes it, the whole thing stalls. Map out the PGLs early, identify your champion, and neutralize skeptics before the formal vote.",
+    "IT Director / CTO": "The IT Director or CTO is the firm's technology gatekeeper. They manage infrastructure, security, integrations, vendor relationships, and the never-ending backlog of partner requests. They've been burned by vendors who over-promised and under-delivered, so they approach every new pitch with healthy skepticism. Earn their trust with technical depth and honest answers about what your product can't do.\n\nSecurity and compliance are non-negotiable for this persona. Professional services firms handle client-privileged data — legal hold obligations, attorney-client privilege, audit workpapers. They need to know exactly where data lives, who can access it, and how you handle encryption, SOC 2, and ethical walls. If you can't answer these questions confidently, the deal is dead.\n\nThe IT Director won't make the buying decision, but they absolutely have veto power. They can kill a deal by raising security concerns or questioning integration feasibility. Get them on your side early with a technical deep dive, a clear API story, and integration references from their specific tech stack (iManage, NetDocuments, Aderant, Elite, etc.).",
+    "Chief Knowledge Officer / Innovation Partner": "The Chief Knowledge Officer (CKO) or Innovation Partner is a newer but increasingly influential role in professional services firms. They sit at the intersection of knowledge management, AI adoption, process improvement, and competitive strategy. They're typically a senior partner or former practitioner who sees technology as a way to differentiate the firm — not just a cost center.\n\nCKOs are your best friend if your product touches AI, automation, knowledge reuse, or analytics. They think about how the firm can leverage institutional knowledge, reduce reinvention, and deliver faster client outcomes. They're also the internal evangelists who can make partners excited about technology instead of afraid of it. If you can connect your solution to their innovation agenda, they'll champion it hard.\n\nHowever, CKOs don't control budgets directly. They influence by building coalition — running pilot programs, publishing internal results, and presenting at partner retreats. Support them with pilot-friendly packaging, clear success metrics, and case studies that show how peer firms gained competitive advantage. They sell vision; give them the data to back it up."
+  },
+  "verticals": {
+    "Am Law 200 / Large Law Firm": "Am Law 200 firms are the blue chips of the legal industry — big budgets, global footprints, and complex governance structures. Deals here are substantial (often $500K+) but the sales cycle can stretch to 12-18 months. Decision-making requires partnership consensus, which means 100+ partners may need to weigh in through committee structures. There's always a technology committee, a finance committee, and often a management committee that all need to align. Your champion needs to navigate this bureaucracy, so arm them well.\n\nThese firms have dedicated IT departments, formal procurement processes, and strict security requirements. Expect a thorough RFP process, security audits, and reference checks. They already use enterprise-grade tools (iManage, Elite/Aderant, Relativity) and won't tolerate integration gaps. The good news: once you're in, switching costs are high and renewals are almost automatic. The bad news: getting in requires patience, persistence, and executive-level relationships.",
+    "Mid-Size Law Firm (20-100 attorneys)": "Mid-size firms are the sweet spot for many technology vendors — big enough to have real budgets and pain points, small enough that the managing partner has genuine authority to make decisions. You're typically dealing with a 2-4 person decision team: the managing partner, COO/administrator, IT lead (often outsourced), and one or two influential partners. Consensus is still important, but one strong champion can move things faster.\n\nThese firms are cost-conscious and pragmatic. They can't afford to overpay, but they also can't afford to fall behind their Am Law competitors who are investing heavily in technology. Frame your solution as a way to compete above their weight class. Implementation speed matters — they don't have the luxury of a 12-month rollout. They want quick wins, visible results, and a clear path to full adoption. Show them a 90-day success plan and you'll stand out from vendors pitching vague \"digital transformation.\"",
+    "Big Four / National Accounting Firm": "Big Four firms (Deloitte, PwC, EY, KPMG) and national accounting firms operate with structured procurement, multiple service lines, and enterprise-level security requirements. Selling here means navigating a complex matrix organization where different service lines (audit, tax, advisory, consulting) may each have their own technology stack and budget. A deal that starts in one service line can expand to others, but each requires its own champion.\n\nProcurement is formal and deliberate. Expect preferred vendor lists, competitive bidding processes, SOC 2 Type II requirements at minimum, and lengthy legal reviews. These firms handle sensitive client financial data and are audited themselves — so security isn't a checkbox, it's an existential requirement. Your technical team will need to do a deep security review with their risk management group before anything else can progress.\n\nThe upside: these are massive organizations with enormous budgets. A single practice line deal can be worth millions. Land one service line, deliver results, and internal referrals can multiply your footprint across the firm. Think of each service line as a separate sale within the same account.",
+    "Regional/Mid-Size Accounting Firm": "Regional and mid-size accounting firms (typically 50-500 employees) are partner-driven organizations with strong client relationships and predictable business cycles. Audit season (January through April) dominates everything — don't try to close a deal or schedule implementations during busy season. The best windows are May-June (post-busy season, partners have time to think) and September-October (budget planning for next year).\n\nThese firms are practical and cost-sensitive. Partners vote with their wallets — show a clear ROI tied to billable hour recovery, client retention, or staff efficiency. They're often running on aging technology because \"it works well enough,\" so you need a compelling event to trigger change: a client complaint, a failed audit, a competitor winning business because they're more tech-savvy, or a key staff departure.\n\nThe managing partner or practice leader typically drives the decision, but buy-in from two or three other partners is essential. These are tight-knit partnerships where hallway conversations carry as much weight as formal presentations. Invite partners to see a peer firm that's already using your solution — nothing sells like seeing a competitor reap the benefits.",
+    "Management Consultancy": "Management consultancies are knowledge-driven, analytically rigorous, and obsessed with billable utilization. Their partners and principals evaluate everything through an ROI lens — they're consultants, after all, so they'll analyze your business case the same way they'd analyze one for their clients. Come with solid numbers or don't come at all.\n\nThese firms move faster than law or accounting firms when they see clear value. The partner or principal who runs the practice area often has budget authority and can make decisions without firm-wide consensus. However, they're also brutally efficient at killing deals that don't show immediate value. You'll get one shot at a compelling demo — make it count.\n\nConsultancies are early adopters when the tool gives them a competitive edge or improves utilization. They're already using AI, analytics, and collaboration tools extensively. Your competition isn't just other vendors — it's the internal \"we'll build it ourselves\" team. Differentiate on time-to-value and integration with their existing workflow (Slack, Teams, Salesforce, custom CRM systems). If your tool can save even 2-3 hours per consultant per week, the math sells itself.",
+    "Boutique / Specialty Firm": "Boutique and specialty firms (typically 5-50 people) are founder or partner-led organizations where one or two people make every significant decision. The sales cycle is either very fast (\"the senior partner liked the demo and wants to start Monday\") or painfully slow (\"we've been meaning to address this for three years\"). There's rarely a middle ground.\n\nThese firms are relationship-driven above all else. They chose to stay small because they value expertise, client intimacy, and quality of life. They're skeptical of enterprise tools that feel bloated or require dedicated IT staff to manage. Your pitch needs to feel personal and tailored — if they sense a cookie-cutter sales process, you've lost them. Reference their specific niche (boutique litigation, transfer pricing, healthcare advisory, whatever it is) and show how your solution serves firms like theirs.\n\nPrice sensitivity varies wildly. Some boutiques are highly profitable and will pay premium prices for premium tools. Others are running lean and will balk at enterprise pricing. Flexible packaging is key — offer a right-sized plan that doesn't force them to pay for 500-user features they'll never touch. The decision maker is almost always in the room during the demo, so don't waste time with discovery calls if you can get a live meeting."
+  },
+  "industryKnowledge": "Key facts about professional services firms that shape how they buy:\n\n1. Average law firm realization rate (collected vs. billed) runs 80-90%. Every point of improvement drops directly to partner profits.\n\n2. Associate billable hour targets are typically 1,800-2,200 hours per year. Anything that helps attorneys hit those targets without burning out is valuable.\n\n3. Partner consensus is required for most firm-wide technology decisions. Even in firms with strong managing partners, significant purchases go through some form of partnership vote or committee approval.\n\n4. Client confidentiality and data security aren't just preferences — they're ethical and regulatory obligations. Law firms must protect attorney-client privilege; accounting firms handle sensitive financial data under strict compliance frameworks.\n\n5. The average professional services firm spends 3-5% of revenue on technology, compared to 6-8% in financial services. There's room to grow, but every dollar needs justification.\n\n6. Decision cycles in professional services have distinct seasonal patterns. Summer (June-August) and December are the slowest — partners are on vacation or closing out year-end. The fastest decision windows are Q1 (January-March) and September-October, when firms are energized and budgeting.\n\n7. The Big Four accounting firms alone generate over $200 billion in combined global revenue, making them among the largest technology buyers in any industry.\n\n8. Lateral partner hires are a major driver of technology change. When a rainmaker joins from a competitor, they often push for the tools they used at their prior firm.\n\n9. Professional services firms have an average employee tenure of 3-5 years at the associate/consultant level, creating constant pressure on training, onboarding, and knowledge transfer.\n\n10. The 'build vs. buy' debate is fierce in consulting and Big Four firms. Many have internal development teams that will pitch building a custom alternative to any vendor solution.\n\n11. Client-facing technology (portals, dashboards, reporting tools) increasingly influences which firms win new business. Clients expect real-time access to matter status, budgets, and deliverables.\n\n12. Alternative fee arrangements (fixed fees, success fees, blended rates) are growing in legal and consulting, putting pressure on firms to track profitability at the matter level — which requires better technology.",
+  "healthFactors": [
+    {
+      "key": "hbiz",
+      "name": "Business Case / ROI",
+      "description": "Is there a quantified, documented business case that ties your solution to billable hours, realization rates, or partner profits?"
+    },
+    {
+      "key": "hbuyer",
+      "name": "Decision Maker Access",
+      "description": "Do you have direct access to the person who can actually approve this purchase — typically the managing partner, COO, or practice group leader?"
+    },
+    {
+      "key": "hpartners",
+      "name": "Partner Consensus",
+      "description": "Have enough partners weighed in favorably, or is there a clear path to getting partnership alignment before the decision deadline?"
+    },
+    {
+      "key": "hprocess",
+      "name": "Decision Process Clarity",
+      "description": "Do you understand the exact steps, committees, meetings, and timeline required to get from 'we like it' to a signed contract?"
+    },
+    {
+      "key": "hadoption",
+      "name": "Tech Readiness / Adoption",
+      "description": "Is the firm culturally ready to adopt new technology, or will resistance from traditionalists derail implementation?"
+    },
+    {
+      "key": "hcomp",
+      "name": "Competitive Position",
+      "description": "Are you clearly differentiated from the incumbent and any other vendors being evaluated, or are you in a commodity bake-off?"
+    },
+    {
+      "key": "hconfidentiality",
+      "name": "Confidentiality / Security",
+      "description": "Have data security, client confidentiality, and compliance concerns been addressed to the firm's satisfaction?"
+    }
+  ],
+  "scoringRules": {
+    "bizcase": {
+      "field": "bizcase",
+      "factor": "hbiz",
+      "scores": {
+        "Yes — documented impact on billable hours/revenue": 3,
+        "Rough ROI discussed": 2,
+        "They know it's a problem but no numbers": 1,
+        "No — still a nice-to-have": 0
+      }
+    },
+    "confidence": {
+      "field": "confidence",
+      "factor": "hbuyer",
+      "scores": {
+        "Very confident — it's a matter of when, not if": 3,
+        "Cautiously optimistic — good signs but gaps remain": 2,
+        "Coin flip — could go either way": 1,
+        "Not great — uphill battle from here": 0
+      }
+    },
+    "partners": {
+      "field": "partners",
+      "factor": "hpartners",
+      "scores": {
+        "Full partner consensus": 3,
+        "Key partners on board, some undecided": 2,
+        "One champion partner, rest haven't weighed in": 1,
+        "No partner discussions yet": 0
+      }
+    },
+    "adoption": {
+      "field": "adoption",
+      "factor": "hadoption",
+      "scores": {
+        "Tech-forward — they embrace new tools": 3,
+        "Cautious — they'll adopt with proof": 2,
+        "Resistant — 'we've always done it this way'": 1,
+        "Unknown": 0
+      }
+    },
+    "confidentiality": {
+      "field": "confidentiality",
+      "factor": "hconfidentiality",
+      "scores": {
+        "Fully addressed — security review done": 3,
+        "Discussed but not formalized": 2,
+        "Haven't raised it yet": 1,
+        "Potential blocker": 0
+      }
+    }
+  }
+}
