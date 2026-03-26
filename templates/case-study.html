@@ -196,6 +196,16 @@
     .cs-section-body p { margin-bottom: 16px; }
     .cs-section-body p:last-child { margin-bottom: 0; }
 
+    /* Editable styling */
+    [contenteditable]:hover { outline: 1px dashed var(--rule-light); outline-offset: 4px; cursor: text; }
+    [contenteditable]:focus { outline: 2px solid var(--accent); outline-offset: 4px; }
+    .edit-hint {
+      text-align: center; padding: 10px 16px; margin-bottom: 20px;
+      background: color-mix(in srgb, var(--accent) 8%, transparent);
+      border-radius: 8px; font-size: 0.82rem; color: var(--ink-mid);
+    }
+    .edit-hint strong { color: var(--ink); }
+
     /* Pull Quote */
     .cs-pull-quote {
       margin: 48px 0; padding: 32px 0; border-top: 1px solid var(--rule-light);
@@ -413,11 +423,12 @@
 
       <!-- Full Case Study -->
       <div id="viewFull">
+        <div class="edit-hint">Click any text to <strong>edit in place</strong> before copying.</div>
         <div class="cs-article">
           <div class="cs-hero" id="csHero">
             <div class="cs-hero-label">Customer Success Story</div>
-            <h1 id="csTitle"></h1>
-            <div class="cs-subtitle" id="csSubtitle"></div>
+            <h1 id="csTitle" contenteditable="true"></h1>
+            <div class="cs-subtitle" id="csSubtitle" contenteditable="true"></div>
           </div>
 
           <div class="cs-results-strip" id="csMetrics"></div>
@@ -426,8 +437,8 @@
             <div class="cs-main">
               <div id="csSections"></div>
               <div class="cs-pull-quote" id="csPullQuote" style="display:none;">
-                <div class="cs-quote-text" id="csQuoteText"></div>
-                <div class="cs-quote-attr" id="csQuoteAttr"></div>
+                <div class="cs-quote-text" id="csQuoteText" contenteditable="true"></div>
+                <div class="cs-quote-attr" id="csQuoteAttr" contenteditable="true"></div>
               </div>
             </div>
             <div class="cs-sidebar">
@@ -445,7 +456,7 @@
           <div class="cs-onepager-label">One-Page Summary</div>
           <h2 id="csOnePagerTitle"></h2>
           <div class="cs-onepager-divider"></div>
-          <div class="cs-onepager-body" id="csOnePagerBody"></div>
+          <div class="cs-onepager-body" id="csOnePagerBody" contenteditable="true"></div>
         </div>
       </div>
 
@@ -553,8 +564,8 @@
         const card = document.createElement('div');
         card.className = 'cs-metric-card';
         card.innerHTML = `
-          <div class="cs-metric-value">${escapeHtml(kr.metric)}</div>
-          <div class="cs-metric-desc">${escapeHtml(kr.description)}</div>
+          <div class="cs-metric-value" contenteditable="true">${escapeHtml(kr.metric)}</div>
+          <div class="cs-metric-desc" contenteditable="true">${escapeHtml(kr.description)}</div>
         `;
         metricsEl.appendChild(card);
       });
@@ -571,8 +582,8 @@
           div.className = 'cs-section';
           const bodyHtml = (sec.body || '').split('\n').filter(p => p.trim()).map(p => `<p>${escapeHtml(p)}</p>`).join('');
           div.innerHTML = `
-            <h2 class="cs-section-headline">${escapeHtml(sec.headline)}</h2>
-            <div class="cs-section-body">${bodyHtml}</div>
+            <h2 class="cs-section-headline" contenteditable="true">${escapeHtml(sec.headline)}</h2>
+            <div class="cs-section-body" contenteditable="true">${bodyHtml}</div>
           `;
           sectionsEl.appendChild(div);
         }
@@ -624,50 +635,13 @@
       showScreen('screenResults');
     }
 
-    function buildPlainText() {
-      if (!_caseStudy) return '';
-      const cs = _caseStudy;
-      let text = cs.title + '\n' + (cs.subtitle || '') + '\n\n';
-
-      if (cs.at_a_glance) {
-        text += '--- At a Glance ---\n';
-        const g = cs.at_a_glance;
-        if (g.customer) text += 'Customer: ' + g.customer + '\n';
-        if (g.industry) text += 'Industry: ' + g.industry + '\n';
-        if (g.solution) text += 'Solution: ' + g.solution + '\n';
-        if (g.timeline) text += 'Timeline: ' + g.timeline + '\n';
-        text += '\n';
-      }
-
-      if (cs.key_results && cs.key_results.length) {
-        text += '--- Key Results ---\n';
-        cs.key_results.forEach(kr => {
-          text += '• ' + kr.metric + ' — ' + kr.description + '\n';
-        });
-        text += '\n';
-      }
-
-      const sectionOrder = ['challenge', 'solution', 'implementation', 'results'];
-      const sections = cs.sections || {};
-      sectionOrder.forEach(key => {
-        if (sections[key]) {
-          text += sections[key].headline.toUpperCase() + '\n\n' + sections[key].body + '\n\n';
-        }
-      });
-
-      if (cs.pull_quote && cs.pull_quote.quote) {
-        text += '"' + cs.pull_quote.quote + '"\n— ' + (cs.pull_quote.attribution || '') + '\n\n';
-      }
-
-      return text.trim();
-    }
-
     function copyCaseStudy() {
-      const text = buildPlainText();
+      var el = document.getElementById('viewFull');
+      var text = el.innerText.replace(/Click any text to edit in place before copying\.\s*/i, '').trim();
       navigator.clipboard.writeText(text).then(() => {
-        const btn = document.getElementById('btnCopyFull');
+        var btn = document.getElementById('btnCopyFull');
         btn.textContent = 'Copied!';
-        setTimeout(() => { btn.textContent = 'Copy Case Study'; }, 1500);
+        setTimeout(function() { btn.textContent = 'Copy Case Study'; }, 1500);
       });
     }
 
