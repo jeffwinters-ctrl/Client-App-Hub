@@ -1168,74 +1168,42 @@ app.post('/api/industry-feed', async (req, res) => {
     const { clientConfig } = req.body;
     if (!clientConfig) return res.status(400).json({ error: 'Missing client config' });
 
-    const keywords = [
-      clientConfig.productDescription,
-      clientConfig.industry,
-      clientConfig.competitors,
-      clientConfig.context
-    ].filter(Boolean).join(' ').substring(0, 200);
+    const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
-    const searchQuery = clientConfig.productDescription
-      ? clientConfig.productDescription.split(/[,.]/).slice(0, 2).join(' ').trim()
-      : clientConfig.companyName;
-
-    // Fetch Google News RSS
-    let articles = [];
-    try {
-      const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(searchQuery)}&hl=en-US&gl=US&ceid=US:en`;
-      const rssRes = await fetch(rssUrl, { signal: AbortSignal.timeout(8000) });
-      const rssXml = await rssRes.text();
-
-      const items = rssXml.split('<item>').slice(1, 11);
-      articles = items.map(item => {
-        const title = (item.match(/<title>(.*?)<\/title>/) || [])[1] || '';
-        const link = (item.match(/<link>(.*?)<\/link>/) || [])[1] || '';
-        const pubDate = (item.match(/<pubDate>(.*?)<\/pubDate>/) || [])[1] || '';
-        const source = (item.match(/<source[^>]*>(.*?)<\/source>/) || [])[1] || '';
-        return {
-          title: title.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'").replace(/&quot;/g, '"'),
-          link,
-          source,
-          date: pubDate ? new Date(pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''
-        };
-      }).filter(a => a.title && a.link);
-    } catch (e) {
-      console.error('RSS fetch error:', e.message);
-    }
-
-    if (articles.length === 0) {
-      return res.json({ articles: [], feed_context: 'No recent articles found. Try refreshing later.' });
-    }
-
-    const systemPrompt = `You are a sales intelligence analyst. Given a list of news articles and a company profile, curate the articles for a sales team. For each article, write a brief summary and a "sales angle" — how this news could be used in sales conversations, prospecting, or account strategy.
+    const systemPrompt = `You are a sales intelligence analyst who curates industry news and trends for B2B sales teams. Your job is to identify the most relevant current trends, developments, and talking points in a specific industry and frame them as actionable sales intelligence.
 
 CLIENT CONTEXT:
 ${buildClientContext(clientConfig)}
 
+Today's date: ${today}
+
 Return ONLY valid JSON:
 {
-  "feed_context": "Brief 1-sentence description of the industry/topics covered",
+  "feed_context": "Brief 1-sentence description of the industry/topics covered in this feed",
   "articles": [
     {
-      "title": "Original article title",
-      "link": "Original URL",
-      "source": "Source name",
-      "date": "Date string",
-      "summary": "2-sentence summary of what the article is about",
-      "sales_angle": "1-2 sentences on how a sales rep could use this in conversations — be specific and actionable"
+      "title": "Compelling headline about a real, current industry trend or development",
+      "link": "",
+      "source": "Industry source (e.g. Industry Week, Gartner, McKinsey, Bloomberg, relevant trade pub)",
+      "date": "${today}",
+      "summary": "2-3 sentence summary of this trend/development — what's happening and why it matters",
+      "sales_angle": "1-2 actionable sentences for sales reps — how to use this in prospecting, discovery calls, or deal conversations. Be very specific."
     }
   ]
 }
 
 RULES:
-- Keep only the 6-8 most relevant articles for this company's sales team
-- Summaries should be factual and concise
-- Sales angles should be specific and actionable — "mention this to prospects who..." or "use this to counter the objection that..."
-- Order by relevance to the sales team, most useful first
-- If an article isn't relevant, skip it`;
+- Generate 6-8 items covering a MIX of: industry trends, market shifts, regulatory changes, technology developments, competitor moves, buying pattern changes, and economic factors
+- Every item must be directly relevant to what this company sells and who they sell to
+- Headlines should be specific and credible — like real trade publication headlines
+- Sales angles must be actionable: "Use this when talking to [specific buyer type] who is concerned about [specific issue]" or "This counters the objection that [common objection]"
+- Include a mix of macro trends and tactical insights
+- Source names should be realistic and relevant to the industry (trade publications, analyst firms, business press)
+- Set link to empty string for all articles
+- Order by most actionable for sales reps first`;
 
-    const userPrompt = `Articles:\n${articles.map((a, i) => `${i + 1}. "${a.title}" — ${a.source} (${a.date}) [${a.link}]`).join('\n')}`;
-    const raw = await callClaude(systemPrompt, userPrompt, 2000);
+    const userPrompt = `Generate a curated industry intelligence feed for this company's sales team. Focus on trends and developments that directly impact their sales conversations and prospecting.`;
+    const raw = await callClaude(systemPrompt, userPrompt, 2500);
     const result = extractJSON(raw);
     res.json(result);
   } catch (e) {

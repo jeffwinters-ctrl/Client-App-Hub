@@ -19,7 +19,7 @@
       --rule: #E8EAED;
       --skeleton: #E8EAED;
       --skeleton-shine: #F4F5F6;
-      --accent-tint: rgba({{ACCENT_COLOR_RGB}}, 0.08);
+      --accent-tint: color-mix(in srgb, var(--accent) 8%, transparent);
     }
     body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
@@ -521,9 +521,7 @@
               '<span>' + escapeHTML(article.date || '') + '</span>' +
             '</div>' +
             '<h2 class="article-title">' +
-              '<a href="' + escapeHTML(article.link || '#') + '" target="_blank" rel="noopener noreferrer">' +
-                escapeHTML(article.title || 'Untitled') +
-              '</a>' +
+              (article.link ? '<a href="' + escapeHTML(article.link) + '" target="_blank" rel="noopener noreferrer">' + escapeHTML(article.title || 'Untitled') + '</a>' : escapeHTML(article.title || 'Untitled')) +
             '</h2>' +
             '<p class="article-summary">' + escapeHTML(article.summary || '') + '</p>' +
             '<div class="sales-angle">' +
