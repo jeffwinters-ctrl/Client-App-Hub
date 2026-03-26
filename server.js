@@ -165,6 +165,71 @@ app.get('/api/admin/clients', requireAdmin, (req, res) => {
   res.json(loadClients());
 });
 
+app.get('/api/admin/industries', requireAdmin, (req, res) => {
+  const industriesDir = path.join(__dirname, 'industries');
+  const files = fs.readdirSync(industriesDir).filter(f => f.endsWith('.json'));
+  res.json(files.map(f => f.replace('.json', '')));
+});
+
+app.post('/api/admin/clients', requireAdmin, (req, res) => {
+  try {
+    const client = req.body;
+    if (!client.slug || !client.companyName || !client.industry) {
+      return res.status(400).json({ error: 'slug, companyName, and industry are required' });
+    }
+    client.slug = client.slug.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
+    const clients = loadClients();
+    if (clients.find(c => c.slug === client.slug)) {
+      return res.status(409).json({ error: 'A client with this slug already exists' });
+    }
+    const newClient = {
+      slug: client.slug,
+      companyName: client.companyName,
+      industry: client.industry,
+      logo: client.logo || '/public/logos/' + client.slug + '.png',
+      primaryColor: client.primaryColor || '#1B3A5C',
+      accentColor: client.accentColor || '#E8A020',
+      poweredBy: client.poweredBy || 'Sapper',
+      apps: client.apps || ['dealcheck'],
+      formspreeUrl: client.formspreeUrl || '',
+      context: client.context || ''
+    };
+    clients.push(newClient);
+    fs.writeFileSync(path.join(__dirname, 'clients', 'clients.json'), JSON.stringify(clients, null, 2));
+    res.json({ success: true, client: newClient });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.put('/api/admin/clients/:slug', requireAdmin, (req, res) => {
+  try {
+    const clients = loadClients();
+    const idx = clients.findIndex(c => c.slug === req.params.slug);
+    if (idx === -1) return res.status(404).json({ error: 'Client not found' });
+    const updates = req.body;
+    delete updates.slug;
+    clients[idx] = { ...clients[idx], ...updates };
+    fs.writeFileSync(path.join(__dirname, 'clients', 'clients.json'), JSON.stringify(clients, null, 2));
+    res.json({ success: true, client: clients[idx] });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.delete('/api/admin/clients/:slug', requireAdmin, (req, res) => {
+  try {
+    let clients = loadClients();
+    const idx = clients.findIndex(c => c.slug === req.params.slug);
+    if (idx === -1) return res.status(404).json({ error: 'Client not found' });
+    clients.splice(idx, 1);
+    fs.writeFileSync(path.join(__dirname, 'clients', 'clients.json'), JSON.stringify(clients, null, 2));
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.post('/api/admin/set-password', requireAdmin, async (req, res) => {
   const { slug, password } = req.body;
   if (!slug || !password) return res.status(400).json({ error: 'Missing slug or password' });

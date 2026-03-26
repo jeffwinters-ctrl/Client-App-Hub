@@ -143,6 +143,26 @@
     .bar-label { font-size: 0.7rem; color: var(--ink-light); margin-top: 6px; text-align: center; }
     .bar-value { font-size: 0.7rem; font-weight: 600; margin-bottom: 4px; }
 
+    /* Add Client */
+    .btn-add-client {
+      padding: 8px 20px; background: var(--accent); color: var(--ink); border: none;
+      border-radius: 6px; font-family: 'Oswald', sans-serif; font-size: 0.85rem;
+      text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; font-weight: 500;
+    }
+    .btn-add-client:hover { opacity: 0.9; }
+    .section-title { font-family: 'Oswald', sans-serif; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-light); }
+    .cf-input {
+      width: 100%; padding: 8px 12px; border: 1px solid var(--rule); border-radius: 6px;
+      font-size: 0.9rem; font-family: inherit; margin-top: 4px; background: var(--surface);
+    }
+    .cf-input:focus { outline: none; border-color: var(--primary); }
+    textarea.cf-input { resize: vertical; line-height: 1.5; }
+    .btn-delete {
+      background: transparent; border: 1px solid var(--red); color: var(--red);
+      padding: 4px 12px; border-radius: 6px; font-size: 0.75rem; cursor: pointer;
+    }
+    .btn-delete:hover { background: #FFEBEE; }
+
     @media (max-width: 768px) {
       .admin-layout { flex-direction: column; }
       .admin-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--rule); padding: 12px 0; }
@@ -187,6 +207,76 @@
 
       <!-- Clients Panel -->
       <div class="panel" id="panelClients">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <div class="section-title" style="margin:0;">All Clients</div>
+          <button class="btn-add-client" onclick="showAddClient()">+ Add Client</button>
+        </div>
+
+        <!-- Add/Edit Client Form (hidden by default) -->
+        <div class="client-form-wrap" id="clientFormWrap" style="display:none;">
+          <div class="client-detail">
+            <h3 id="formTitle">Add New Client</h3>
+            <form id="clientForm" onsubmit="saveClient(event)">
+              <input type="hidden" id="cf_editing" value="">
+              <div class="detail-grid" style="margin-bottom:16px;">
+                <div class="detail-item">
+                  <div class="detail-label">Company Name *</div>
+                  <input class="cf-input" type="text" id="cf_companyName" placeholder="Acme Industrial Supply" required>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">URL Slug *</div>
+                  <input class="cf-input" type="text" id="cf_slug" placeholder="acme-industrial" required>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Industry *</div>
+                  <select class="cf-input" id="cf_industry" required>
+                    <option value="">Select...</option>
+                  </select>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Primary Color</div>
+                  <input class="cf-input" type="text" id="cf_primaryColor" placeholder="#1B3A5C" value="#1B3A5C">
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Accent Color</div>
+                  <input class="cf-input" type="text" id="cf_accentColor" placeholder="#E8A020" value="#E8A020">
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Powered By</div>
+                  <input class="cf-input" type="text" id="cf_poweredBy" placeholder="Sapper" value="Sapper">
+                </div>
+              </div>
+              <div style="margin-bottom:16px;">
+                <div class="detail-label">Apps (check all that apply)</div>
+                <div style="display:flex;gap:16px;margin-top:8px;">
+                  <label style="font-size:0.9rem;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                    <input type="checkbox" id="cf_app_dealcheck" value="dealcheck" checked> DealCheck
+                  </label>
+                  <label style="font-size:0.9rem;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                    <input type="checkbox" id="cf_app_bizcase" value="business-case" checked> Business Case
+                  </label>
+                  <label style="font-size:0.9rem;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                    <input type="checkbox" id="cf_app_linkedin" value="linkedin-post" checked> LinkedIn Post
+                  </label>
+                </div>
+              </div>
+              <div style="margin-bottom:16px;">
+                <div class="detail-label">Client Context *</div>
+                <textarea class="cf-input" id="cf_context" rows="4" placeholder="Describe what they sell, who they sell to, deal sizes, competitors, differentiators..." required></textarea>
+              </div>
+              <div style="margin-bottom:16px;">
+                <div class="detail-label">Initial Password</div>
+                <input class="cf-input" type="text" id="cf_password" placeholder="Set a login password for this client">
+              </div>
+              <div style="display:flex;gap:10px;">
+                <button type="submit" class="btn-set-pw" id="btnSaveClient">Save Client</button>
+                <button type="button" class="btn-set-pw" style="background:transparent;color:var(--ink-light);border:1px solid var(--rule);" onclick="hideAddClient()">Cancel</button>
+              </div>
+              <div class="pw-msg" id="clientFormMsg"></div>
+            </form>
+          </div>
+        </div>
+
         <table class="data-table" id="clientsTable">
           <thead>
             <tr>
@@ -340,6 +430,19 @@
     }
 
     // Clients
+    let industries = [];
+
+    async function loadIndustries() {
+      try {
+        const res = await fetch('/api/admin/industries');
+        industries = await res.json();
+      } catch (e) { industries = ['manufacturing','saas','healthcare','financial-services','construction','professional-services']; }
+      const sel = document.getElementById('cf_industry');
+      sel.innerHTML = '<option value="">Select...</option>';
+      industries.forEach(i => { const o = document.createElement('option'); o.value = i; o.textContent = i; sel.appendChild(o); });
+    }
+    loadIndustries();
+
     function renderClientsTable() {
       const body = document.getElementById('clientsBody');
       body.innerHTML = CLIENTS.map(c => `
@@ -350,10 +453,126 @@
           <td>${c.apps.map(a => `<span class="badge badge-green">${a}</span> `).join('')}</td>
           <td>
             <button class="btn-set-pw" style="font-size:0.75rem;padding:4px 12px;" onclick="showClientDetail('${c.slug}')">Manage</button>
+            <button class="btn-set-pw" style="font-size:0.75rem;padding:4px 12px;" onclick="editClient('${c.slug}')">Edit</button>
+            <button class="btn-delete" onclick="deleteClient('${c.slug}', '${c.companyName.replace(/'/g, "\\'")}')">Delete</button>
             <a href="/${c.slug}" target="_blank" style="font-size:0.8rem;margin-left:8px;">Visit</a>
           </td>
         </tr>
       `).join('');
+    }
+
+    function showAddClient() {
+      document.getElementById('cf_editing').value = '';
+      document.getElementById('formTitle').textContent = 'Add New Client';
+      document.getElementById('cf_companyName').value = '';
+      document.getElementById('cf_slug').value = '';
+      document.getElementById('cf_slug').removeAttribute('readonly');
+      document.getElementById('cf_industry').value = '';
+      document.getElementById('cf_primaryColor').value = '#1B3A5C';
+      document.getElementById('cf_accentColor').value = '#E8A020';
+      document.getElementById('cf_poweredBy').value = 'Sapper';
+      document.getElementById('cf_app_dealcheck').checked = true;
+      document.getElementById('cf_app_bizcase').checked = true;
+      document.getElementById('cf_app_linkedin').checked = true;
+      document.getElementById('cf_context').value = '';
+      document.getElementById('cf_password').value = '';
+      document.getElementById('clientFormMsg').textContent = '';
+      document.getElementById('clientFormWrap').style.display = 'block';
+      document.getElementById('cf_companyName').focus();
+    }
+
+    function hideAddClient() {
+      document.getElementById('clientFormWrap').style.display = 'none';
+      document.getElementById('clientFormMsg').textContent = '';
+    }
+
+    function editClient(slug) {
+      const c = CLIENTS.find(cl => cl.slug === slug);
+      if (!c) return;
+      document.getElementById('cf_editing').value = slug;
+      document.getElementById('formTitle').textContent = 'Edit Client: ' + c.companyName;
+      document.getElementById('cf_companyName').value = c.companyName;
+      document.getElementById('cf_slug').value = c.slug;
+      document.getElementById('cf_slug').setAttribute('readonly', 'true');
+      document.getElementById('cf_industry').value = c.industry;
+      document.getElementById('cf_primaryColor').value = c.primaryColor || '#1B3A5C';
+      document.getElementById('cf_accentColor').value = c.accentColor || '#E8A020';
+      document.getElementById('cf_poweredBy').value = c.poweredBy || 'Sapper';
+      document.getElementById('cf_app_dealcheck').checked = c.apps.includes('dealcheck');
+      document.getElementById('cf_app_bizcase').checked = c.apps.includes('business-case');
+      document.getElementById('cf_app_linkedin').checked = c.apps.includes('linkedin-post');
+      document.getElementById('cf_context').value = c.context || '';
+      document.getElementById('cf_password').value = '';
+      document.getElementById('clientFormMsg').textContent = '';
+      document.getElementById('clientFormWrap').style.display = 'block';
+      document.getElementById('cf_companyName').focus();
+    }
+
+    async function saveClient(e) {
+      e.preventDefault();
+      const msg = document.getElementById('clientFormMsg');
+      const editing = document.getElementById('cf_editing').value;
+      const apps = [];
+      if (document.getElementById('cf_app_dealcheck').checked) apps.push('dealcheck');
+      if (document.getElementById('cf_app_bizcase').checked) apps.push('business-case');
+      if (document.getElementById('cf_app_linkedin').checked) apps.push('linkedin-post');
+
+      const payload = {
+        slug: document.getElementById('cf_slug').value.trim(),
+        companyName: document.getElementById('cf_companyName').value.trim(),
+        industry: document.getElementById('cf_industry').value,
+        primaryColor: document.getElementById('cf_primaryColor').value.trim(),
+        accentColor: document.getElementById('cf_accentColor').value.trim(),
+        poweredBy: document.getElementById('cf_poweredBy').value.trim(),
+        apps: apps,
+        context: document.getElementById('cf_context').value.trim()
+      };
+
+      try {
+        let res;
+        if (editing) {
+          res = await fetch('/api/admin/clients/' + editing, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } else {
+          res = await fetch('/api/admin/clients', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        }
+        const data = await res.json();
+        if (data.error) { msg.textContent = data.error; msg.style.color = 'var(--red)'; return; }
+
+        // Set password if provided
+        const pw = document.getElementById('cf_password').value.trim();
+        if (pw && pw.length >= 6) {
+          await fetch('/api/admin/set-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ slug: payload.slug || editing, password: pw })
+          });
+        }
+
+        msg.textContent = editing ? 'Client updated! Reloading...' : 'Client added! Reloading...';
+        msg.style.color = 'var(--green)';
+        setTimeout(() => window.location.reload(), 1000);
+      } catch (err) {
+        msg.textContent = 'Error: ' + err.message;
+        msg.style.color = 'var(--red)';
+      }
+    }
+
+    async function deleteClient(slug, name) {
+      if (!confirm('Delete ' + name + '? This cannot be undone.')) return;
+      try {
+        const res = await fetch('/api/admin/clients/' + slug, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) window.location.reload();
+        else alert(data.error || 'Failed to delete');
+      } catch (e) { alert('Error: ' + e.message); }
     }
 
     function showClientDetail(slug) {
