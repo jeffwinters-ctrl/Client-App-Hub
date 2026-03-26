@@ -1,0 +1,259 @@
+{
+  "industry": "general",
+  "label": "General B2B Sales",
+  "questionCount": 14,
+  "healthFactorCount": 7,
+  "playCount": 3,
+  "tagline": "For Sales Professionals Across Every Industry",
+  "headline": "Is this deal<br><em>real</em> or just<br>a pipeline dream?",
+  "description": "Answer 14 quick questions about your deal. Get a health check on what's working and what's missing — then receive three specific plays to move it forward. Works for any B2B sale, any industry.",
+  "questions": [
+    {
+      "section": "The Basics",
+      "text": "What are you selling and who's the target account?",
+      "hint": "Your product or service, the company you're selling into, and a bit of context on what they do. The more specific, the better the coaching.",
+      "type": "textarea",
+      "placeholder": "e.g. Custom office furniture package ($340K) into Meridian Financial Group, a 1,200-person regional bank headquartered in Dallas...",
+      "key": "ctx"
+    },
+    {
+      "section": "The Basics",
+      "text": "What's the deal size and how long have you been working it?",
+      "hint": "Total deal value (or annual contract value if recurring) and when you first engaged. Include any relevant pricing structure — one-time, subscription, multi-year, etc.",
+      "type": "textarea",
+      "placeholder": "e.g. $185K one-time purchase with $24K annual maintenance. First meeting was early February, so about 7 weeks in...",
+      "key": "size"
+    },
+    {
+      "section": "The Basics",
+      "text": "Who's your primary contact and what's their role?",
+      "hint": "Name, title, and how engaged they've been. Are they your champion who's actively pushing this forward, or just the person who took the first meeting?",
+      "type": "textarea",
+      "placeholder": "e.g. Rachel Torres, Director of Operations. She initiated the RFP, owns the budget for this project, and has been responsive on every follow-up...",
+      "key": "contact"
+    },
+    {
+      "section": "The Buyer",
+      "text": "Who's the economic buyer — the person who actually approves the spend?",
+      "hint": "Name and title of whoever signs off on this purchase. Have you met them directly? Presented to them? Or are you relying on your contact to sell internally?",
+      "type": "textarea",
+      "placeholder": "e.g. David Kim, CFO. Rachel says he's supportive but I haven't had a direct conversation with him yet. He approved the evaluation but hasn't seen our proposal...",
+      "key": "buyer"
+    },
+    {
+      "section": "The Buyer",
+      "text": "Which persona best describes your main contact?",
+      "hint": "Pick the closest match — this helps tailor the coaching to how that type of buyer typically makes decisions.",
+      "type": "select",
+      "options": [
+        "C-Suite Executive",
+        "VP / Director",
+        "Manager / Team Lead",
+        "Technical Decision Maker",
+        "Procurement / Purchasing",
+        "End User / Champion"
+      ],
+      "key": "persona"
+    },
+    {
+      "section": "The Buyer",
+      "text": "What kind of organization are you selling into?",
+      "hint": "Company size and sector — this changes the playbook significantly.",
+      "type": "select",
+      "options": [
+        "Enterprise (5000+ employees)",
+        "Mid-Market (500-5000 employees)",
+        "Small Business (under 500 employees)",
+        "Government / Public Sector",
+        "Education / Non-Profit",
+        "General B2B"
+      ],
+      "key": "vertical"
+    },
+    {
+      "section": "The Problem",
+      "text": "What problem or pain is driving this purchase?",
+      "hint": "Why are they buying now? What broke, what changed, or what's costing them money? A specific trigger is gold — 'we've always needed this' is a red flag.",
+      "type": "textarea",
+      "placeholder": "e.g. They lost a major client because their fulfillment times were 3x the industry average. The CEO put out a mandate to fix operations by Q3 or heads will roll...",
+      "key": "pain"
+    },
+    {
+      "section": "The Problem",
+      "text": "Have they quantified the cost of doing nothing?",
+      "hint": "Is there an actual dollar figure or business impact tied to the problem? Or is it still 'we should probably fix this someday'?",
+      "type": "select",
+      "options": [
+        "Yes — documented with real numbers",
+        "Rough estimate discussed",
+        "Vague sense it would help",
+        "No — it's still a nice-to-have"
+      ],
+      "key": "bizcase"
+    },
+    {
+      "section": "The Process",
+      "text": "What's their decision process and who's involved?",
+      "hint": "Walk me through how they buy. Is there a formal RFP? A committee? Legal review? Multiple approvals? Or is one person calling the shots?",
+      "type": "textarea",
+      "placeholder": "e.g. Rachel owns the evaluation, the CFO has final budget approval, and anything over $100K needs board sign-off. They also require three competitive bids as policy...",
+      "key": "process"
+    },
+    {
+      "section": "The Process",
+      "text": "What's the timeline — is there a compelling event forcing a decision?",
+      "hint": "Is something creating urgency? A deadline, a contract expiration, a regulatory requirement, a new facility opening, budget that expires? Or is this open-ended?",
+      "type": "textarea",
+      "placeholder": "e.g. They're opening a new regional office in September and need everything in place by August 1. The budget was approved for this fiscal year and doesn't roll over...",
+      "key": "timeline"
+    },
+    {
+      "section": "The Competition",
+      "text": "Who else are they evaluating, or what's the alternative?",
+      "hint": "Other vendors in the mix, doing it in-house, or the 'do nothing and live with it' path. Be honest about where you stand relative to alternatives.",
+      "type": "textarea",
+      "placeholder": "e.g. They got proposals from two other vendors. One is cheaper but doesn't offer installation services. The other is a big national brand but their lead times are 12 weeks vs. our 6...",
+      "key": "competition"
+    },
+    {
+      "section": "The Competition",
+      "text": "Have they seen proof that your solution works — a demo, sample, pilot, or reference?",
+      "hint": "Have they experienced your product or service firsthand, or just heard the pitch? Proof points are the single biggest predictor of deal conversion.",
+      "type": "select",
+      "options": [
+        "Yes — proof delivered with positive results",
+        "Proof in progress (pilot, trial, sample)",
+        "Presentation or demo only — no firsthand experience",
+        "No direct exposure yet"
+      ],
+      "key": "poc"
+    },
+    {
+      "section": "The Close",
+      "text": "Multi-threading — how many people on their side are engaged?",
+      "hint": "Deals that depend on a single person die when that person goes dark, gets reassigned, or leaves. How deep are your relationships in this account?",
+      "type": "select",
+      "options": [
+        "4+ contacts across departments",
+        "2-3 contacts in the same team",
+        "Single-threaded — one contact only"
+      ],
+      "key": "threads"
+    },
+    {
+      "section": "The Close",
+      "text": "Gut check — how confident are you this deal closes on time?",
+      "hint": "Be real. Not what you told your manager on the forecast call — what you actually believe when nobody's listening.",
+      "type": "select",
+      "options": [
+        "Very confident — 80%+",
+        "Cautiously optimistic — 50-80%",
+        "Uncertain — 25-50%",
+        "Not confident — under 25%"
+      ],
+      "key": "confidence"
+    }
+  ],
+  "personas": {
+    "C-Suite Executive": "The C-Suite buyer (CEO, COO, CFO, CTO) is focused on strategic impact, risk, and ROI. They don't care about feature lists — they care about how your solution moves a business needle. They think in terms of revenue growth, cost reduction, competitive advantage, and risk mitigation. If you can't connect your offering to one of those four things in the first two minutes, you've lost them.\n\nC-Suite executives have limited time and zero patience for vendor pitches that don't respect that. Your meetings will be short, often 30 minutes or less. They'll ask pointed questions: 'What's the business impact?' 'What's the risk of doing this versus not doing it?' 'Why now?' They may delegate the detailed evaluation to their team but reserve veto power on the final decision. If you never get in front of the C-Suite, your deal is at the mercy of someone else's ability to sell internally.\n\nTo win this persona, lead with business outcomes and social proof from peers. A CFO wants to hear what other CFOs experienced. A CEO wants to know which competitors are already using your solution. Bring a one-page executive summary, not a 40-slide deck. Be concise, be direct, and be prepared for the question: 'Why should I prioritize this over the other 15 things on my plate?' If you can answer that credibly, you've got an executive sponsor.",
+    "VP / Director": "The VP or Director is typically the person who owns the problem your solution addresses. They're the ones feeling the pain daily — missed deadlines, rising costs, unhappy clients, overwhelmed teams. They initiated the search for a solution because the status quo is no longer sustainable, and they need to show their leadership that they're fixing it.\n\nThis persona is your most likely champion. They have enough authority to drive an evaluation, influence budget allocation, and present a recommendation to the C-Suite. But they may not have final sign-off authority — especially for purchases above a certain threshold. They need you to help them build the internal case: ROI justification, risk analysis, implementation plan, and a clear narrative for why your solution beats the alternatives.\n\nTo win this persona, become their strategic partner, not just a vendor. Help them quantify the problem in terms their CFO cares about. Provide them with materials they can use internally — a business case template, ROI calculator, competitive comparison, or implementation timeline. Understand that their reputation is on the line: if they champion your solution and it fails, that's a career setback. Reduce their risk by offering references from similar companies, phased implementation options, and clear success metrics. When they trust that you'll make them look good, they'll fight for your deal.",
+    "Manager / Team Lead": "The Manager or Team Lead is the day-to-day user or the person whose team will be directly impacted by your solution. They care about practicality: Will this actually work in our environment? How painful is the transition? Will my team adopt it or resist it? They're less interested in strategic vision and more interested in 'show me how this works on a Tuesday afternoon.'\n\nThis persona often surfaces during the evaluation phase. They'll test your product, ask detailed questions about workflow integration, and compare your solution to what they're currently using. Their feedback carries significant weight because leadership knows that a solution the team won't adopt is worthless regardless of its ROI on paper.\n\nTo win this persona, let them get hands-on as early as possible. Don't oversell — be honest about limitations and transition effort. Show them what their first week looks like after implementation. Bring case studies from similar teams at similar companies: 'A 15-person operations team at a logistics company went live in 3 weeks and reduced their processing time by 40%.' Address change management head-on. If they become your internal advocate, they'll influence the decision far more than your sales pitch ever could — because they're the credible voice of 'I tried it and it works.'",
+    "Technical Decision Maker": "The Technical Decision Maker (IT Director, Solutions Architect, Engineering Lead) evaluates your offering through the lens of integration, security, reliability, and long-term maintainability. They want to know how your solution fits into their existing technology stack, what the implementation requirements are, and what ongoing maintenance looks like.\n\nExpect detailed questions about APIs, data formats, security certifications, uptime guarantees, disaster recovery, and support response times. They've been burned by vendors who promised seamless integration and delivered months of custom development. They'll ask for architecture diagrams, technical documentation, and references from similar technical environments.\n\nTo win this persona, come prepared with technical depth. Have your solutions engineer or technical lead on the call. Provide documentation proactively — don't make them ask twice. Be honest about what integrations exist natively versus what requires custom work. If there's a limitation, own it and explain the workaround. Technical buyers respect transparency and despise hand-waving. If they trust your technical credibility, they'll green-light the deal from a technical perspective. If they don't, they'll quietly kill it with a 'not recommended' assessment that no executive will override.",
+    "Procurement / Purchasing": "Procurement's job is to reduce cost, mitigate risk, and ensure the contract protects the organization. They typically enter the deal after the business decision has been made, and their involvement can add 2-6 weeks to your timeline. They may not understand your product at all — they're evaluating commercial terms, not capabilities.\n\nExpect them to challenge your pricing, request competitive bids (even if the team already chose you), push for extended payment terms, and redline your contract. Common demands include: lower unit pricing, Net-60 or Net-90 payment terms, removal of auto-renewal clauses, increased liability caps, and right-to-audit provisions. They'll also want insurance certificates, W-9s, and vendor registration in their procurement system.\n\nTo manage procurement effectively, get ahead of the process. Ask your champion early: 'What does your purchasing process look like? Can we start the paperwork in parallel with the evaluation?' Provide a clean, professional proposal and contract that minimizes redline opportunities. Give procurement a small win early — a minor concession on payment terms or a volume discount — so they can demonstrate value to their organization. Never negotiate with procurement without your champion's backing, and never give a concession without getting something in return: faster signature, longer commitment, case study rights, or a reference agreement.",
+    "End User / Champion": "The End User or Champion is the person who will interact with your product or service most directly. They're the one who raised their hand and said 'there has to be a better way.' Their enthusiasm (or resistance) will determine whether your solution gets adopted or sits unused. In many deals, this person is your greatest asset — they sell harder than any rep because they have credibility their colleagues trust.\n\nThis persona evaluates you based on real-world usability. During a pilot or trial, they'll test edge cases, compare you to their current process, and form opinions fast. They don't care about your company's funding round or your executive team's pedigree — they care about whether your solution saves them time, reduces frustration, and makes them look competent. If your solution adds complexity to their day, they'll tell their boss it doesn't work, and your deal is dead.\n\nTo win this persona, invest in their success. Give them dedicated support during evaluation. Train them properly — not with a generic webinar, but with hands-on guidance tailored to their specific use case. Celebrate their wins and help them present results to leadership. When they succeed with your solution, help them tell that story internally. A champion who can walk into their VP's office and say 'I've been using this for two weeks and here's what it did for our team' is worth more than any slide deck or ROI model you could build."
+  },
+  "verticals": {
+    "Enterprise (5000+ employees)": "Enterprise organizations are high-value, high-complexity buyers. Sales cycles typically run 4-9 months and involve 6-12 stakeholders across business units, finance, legal, IT, procurement, and sometimes the C-Suite. Budget usually isn't the constraint — process is. These organizations have formal vendor evaluation frameworks, approval hierarchies, and compliance requirements that must be navigated methodically.\n\nExpect multiple rounds of evaluation: business case review, technical assessment, legal and contract negotiation, procurement processing, and executive approval. Each stage has its own stakeholders and timeline. The deal can stall at any point — a budget freeze, a reorganization, a key stakeholder leaving, or a legal term your team won't agree to.\n\nEnterprise deals reward patience, thoroughness, and multi-threading. Map the entire buying committee in your first 30 days. Build relationships at multiple levels so your deal survives personnel changes. Provide executive-grade materials: business case summaries, ROI analyses, and implementation roadmaps. The payoff is significant — enterprise deals are typically 5-10x larger than mid-market, and these accounts tend to expand over time if you deliver on your promises.",
+    "Mid-Market (500-5000 employees)": "Mid-market companies are the sweet spot for many sellers. They're large enough to have real budget and complex problems, but nimble enough that deals don't take 9 months to close. Typical buying cycles run 45-90 days. These companies are often growing fast and feeling the pain of outgrowing their current tools, processes, or vendor relationships.\n\nDecision-making is concentrated: usually 2-5 people involved. A VP or Director who owns the problem area often has budget authority, with a finance sign-off for larger purchases. Evaluation processes exist but are less formal than enterprise — you might get a structured RFP or just a series of meetings and a proposal request.\n\nThe risk with mid-market deals is that priorities shift fast. These companies are resource-constrained, so 'the team got pulled into a fire drill' is a real reason your deal goes dark for weeks. Keep momentum high with clear next steps after every interaction. Don't over-engineer your proposal — they want fast time-to-value and a vendor who treats them like a priority, not an afterthought.",
+    "Small Business (under 500 employees)": "Small businesses buy fast but watch every dollar. Decisions are often made by the owner, a single executive, or a small leadership team. There's rarely a formal procurement process — the person you're talking to is often the person who signs the check. The upside is speed: you can go from first conversation to closed deal in 1-4 weeks.\n\nThe downside is smaller deal sizes, higher price sensitivity, and a lower tolerance for complexity. Small businesses want solutions that work out of the box without extensive customization, implementation projects, or training programs. They'll compare you to cheaper alternatives and may ask for discounts, payment plans, or 'can we start with just the basic package?'\n\nThe play with small businesses is to make buying easy and make the ROI obvious fast. Streamline your proposal, reduce friction in the purchasing process, and demonstrate value within the first 30 days. These accounts can be highly loyal — small businesses that find a vendor they trust tend to stick around and refer others. But they can also churn quickly if they don't see immediate value or if your pricing increases feel unjustified.",
+    "Government / Public Sector": "Government and public sector sales follow rigid procurement rules that are fundamentally different from commercial sales. Purchases often require formal RFPs/RFQs, competitive bidding, and adherence to specific regulations (FAR clauses for federal, state-specific procurement codes for state/local). The process is transparent but slow — sales cycles of 6-18 months are common.\n\nBudget cycles are fixed and predictable but inflexible. If you miss the budget window, you're waiting until the next fiscal year. Government buyers can't accept gifts, dinners, or trips — relationship-building happens through consistent, reliable engagement over time. They value vendors who understand their constraints: compliance requirements, accessibility standards (Section 508), data sovereignty, and approved vendor lists.\n\nTo succeed in government sales, learn the procurement process for your target agencies before you start selling. Get on relevant contract vehicles (GSA Schedule, BPAs, GWACs) that simplify purchasing for the buyer. Invest in certifications and compliance documentation. And be patient — government deals take longer but often come with multi-year contracts, predictable revenue, and strong retention because switching vendors requires going through the entire procurement cycle again.",
+    "Education / Non-Profit": "Education institutions and non-profits operate under tight budget constraints with complex stakeholder dynamics. Universities have department heads, deans, provosts, and board approval processes. Non-profits have executive directors, boards of directors, and grant-funded budgets with specific spending restrictions. Both tend to have long decision cycles and a strong preference for vendors who offer discounted or special pricing for their sector.\n\nPurchasing decisions in education often follow academic calendar cycles — budget requests in spring, approvals in summer, implementation in fall. Non-profits may time purchases around grant cycles or annual fundraising results. Both sectors are highly reference-driven: they'll ask 'Who else in our space uses this?' and will check with peer institutions before committing.\n\nTo win in education and non-profit, lead with mission alignment and peer references. Show that you understand their unique constraints — limited IT staff, diverse user populations, accessibility requirements, and the need to demonstrate responsible use of funds. Offer flexible pricing, phased implementations, and strong onboarding support. These organizations are loyal customers when they find vendors who genuinely understand their world, but they'll drop you quickly if they feel like an afterthought compared to your commercial clients.",
+    "General B2B": "General B2B companies span a wide range of industries — from manufacturing and distribution to professional services, retail, and everything in between. Buying behaviors vary significantly based on company maturity, industry norms, and the specific purchase category. A family-owned distributor buys very differently from a venture-backed tech company, even if they're the same size.\n\nThe typical B2B purchase involves 3-6 stakeholders and takes 30-90 days for standard purchases. Larger or more strategic purchases can extend to 4-6 months. Standard considerations include: fit with existing operations, implementation effort, vendor reliability, and total cost of ownership. Many B2B companies still rely on relationships and referrals when choosing vendors, so references and reputation matter enormously.\n\nWhen selling into general B2B, your first job is to understand their specific buying process. Ask early: 'Walk me through how you've made purchases like this before. Who needs to be involved and what does the approval process look like?' This single question saves you weeks of surprises. Don't assume every company works the same way — the rep who maps the process early and adapts their approach closes faster than the one who runs a generic playbook."
+  },
+  "industryKnowledge": "The average B2B sales cycle length is 45-90 days for mid-market deals and 4-9 months for enterprise deals. These benchmarks span industries — from technology and professional services to manufacturing and distribution. If your deal is significantly exceeding the typical cycle for its size without a clear reason (like government procurement or a compliance review), it's likely stalled, not 'still in progress.'\n\nThe average B2B purchase now involves 6-10 decision-makers (Gartner). In complex enterprise sales, that number can climb to 11+. Single-threaded deals — where you're relying on one champion — have a close rate roughly 40% lower than multi-threaded deals with 3+ engaged contacts. This is true whether you're selling software, equipment, consulting services, or office furniture.\n\n60% of forecast deals that are lost are lost to 'no decision,' not to a competitor. The biggest threat to your deal isn't the other vendor — it's inertia, competing priorities, and budget reallocation. This is why a quantified business case and a compelling event are critical regardless of what you sell. If the buyer can't articulate why they need to act now, they probably won't.\n\nProof of value is the single strongest predictor of deal conversion across all industries. Whether it's a product demo, a pilot program, a sample delivery, a reference visit, or a proof-of-concept project — deals where the buyer has firsthand experience with your solution close at 2-3x the rate of deals based on presentations alone. Getting the prospect to experience your solution should be a top priority in every mid-funnel deal.\n\nPricing and discounting norms vary by industry but follow universal patterns. Standard negotiated discounts run 10-20% off list price for straightforward deals. Larger commitments (multi-year, higher volume) justify 20-30% discounts. Discounting beyond 30% signals desperation and erodes your pricing credibility. Always trade a discount for something: a longer commitment, faster signature, case study rights, a referral, or expanded scope.\n\nThe procurement gauntlet: In companies with formal purchasing departments, procurement involvement adds 2-6 weeks to the sales cycle. Common procurement tactics include: requesting competitive bids (even after a decision is made), pushing for extended payment terms (Net-60 or Net-90), challenging unit pricing, and redlining contracts. Prepare for these conversations before they happen. Ask your champion early: 'What does your purchasing process look like and when should we start the paperwork?'\n\nChampion risk is universal: In B2B sales, your primary contact changes roles, gets promoted, or leaves the company in roughly 20% of active deal cycles. Average tenure for mid-level managers is 3-4 years, meaning turnover is a constant threat. Multi-threading isn't optional — it's insurance. If your champion left tomorrow, would anyone else at the account advocate for your deal?\n\nBudget timing matters more than most reps realize. Most B2B companies operate on annual budget cycles (calendar year or fiscal year). If your deal doesn't align with their budget cycle, you're either fighting for discretionary spend or waiting until next year. Ask early: 'Is there approved budget for this, or are we building a case for next year's budget?' This qualification question alone prevents months of wasted effort on deals that were never going to close in your timeframe.\n\nThe power of a mutual action plan: Deals with a documented, shared timeline of next steps (evaluation milestones, decision dates, implementation kickoff) close at significantly higher rates than deals managed through ad hoc emails and 'let's circle back next week.' Create a simple shared document that maps out every step from current state to signed contract, with owners and dates. This creates accountability on both sides and makes deal slippage visible before it becomes fatal.\n\nReference selling is underutilized across every industry. Buyers trust peers more than vendors — always. Having 2-3 referenceable customers in a similar industry, company size, or use case is one of the most powerful sales tools available. If you don't have a direct reference match, find the closest analog and frame it well: 'They're in a different industry but had the exact same operational challenge you're describing.' A strong reference call at the right moment in the sales cycle can accelerate a decision by weeks.",
+  "healthFactors": [
+    {
+      "key": "hbiz",
+      "name": "Business Case",
+      "description": "Is there a quantified, documented reason to buy? Have they connected the problem to real dollars — revenue at risk, costs mounting, or opportunities slipping away?",
+      "weight": 20
+    },
+    {
+      "key": "hbuyer",
+      "name": "Economic Buyer Access",
+      "description": "Have you identified and engaged the person who controls budget? Have they expressed support, or are you still pitching through a proxy who 'thinks they'll approve it'?",
+      "weight": 18
+    },
+    {
+      "key": "hchamp",
+      "name": "Champion Strength",
+      "description": "Do you have an internal champion who's actively advocating for your solution when you're not in the room? Can they navigate their own organization's politics?",
+      "weight": 16
+    },
+    {
+      "key": "hproof",
+      "name": "Proof of Value",
+      "description": "Has the buyer experienced your solution firsthand — through a demo, pilot, sample, trial, or reference? Were the results positive and acknowledged?",
+      "weight": 16
+    },
+    {
+      "key": "hprocess",
+      "name": "Decision Process Clarity",
+      "description": "Do you know exactly who's involved in the decision, what the steps are, and what timeline they're working against? Or are you guessing at the process?",
+      "weight": 12
+    },
+    {
+      "key": "hcomp",
+      "name": "Competitive Position",
+      "description": "Where do you stand versus alternatives — other vendors, in-house options, or the 'do nothing' path? Are you the frontrunner or fighting from behind?",
+      "weight": 10
+    },
+    {
+      "key": "hmomentum",
+      "name": "Deal Velocity / Momentum",
+      "description": "Is this deal moving forward with consistent next steps, or has it stalled? Are meetings happening on schedule or getting pushed? Is energy increasing or fading?",
+      "weight": 8
+    }
+  ],
+  "scoringRules": {
+    "bizcase": {
+      "field": "bizcase",
+      "label": "Business Case Strength",
+      "rules": [
+        { "value": "Yes — documented with real numbers", "points": 20, "factor": "hbiz", "note": "Strong quantified business case in place" },
+        { "value": "Rough estimate discussed", "points": 12, "factor": "hbiz", "note": "Directional ROI discussed but not fully documented" },
+        { "value": "Vague sense it would help", "points": 5, "factor": "hbiz", "note": "No concrete business case — deal is vulnerable to 'no decision'" },
+        { "value": "No — it's still a nice-to-have", "points": 0, "factor": "hbiz", "note": "No business urgency — this deal will stall without intervention" }
+      ]
+    },
+    "confidence": {
+      "field": "confidence",
+      "label": "Rep Confidence Level",
+      "rules": [
+        { "value": "Very confident — 80%+", "points": 10, "factor": "hmomentum", "note": "High confidence — verify this isn't happy ears" },
+        { "value": "Cautiously optimistic — 50-80%", "points": 6, "factor": "hmomentum", "note": "Moderate confidence — identify and address the gap" },
+        { "value": "Uncertain — 25-50%", "points": 3, "factor": "hmomentum", "note": "Low confidence — deal needs a reset or qualification check" },
+        { "value": "Not confident — under 25%", "points": 0, "factor": "hmomentum", "note": "Very low confidence — consider whether this belongs in pipeline" }
+      ]
+    },
+    "poc": {
+      "field": "poc",
+      "label": "Proof of Value Status",
+      "rules": [
+        { "value": "Yes — proof delivered with positive results", "points": 16, "factor": "hproof", "note": "Validated solution fit — strong close indicator" },
+        { "value": "Proof in progress (pilot, trial, sample)", "points": 10, "factor": "hproof", "note": "In evaluation — focus on driving a positive outcome and defined success criteria" },
+        { "value": "Presentation or demo only — no firsthand experience", "points": 4, "factor": "hproof", "note": "No firsthand validation — push for a pilot, trial, or proof of concept" },
+        { "value": "No direct exposure yet", "points": 0, "factor": "hproof", "note": "Prospect hasn't experienced your solution — deal is early stage regardless of what they say" }
+      ]
+    },
+    "threads": {
+      "field": "threads",
+      "label": "Multi-threading Depth",
+      "rules": [
+        { "value": "4+ contacts across departments", "points": 12, "factor": "hchamp", "note": "Well multi-threaded — deal has organizational support and champion insurance" },
+        { "value": "2-3 contacts in the same team", "points": 6, "factor": "hchamp", "note": "Partially threaded — expand to other stakeholders and the economic buyer's orbit" },
+        { "value": "Single-threaded — one contact only", "points": 0, "factor": "hchamp", "note": "Single-threaded — highest risk factor in B2B deals. Expand immediately." }
+      ]
+    }
+  }
+}

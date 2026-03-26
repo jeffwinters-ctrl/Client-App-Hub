@@ -216,6 +216,13 @@ app.post('/api/admin/clients', requireAdmin, async (req, res) => {
       poweredBy: client.poweredBy || 'Sapper',
       apps: client.apps || ['dealcheck'],
       formspreeUrl: client.formspreeUrl || '',
+      website: client.website || '',
+      productDescription: client.productDescription || '',
+      targetBuyers: client.targetBuyers || '',
+      avgDealSize: client.avgDealSize || '',
+      salesCycle: client.salesCycle || '',
+      competitors: client.competitors || '',
+      differentiators: client.differentiators || '',
       context: client.context || ''
     };
     if (supabase) {
@@ -280,6 +287,65 @@ app.post('/api/admin/set-password', requireAdmin, async (req, res) => {
     if (error) throw error;
     res.json({ success: true });
   } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ─── WEBSITE ANALYZER ────────────────────────────────────
+
+app.post('/api/admin/analyze-website', requireAdmin, async (req, res) => {
+  try {
+    const { url } = req.body;
+    if (!url) return res.status(400).json({ error: 'URL is required' });
+
+    // Fetch website content
+    let pageText = '';
+    try {
+      const response = await fetch(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SapperBot/1.0)' },
+        signal: AbortSignal.timeout(10000)
+      });
+      const html = await response.text();
+      pageText = html
+        .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+        .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+        .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, '')
+        .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .substring(0, 6000);
+    } catch (e) {
+      return res.status(400).json({ error: 'Could not fetch website: ' + e.message });
+    }
+
+    const industries = fs.readdirSync(path.join(__dirname, 'industries'))
+      .filter(f => f.endsWith('.json'))
+      .map(f => f.replace('.json', ''));
+
+    const systemPrompt = `You are a sales operations analyst. Given website content, extract a company profile for a sales enablement platform. Return ONLY valid JSON matching this schema:
+{
+  "companyName": "The company's official name",
+  "industry": "Best match from: ${industries.join(', ')}",
+  "productDescription": "2-3 sentences describing what they sell (products/services)",
+  "targetBuyers": "Who their sales reps typically sell to (job titles, company types)",
+  "avgDealSize": "Estimated deal size range based on their market (e.g. $50K-$200K)",
+  "salesCycle": "Estimated sales cycle length (e.g. 3-6 months)",
+  "competitors": "2-4 likely competitors based on their space",
+  "differentiators": "2-3 key differentiators or value props visible from their site",
+  "context": "A rich 3-4 sentence summary an AI sales coach would need to give great advice to their reps. Include what they sell, to whom, typical objections they might face, and what makes them unique."
+}
+RULES:
+- If you can't determine a field, use your best estimate based on the industry and company type
+- For industry, pick the closest match from the list. Use "general" if none fit well
+- Be specific and practical — this data trains an AI coach for their sales team
+- Return ONLY the JSON object`;
+
+    const raw = await callClaude(systemPrompt, `Website content from ${url}:\n\n${pageText}`, 1000);
+    const profile = extractJSON(raw);
+    res.json({ profile });
+  } catch (e) {
+    console.error('Website analyze error:', e);
     res.status(500).json({ error: e.message });
   }
 });
@@ -358,7 +424,8 @@ app.get('/:slug/dealcheck', requireAuth, async (req, res) => {
   const client = await getClient(req.params.slug);
   if (!client) return res.status(404).send(renderTemplate('404.html', {}));
   if (!client.apps.includes('dealcheck')) return res.status(403).send('App not available');
-  const industry = loadIndustry(client.industry);
+  let industry = loadIndustry(client.industry);
+  if (!industry) industry = loadIndustry('general');
   if (!industry) return res.status(500).send('Industry config missing');
   logEvent(client.slug, 'dealcheck', 'app_open', {}, req);
   res.send(renderTemplate('dealcheck.html', {
@@ -414,6 +481,19 @@ app.get('/:slug/linkedin-post', requireAuth, async (req, res) => {
 });
 
 // ─── AI API PROXIES ──────────────────────────────────────
+
+function buildClientContext(client) {
+  const parts = [];
+  parts.push(`Company: ${client.companyName}`);
+  if (client.productDescription) parts.push(`Product/Service: ${client.productDescription}`);
+  if (client.targetBuyers) parts.push(`Target Buyers: ${client.targetBuyers}`);
+  if (client.avgDealSize) parts.push(`Average Deal Size: ${client.avgDealSize}`);
+  if (client.salesCycle) parts.push(`Typical Sales Cycle: ${client.salesCycle}`);
+  if (client.competitors) parts.push(`Key Competitors: ${client.competitors}`);
+  if (client.differentiators) parts.push(`Key Differentiators: ${client.differentiators}`);
+  if (client.context) parts.push(`Additional Context: ${client.context}`);
+  return parts.join('\n');
+}
 
 function extractJSON(text) {
   let cleaned = text.trim();
@@ -472,7 +552,7 @@ INDUSTRY KNOWLEDGE:
 ${industryConfig.industryKnowledge || ''}
 
 CLIENT CONTEXT:
-${clientConfig.context || ''}
+${buildClientContext(clientConfig)}
 
 ${persona ? `PERSONA INSIGHT:\n${persona}` : ''}
 ${vertical ? `VERTICAL CONTEXT:\n${vertical}` : ''}
@@ -546,7 +626,7 @@ app.post('/api/business-case', async (req, res) => {
     const systemPrompt = `You are a senior business analyst and sales strategist who specializes in building compelling ROI business cases. You write business cases that CFOs and procurement teams actually read and approve. Your tone is professional but persuasive — you use real numbers, specific outcomes, and credible benchmarks.
 
 CLIENT CONTEXT:
-${clientConfig.context || ''}
+${buildClientContext(clientConfig)}
 
 Return ONLY valid JSON matching this schema:
 {
@@ -611,7 +691,7 @@ app.post('/api/linkedin-post', async (req, res) => {
     const systemPrompt = `You are a LinkedIn content strategist who specializes in B2B sales thought leadership. You write posts that get engagement because they're genuine, insightful, and avoid the cringe-worthy "broetry" style. You know what works on LinkedIn in 2025: authentic stories, contrarian takes, practical advice, and vulnerability.
 
 CLIENT CONTEXT:
-${clientConfig.context || ''}
+${buildClientContext(clientConfig)}
 
 Return ONLY valid JSON matching this schema:
 {

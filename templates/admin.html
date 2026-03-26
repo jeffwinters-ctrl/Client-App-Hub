@@ -218,6 +218,19 @@
             <h3 id="formTitle">Add New Client</h3>
             <form id="clientForm" onsubmit="saveClient(event)">
               <input type="hidden" id="cf_editing" value="">
+
+              <!-- Website Auto-Analyze -->
+              <div style="margin-bottom:20px;padding:16px 20px;background:var(--bg);border-radius:8px;border:1px solid var(--rule);">
+                <div class="detail-label" style="margin-bottom:8px;">Quick Setup — Paste a website to auto-fill</div>
+                <div style="display:flex;gap:8px;">
+                  <input class="cf-input" type="url" id="cf_website" placeholder="https://www.clientcompany.com" style="flex:1;margin-top:0;">
+                  <button type="button" class="btn-add-client" id="btnAnalyze" onclick="analyzeWebsite()" style="white-space:nowrap;">Analyze Website</button>
+                </div>
+                <div class="pw-msg" id="analyzeMsg" style="margin-top:6px;"></div>
+              </div>
+
+              <!-- Basic Info -->
+              <div style="margin-bottom:6px;"><div class="section-title" style="font-size:0.75rem;">Basic Info</div></div>
               <div class="detail-grid" style="margin-bottom:16px;">
                 <div class="detail-item">
                   <div class="detail-label">Company Name *</div>
@@ -246,6 +259,8 @@
                   <input class="cf-input" type="text" id="cf_poweredBy" placeholder="Sapper" value="Sapper">
                 </div>
               </div>
+
+              <!-- Apps -->
               <div style="margin-bottom:16px;">
                 <div class="detail-label">Apps (check all that apply)</div>
                 <div style="display:flex;gap:16px;margin-top:8px;">
@@ -260,13 +275,44 @@
                   </label>
                 </div>
               </div>
+
+              <!-- Company Profile -->
+              <div style="margin-bottom:6px;margin-top:24px;"><div class="section-title" style="font-size:0.75rem;">Company Profile — This Powers the AI</div></div>
               <div style="margin-bottom:16px;">
-                <div class="detail-label">Client Context *</div>
-                <textarea class="cf-input" id="cf_context" rows="4" placeholder="Describe what they sell, who they sell to, deal sizes, competitors, differentiators..." required></textarea>
+                <div class="detail-label">What They Sell *</div>
+                <textarea class="cf-input" id="cf_productDescription" rows="2" placeholder="e.g. Predictive maintenance sensors for industrial equipment, SaaS analytics platform, office furniture for commercial spaces..." required></textarea>
               </div>
               <div style="margin-bottom:16px;">
+                <div class="detail-label">Who They Sell To *</div>
+                <textarea class="cf-input" id="cf_targetBuyers" rows="2" placeholder="e.g. Plant managers, maintenance directors at Tier 1 auto suppliers / CIOs and VP of IT at mid-market companies..."></textarea>
+              </div>
+              <div class="detail-grid" style="margin-bottom:16px;">
+                <div class="detail-item">
+                  <div class="detail-label">Average Deal Size</div>
+                  <input class="cf-input" type="text" id="cf_avgDealSize" placeholder="e.g. $80K-$150K">
+                </div>
+                <div class="detail-item">
+                  <div class="detail-label">Typical Sales Cycle</div>
+                  <input class="cf-input" type="text" id="cf_salesCycle" placeholder="e.g. 3-6 months">
+                </div>
+              </div>
+              <div style="margin-bottom:16px;">
+                <div class="detail-label">Key Competitors</div>
+                <textarea class="cf-input" id="cf_competitors" rows="2" placeholder="e.g. Honeywell, SKF, manual inspection processes / Tableau, Looker, Excel spreadsheets..."></textarea>
+              </div>
+              <div style="margin-bottom:16px;">
+                <div class="detail-label">Key Differentiators</div>
+                <textarea class="cf-input" id="cf_differentiators" rows="2" placeholder="e.g. Proprietary sensor accuracy, on-site installation support, 24/7 monitoring dashboard..."></textarea>
+              </div>
+              <div style="margin-bottom:16px;">
+                <div class="detail-label">Additional Context / Notes</div>
+                <textarea class="cf-input" id="cf_context" rows="3" placeholder="Any other context from onboarding packet, account manager notes, etc."></textarea>
+              </div>
+
+              <!-- Password & Save -->
+              <div style="margin-bottom:16px;">
                 <div class="detail-label">Initial Password</div>
-                <input class="cf-input" type="text" id="cf_password" placeholder="Set a login password for this client">
+                <input class="cf-input" type="text" id="cf_password" placeholder="Set a login password for this client (min 6 chars)">
               </div>
               <div style="display:flex;gap:10px;">
                 <button type="submit" class="btn-set-pw" id="btnSaveClient">Save Client</button>
@@ -436,10 +482,12 @@
       try {
         const res = await fetch('/api/admin/industries');
         industries = await res.json();
-      } catch (e) { industries = ['manufacturing','saas','healthcare','financial-services','construction','professional-services']; }
+      } catch (e) { industries = ['general','manufacturing','saas','healthcare','financial-services','construction','professional-services']; }
+      if (!industries.includes('general')) industries.unshift('general');
       const sel = document.getElementById('cf_industry');
       sel.innerHTML = '<option value="">Select...</option>';
-      industries.forEach(i => { const o = document.createElement('option'); o.value = i; o.textContent = i; sel.appendChild(o); });
+      const labels = { 'general': 'General (Any Industry)', 'saas': 'SaaS / Software', 'healthcare': 'Healthcare', 'manufacturing': 'Manufacturing', 'financial-services': 'Financial Services', 'construction': 'Construction', 'professional-services': 'Professional Services' };
+      industries.forEach(i => { const o = document.createElement('option'); o.value = i; o.textContent = labels[i] || i; sel.appendChild(o); });
     }
     loadIndustries();
 
@@ -461,6 +509,12 @@
       `).join('');
     }
 
+    const profileFields = ['cf_website','cf_productDescription','cf_targetBuyers','cf_avgDealSize','cf_salesCycle','cf_competitors','cf_differentiators','cf_context'];
+
+    function clearProfileFields() {
+      profileFields.forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    }
+
     function showAddClient() {
       document.getElementById('cf_editing').value = '';
       document.getElementById('formTitle').textContent = 'Add New Client';
@@ -474,9 +528,10 @@
       document.getElementById('cf_app_dealcheck').checked = true;
       document.getElementById('cf_app_bizcase').checked = true;
       document.getElementById('cf_app_linkedin').checked = true;
-      document.getElementById('cf_context').value = '';
+      clearProfileFields();
       document.getElementById('cf_password').value = '';
       document.getElementById('clientFormMsg').textContent = '';
+      document.getElementById('analyzeMsg').textContent = '';
       document.getElementById('clientFormWrap').style.display = 'block';
       document.getElementById('cf_companyName').focus();
     }
@@ -501,11 +556,57 @@
       document.getElementById('cf_app_dealcheck').checked = c.apps.includes('dealcheck');
       document.getElementById('cf_app_bizcase').checked = c.apps.includes('business-case');
       document.getElementById('cf_app_linkedin').checked = c.apps.includes('linkedin-post');
+      document.getElementById('cf_website').value = c.website || '';
+      document.getElementById('cf_productDescription').value = c.productDescription || '';
+      document.getElementById('cf_targetBuyers').value = c.targetBuyers || '';
+      document.getElementById('cf_avgDealSize').value = c.avgDealSize || '';
+      document.getElementById('cf_salesCycle').value = c.salesCycle || '';
+      document.getElementById('cf_competitors').value = c.competitors || '';
+      document.getElementById('cf_differentiators').value = c.differentiators || '';
       document.getElementById('cf_context').value = c.context || '';
       document.getElementById('cf_password').value = '';
       document.getElementById('clientFormMsg').textContent = '';
+      document.getElementById('analyzeMsg').textContent = '';
       document.getElementById('clientFormWrap').style.display = 'block';
       document.getElementById('cf_companyName').focus();
+    }
+
+    async function analyzeWebsite() {
+      const url = document.getElementById('cf_website').value.trim();
+      const msg = document.getElementById('analyzeMsg');
+      const btn = document.getElementById('btnAnalyze');
+      if (!url) { msg.textContent = 'Enter a website URL first.'; msg.style.color = 'var(--red)'; return; }
+      btn.disabled = true;
+      btn.textContent = 'Analyzing...';
+      msg.textContent = 'Fetching website and generating profile — this takes 10-15 seconds...';
+      msg.style.color = 'var(--ink-light)';
+      try {
+        const res = await fetch('/api/admin/analyze-website', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url })
+        });
+        const data = await res.json();
+        if (data.error) { msg.textContent = data.error; msg.style.color = 'var(--red)'; return; }
+        const p = data.profile;
+        if (p.companyName && !document.getElementById('cf_companyName').value) document.getElementById('cf_companyName').value = p.companyName;
+        if (p.industry) document.getElementById('cf_industry').value = p.industry;
+        if (p.productDescription) document.getElementById('cf_productDescription').value = p.productDescription;
+        if (p.targetBuyers) document.getElementById('cf_targetBuyers').value = p.targetBuyers;
+        if (p.avgDealSize) document.getElementById('cf_avgDealSize').value = p.avgDealSize;
+        if (p.salesCycle) document.getElementById('cf_salesCycle').value = p.salesCycle;
+        if (p.competitors) document.getElementById('cf_competitors').value = p.competitors;
+        if (p.differentiators) document.getElementById('cf_differentiators').value = p.differentiators;
+        if (p.context) document.getElementById('cf_context').value = p.context;
+        msg.textContent = 'Profile generated! Review and edit the fields below, then save.';
+        msg.style.color = 'var(--green)';
+      } catch (e) {
+        msg.textContent = 'Error: ' + e.message;
+        msg.style.color = 'var(--red)';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Analyze Website';
+      }
     }
 
     async function saveClient(e) {
@@ -525,6 +626,13 @@
         accentColor: document.getElementById('cf_accentColor').value.trim(),
         poweredBy: document.getElementById('cf_poweredBy').value.trim(),
         apps: apps,
+        website: document.getElementById('cf_website').value.trim(),
+        productDescription: document.getElementById('cf_productDescription').value.trim(),
+        targetBuyers: document.getElementById('cf_targetBuyers').value.trim(),
+        avgDealSize: document.getElementById('cf_avgDealSize').value.trim(),
+        salesCycle: document.getElementById('cf_salesCycle').value.trim(),
+        competitors: document.getElementById('cf_competitors').value.trim(),
+        differentiators: document.getElementById('cf_differentiators').value.trim(),
         context: document.getElementById('cf_context').value.trim()
       };
 

@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{COMPANY_NAME}} — Hub</title>
+  <title>{{COMPANY_NAME}} — Sales Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
       --primary: {{PRIMARY_COLOR}};
       --accent: {{ACCENT_COLOR}};
-      --bg: #F8F7F4;
+      --bg: #F5F4F1;
       --surface: #FFFFFF;
       --ink: #1A1A1A;
       --ink-light: #6B6B6B;
@@ -22,106 +22,158 @@
       background: var(--bg);
       color: var(--ink);
       min-height: 100vh;
+      overflow-x: hidden;
     }
-    /* Header */
-    .hub-header {
+
+    /* ── Header ── */
+    .header {
       background: var(--primary);
       color: #fff;
-      padding: 0 32px;
-      height: 56px;
+      padding: 0 40px;
+      height: 60px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .hub-header .brand {
+    .header-brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
-    .hub-header .brand img {
-      height: 28px;
+    .header-brand img {
+      height: 30px;
       filter: brightness(0) invert(1);
     }
-    .hub-header .brand h1 {
+    .header-brand h1 {
       font-family: 'Oswald', sans-serif;
       font-size: 1rem;
       font-weight: 500;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
     }
-    .hub-header .header-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      font-size: 0.85rem;
-    }
-    .btn-logout {
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.25);
+    .btn-sign-out {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
       color: #fff;
-      padding: 6px 16px;
-      border-radius: 6px;
+      padding: 8px 20px;
+      border-radius: 8px;
       font-family: 'Source Sans 3', sans-serif;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
+      font-weight: 500;
       cursor: pointer;
       transition: background 0.2s;
     }
-    .btn-logout:hover { background: rgba(255,255,255,0.25); }
+    .btn-sign-out:hover { background: rgba(255,255,255,0.22); }
 
-    /* Main content */
-    .hub-main {
-      max-width: 960px;
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--primary) 65%, #000) 100%);
+      color: #fff;
+      padding: 64px 40px 72px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -40%;
+      left: -5%;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: 900px;
       margin: 0 auto;
-      padding: 48px 24px;
+      position: relative;
+      z-index: 1;
     }
-    .welcome {
-      margin-bottom: 40px;
-    }
-    .welcome h2 {
-      font-family: 'Oswald', sans-serif;
-      font-size: 2rem;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-      margin-bottom: 8px;
-    }
-    .welcome p {
-      color: var(--ink-light);
-      font-size: 1.05rem;
-      font-family: 'Source Serif 4', serif;
-      font-style: italic;
-    }
-    .section-label {
+    .hero-greeting {
       font-family: 'Oswald', sans-serif;
       font-size: 0.8rem;
       font-weight: 500;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: var(--ink-light);
-      margin-bottom: 16px;
+      opacity: 0.7;
+      margin-bottom: 12px;
+    }
+    .hero-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .hero-title em {
+      font-family: 'Source Serif 4', serif;
+      font-style: italic;
+      color: var(--accent);
+    }
+    .hero-subtitle {
+      font-family: 'Source Serif 4', serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      opacity: 0.8;
+      max-width: 500px;
     }
 
-    /* App Grid */
+    /* ── Main Content ── */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px;
+      position: relative;
+      z-index: 2;
+      margin-top: -32px;
+    }
+
+    /* ── App Grid ── */
     .app-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
     }
     .app-card {
       background: var(--surface);
       border: 1px solid var(--rule);
-      border-radius: 12px;
-      padding: 28px 24px;
+      border-radius: 16px;
+      padding: 36px 32px 32px;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
       text-decoration: none;
       color: inherit;
-      display: block;
+      display: flex;
+      flex-direction: column;
       position: relative;
       overflow: hidden;
+      min-height: 260px;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: cardIn 0.5s ease forwards;
+    }
+    .app-card:nth-child(1) { animation-delay: 0.1s; }
+    .app-card:nth-child(2) { animation-delay: 0.2s; }
+    .app-card:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes cardIn {
+      to { opacity: 1; transform: translateY(0); }
     }
     .app-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.05);
+      border-color: var(--accent);
     }
     .app-card::before {
       content: '';
@@ -129,86 +181,178 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 3px;
-      background: var(--accent);
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 60%, var(--primary)));
+      opacity: 0;
+      transition: opacity 0.25s ease;
     }
-    .app-card .app-icon {
-      width: 44px;
-      height: 44px;
-      background: var(--primary);
-      border-radius: 10px;
+    .app-card:hover::before { opacity: 1; }
+
+    .app-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 16px;
-      font-size: 1.3rem;
+      margin-bottom: 20px;
+      flex-shrink: 0;
     }
-    .app-card h3 {
+    .app-icon svg {
+      width: 30px;
+      height: 30px;
+    }
+    .app-icon.icon-dealcheck {
+      background: linear-gradient(135deg, #FF6B35, #E8A020);
+    }
+    .app-icon.icon-business-case {
+      background: linear-gradient(135deg, #2E86DE, #54A0FF);
+    }
+    .app-icon.icon-linkedin-post {
+      background: linear-gradient(135deg, #8854D0, #A55EEA);
+    }
+    .app-icon.icon-default {
+      background: var(--primary);
+    }
+
+    .app-name {
       font-family: 'Oswald', sans-serif;
-      font-size: 1.15rem;
-      font-weight: 500;
+      font-size: 1.3rem;
+      font-weight: 600;
       letter-spacing: 0.02em;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
-    .app-card p {
-      font-size: 0.9rem;
+    .app-desc {
+      font-size: 0.95rem;
       color: var(--ink-light);
-      line-height: 1.5;
+      line-height: 1.6;
+      flex: 1;
     }
-    .app-card .app-arrow {
-      position: absolute;
-      bottom: 24px;
-      right: 24px;
+    .app-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       color: var(--accent);
-      font-size: 1.2rem;
+      transition: gap 0.2s ease;
+    }
+    .app-card:hover .app-cta { gap: 14px; }
+    .app-cta svg {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.2s ease;
+    }
+    .app-card:hover .app-cta svg { transform: translateX(4px); }
+
+    /* ── Tip Section ── */
+    .tip-section {
+      margin-top: 48px;
+      margin-bottom: 32px;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 16px;
+      padding: 28px 32px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
       opacity: 0;
-      transition: opacity 0.2s, transform 0.2s;
+      animation: cardIn 0.5s ease 0.45s forwards;
     }
-    .app-card:hover .app-arrow {
-      opacity: 1;
-      transform: translateX(4px);
+    .tip-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 70%, var(--primary)));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
-
-    /* Footer */
-    .hub-footer {
-      text-align: center;
-      padding: 32px 24px;
-      font-size: 0.8rem;
+    .tip-icon svg { width: 22px; height: 22px; }
+    .tip-content { flex: 1; }
+    .tip-label {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .tip-text {
+      font-family: 'Source Serif 4', serif;
+      font-style: italic;
+      font-size: 1rem;
       color: var(--ink-light);
-      border-top: 1px solid var(--rule);
-      margin-top: 64px;
+      line-height: 1.6;
     }
 
-    @media (max-width: 600px) {
-      .hub-header { padding: 0 16px; }
-      .hub-main { padding: 32px 16px; }
-      .welcome h2 { font-size: 1.6rem; }
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding: 40px 24px 32px;
+      font-size: 0.78rem;
+      color: var(--ink-light);
+      letter-spacing: 0.03em;
+    }
+    .footer span {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .header { padding: 0 20px; }
+      .hero { padding: 48px 20px 56px; }
+      .hero-title { font-size: 2rem; }
+      .main { padding: 0 20px; margin-top: -24px; }
       .app-grid { grid-template-columns: 1fr; }
+      .app-card { min-height: 200px; }
+      .tip-section { flex-direction: column; gap: 12px; }
+    }
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .app-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
 <body>
-  <header class="hub-header">
-    <div class="brand">
+  <header class="header">
+    <div class="header-brand">
       <img src="{{LOGO_URL}}" alt="" onerror="this.style.display='none'">
       <h1>{{COMPANY_NAME}}</h1>
     </div>
-    <div class="header-right">
-      <button class="btn-logout" onclick="logout()">Sign Out</button>
-    </div>
+    <button class="btn-sign-out" onclick="logout()">Sign Out</button>
   </header>
 
-  <main class="hub-main">
-    <div class="welcome">
-      <h2>Welcome back</h2>
-      <p>Your sales acceleration tools, ready when you are.</p>
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-greeting" id="heroGreeting"></div>
+      <h2 class="hero-title">Welcome back to <em>{{COMPANY_NAME}}</em></h2>
+      <p class="hero-subtitle">What can we help you with today?</p>
     </div>
-    <div class="section-label">Your Tools</div>
+  </section>
+
+  <main class="main">
     <div class="app-grid" id="appGrid"></div>
+
+    <div class="tip-section" id="tipSection">
+      <div class="tip-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+      </div>
+      <div class="tip-content">
+        <div class="tip-label">Sales Tip of the Day</div>
+        <div class="tip-text" id="tipText"></div>
+      </div>
+    </div>
   </main>
 
-  <footer class="hub-footer">
-    Powered by {{POWERED_BY}}
+  <footer class="footer">
+    Powered by <span>{{POWERED_BY}}</span>
   </footer>
 
   <script>
@@ -216,43 +360,71 @@
     const SLUG = '{{SLUG}}';
     const APPS = {{APPS_JSON}};
 
+    // Time-based greeting
+    const hour = new Date().getHours();
+    let greeting = 'Good evening';
+    if (hour < 12) greeting = 'Good morning';
+    else if (hour < 17) greeting = 'Good afternoon';
+    document.getElementById('heroGreeting').textContent = greeting;
+
+    // App metadata
     const APP_META = {
       'dealcheck': {
         name: 'DealCheck',
-        icon: '\u{1F3AF}',
-        description: 'Get an AI-powered health check on any active deal. Answer a few questions, get a score, specific findings, and three plays to move it forward.'
+        iconClass: 'icon-dealcheck',
+        icon: '<svg fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+        description: 'Get an AI-powered health check on any active deal. Answer a few questions, get a score, specific findings, and three ready-to-use plays to move it forward.'
       },
       'business-case': {
         name: 'Business Case Builder',
-        icon: '\u{1F4CA}',
-        description: 'Generate a professional ROI business case your prospect can take to their CFO. Enter the deal details, get a polished document in minutes.'
+        iconClass: 'icon-business-case',
+        icon: '<svg fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>',
+        description: 'Generate a polished ROI business case your prospect can take to their CFO. Enter the deal details, get a professional document in minutes — not days.'
       },
       'linkedin-post': {
         name: 'LinkedIn Post Writer',
-        icon: '\u{1F4DD}',
-        description: 'Create engaging LinkedIn posts that position you as a thought leader. Get three different styles — story, insight, and hot take — ready to post.'
+        iconClass: 'icon-linkedin-post',
+        icon: '<svg fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>',
+        description: 'Create three engaging LinkedIn posts that position you as a thought leader. Choose from story, insight, and hot take styles — ready to copy and post.'
       }
     };
 
+    const arrowSvg = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>';
+
+    // Render cards
     const grid = document.getElementById('appGrid');
     APPS.forEach(appId => {
       const meta = APP_META[appId];
       if (!meta) return;
       const card = document.createElement('a');
       card.className = 'app-card';
-      card.href = `/${SLUG}/${appId}`;
-      card.innerHTML = `
-        <div class="app-icon">${meta.icon}</div>
-        <h3>${meta.name}</h3>
-        <p>${meta.description}</p>
-        <span class="app-arrow">\u2192</span>
-      `;
+      card.href = '/' + SLUG + '/' + appId;
+      card.innerHTML =
+        '<div class="app-icon ' + meta.iconClass + '">' + meta.icon + '</div>' +
+        '<div class="app-name">' + meta.name + '</div>' +
+        '<div class="app-desc">' + meta.description + '</div>' +
+        '<div class="app-cta">Launch ' + arrowSvg + '</div>';
       grid.appendChild(card);
     });
 
+    // Sales tips
+    const tips = [
+      "The best reps don't sell features — they sell the cost of doing nothing. Quantify the pain before you pitch the solution.",
+      "If you can't describe your prospect's problem better than they can, you haven't earned the right to propose a solution.",
+      "Multi-threading isn't optional. If your deal depends on one champion, it's one resignation away from dying.",
+      "The close doesn't happen in the last meeting — it happens in every meeting before it. Advance or die.",
+      "Procurement isn't the enemy. They have a job to do. Give them what they need and they'll help you close faster.",
+      "Your prospect's status quo is your biggest competitor. Make 'doing nothing' feel more expensive than change.",
+      "A mutual action plan with dates, owners, and milestones closes deals 38% faster than 'we'll circle back.'",
+      "Stop sending 'just checking in' emails. Every touch should deliver value — an insight, a resource, a connection.",
+      "The rep who controls the narrative controls the deal. Write the business case FOR them, don't wait for them to build it.",
+      "Ask your champion: 'If you were me, what would you do to get this across the finish line?' Then do exactly that."
+    ];
+    document.getElementById('tipText').textContent = tips[Math.floor(Math.random() * tips.length)];
+
     async function logout() {
       await fetch('/api/logout', { method: 'POST' });
-      window.location.href = `/${SLUG}/login`;
+      window.location.href = '/' + SLUG + '/login';
     }
   </script>
 </body>
