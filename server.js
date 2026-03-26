@@ -570,7 +570,7 @@ app.get('/:slug/dealcheck', requireAuth, async (req, res) => {
   res.send(renderTemplate('dealcheck.html', {
     CLIENT_CONFIG: JSON.stringify(client),
     INDUSTRY_CONFIG: JSON.stringify(industry),
-    PAGE_TITLE: `DealCheck — ${client.companyName}`,
+    PAGE_TITLE: `Deal Coach — ${client.companyName}`,
     SLUG: client.slug,
     COMPANY_NAME: client.companyName,
     PRIMARY_COLOR: client.primaryColor,
@@ -590,7 +590,7 @@ app.get('/:slug/business-case', requireAuth, async (req, res) => {
   logEvent(client.slug, 'business-case', 'app_open', {}, req);
   res.send(renderTemplate('business-case.html', {
     CLIENT_CONFIG: JSON.stringify(client),
-    PAGE_TITLE: `Business Case Builder — ${client.companyName}`,
+    PAGE_TITLE: `ROI Builder — ${client.companyName}`,
     SLUG: client.slug,
     COMPANY_NAME: client.companyName,
     PRIMARY_COLOR: client.primaryColor,
@@ -609,7 +609,7 @@ app.get('/:slug/linkedin-post', requireAuth, async (req, res) => {
   logEvent(client.slug, 'linkedin-post', 'app_open', {}, req);
   res.send(renderTemplate('linkedin-post.html', {
     CLIENT_CONFIG: JSON.stringify(client),
-    PAGE_TITLE: `LinkedIn Post Writer — ${client.companyName}`,
+    PAGE_TITLE: `Post Writer — ${client.companyName}`,
     SLUG: client.slug,
     COMPANY_NAME: client.companyName,
     PRIMARY_COLOR: client.primaryColor,
@@ -628,7 +628,7 @@ app.get('/:slug/corporate-strategy', requireAuth, async (req, res) => {
   logEvent(client.slug, 'corporate-strategy', 'app_open', {}, req);
   res.send(renderTemplate('corporate-strategy.html', {
     CLIENT_CONFIG: JSON.stringify(client),
-    PAGE_TITLE: `Corporate Strategy — ${client.companyName}`,
+    PAGE_TITLE: `Business Advisor — ${client.companyName}`,
     SLUG: client.slug,
     COMPANY_NAME: client.companyName,
     PRIMARY_COLOR: client.primaryColor,
@@ -647,7 +647,7 @@ app.get('/:slug/case-study', requireAuth, async (req, res) => {
   logEvent(client.slug, 'case-study', 'app_open', {}, req);
   res.send(renderTemplate('case-study.html', {
     CLIENT_CONFIG: JSON.stringify(client),
-    PAGE_TITLE: `Case Study Generator — ${client.companyName}`,
+    PAGE_TITLE: `Win Story Builder — ${client.companyName}`,
     SLUG: client.slug,
     COMPANY_NAME: client.companyName,
     PRIMARY_COLOR: client.primaryColor,
@@ -666,7 +666,7 @@ app.get('/:slug/trade-show', requireAuth, async (req, res) => {
   logEvent(client.slug, 'trade-show', 'app_open', {}, req);
   res.send(renderTemplate('trade-show.html', {
     CLIENT_CONFIG: JSON.stringify(client),
-    PAGE_TITLE: `Trade Show Strategy — ${client.companyName}`,
+    PAGE_TITLE: `Event Planner — ${client.companyName}`,
     SLUG: client.slug,
     COMPANY_NAME: client.companyName,
     PRIMARY_COLOR: client.primaryColor,
@@ -686,6 +686,7 @@ app.get('/:slug/industry-feed', requireAuth, async (req, res) => {
   res.send(renderTemplate('industry-feed.html', {
     CLIENT_CONFIG: JSON.stringify(client),
     PAGE_TITLE: `Industry Feed — ${client.companyName}`,
+
     SLUG: client.slug,
     COMPANY_NAME: client.companyName,
     PRIMARY_COLOR: client.primaryColor,
