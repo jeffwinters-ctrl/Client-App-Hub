@@ -395,9 +395,11 @@ app.post('/api/admin/analyze-website', requireAdmin, async (req, res) => {
     if (!url) return res.status(400).json({ error: 'URL is required' });
 
     // Fetch website content
+    let fullUrl = url;
+    if (!/^https?:\/\//i.test(fullUrl)) fullUrl = 'https://' + fullUrl;
     let pageText = '';
     try {
-      const response = await fetch(url, {
+      const response = await fetch(fullUrl, {
         headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SapperBot/1.0)' },
         signal: AbortSignal.timeout(10000)
       });
