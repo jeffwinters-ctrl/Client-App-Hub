@@ -139,7 +139,7 @@
       z-index: 2;
       margin-top: -32px;
       display: grid;
-      grid-template-columns: 1fr 360px;
+      grid-template-columns: 360px 1fr;
       gap: 32px;
       align-items: start;
     }
@@ -148,7 +148,7 @@
     /* ── App Grid ── */
     .app-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 24px;
     }
 
@@ -373,6 +373,9 @@
     .app-icon.icon-industry-feed {
       background: linear-gradient(135deg, #11998E, #38EF7D);
     }
+    .app-icon.icon-research {
+      background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+    }
     .app-icon.icon-default {
       background: var(--primary);
     }
@@ -468,10 +471,15 @@
     }
 
     /* ── Responsive ── */
+    @media (max-width: 1200px) {
+      .app-grid { grid-template-columns: repeat(2, 1fr); }
+    }
     @media (max-width: 1024px) {
       .main { grid-template-columns: 1fr; padding: 0 20px; margin-top: -24px; }
-      .feed-sidebar { max-height: none; position: static; }
+      .feed-sidebar { max-height: none; position: static; order: 2; }
+      .main-left { order: 1; }
       .feed-scroll { max-height: 500px; }
+      .app-grid { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 768px) {
       .header { padding: 0 20px; }
@@ -501,20 +509,6 @@
   </section>
 
   <main class="main">
-    <div class="main-left">
-      <div class="app-grid" id="appGrid"></div>
-
-      <div class="tip-section" id="tipSection">
-        <div class="tip-icon">
-          <svg fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-        </div>
-        <div class="tip-content">
-          <div class="tip-label">Sales Tip of the Day</div>
-          <div class="tip-text" id="tipText"></div>
-        </div>
-      </div>
-    </div>
-
     <aside class="feed-sidebar">
       <div class="feed-header-bar">
         <h3><span class="feed-dot"></span> Sales Playbook</h3>
@@ -533,6 +527,20 @@
         </div>
       </div>
     </aside>
+
+    <div class="main-left">
+      <div class="app-grid" id="appGrid"></div>
+
+      <div class="tip-section" id="tipSection">
+        <div class="tip-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+        </div>
+        <div class="tip-content">
+          <div class="tip-label">Sales Tip of the Day</div>
+          <div class="tip-text" id="tipText"></div>
+        </div>
+      </div>
+    </div>
   </main>
 
   <footer class="footer">
