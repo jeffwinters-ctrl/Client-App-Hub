@@ -28,9 +28,8 @@
       --red: #EF476F;
       --red-dim: rgba(239,71,111,0.15);
     }
-    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; }
 
-    /* Header */
     .cs-header {
       background: rgba(15,25,35,0.95);
       border-bottom: 1px solid var(--rule);
@@ -55,298 +54,223 @@
     .cs-header a { color: var(--ink-muted); text-decoration: none; font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 500; text-transform: none; letter-spacing: 0.02em; transition: color 0.2s; }
     .cs-header a:hover { color: var(--blue); }
 
-    .screen { display: none; }
-    .screen.active { display: block; }
-
-    /* Hero / Form Screen */
-    .form-screen { max-width: 700px; margin: 0 auto; padding: 48px 24px 80px; }
-    .hero-area {
-      position: relative;
-      text-align: center;
-      padding: 48px 24px 40px;
-      margin-bottom: 36px;
-      border-radius: 16px;
-      background:
-        linear-gradient(rgba(0,180,216,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,180,216,0.03) 1px, transparent 1px),
-        radial-gradient(ellipse at center, rgba(0,180,216,0.06) 0%, transparent 70%);
-      background-size: 40px 40px, 40px 40px, 100% 100%;
-      border: 1px solid var(--rule);
-    }
-    .hero-area::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 24px;
-      height: 24px;
-      transform: translate(-50%, -50%);
-      border: 1px solid rgba(0,180,216,0.15);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-    .hero-area::after {
-      content: '+';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: rgba(0,180,216,0.2);
-      font-size: 1.2rem;
-      font-weight: 300;
-      pointer-events: none;
-    }
-    .hero-area h2 {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 2.2rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: #fff;
-      margin-bottom: 8px;
-    }
-    .hero-area .subtitle {
-      color: var(--ink-muted);
-      font-size: 1rem;
-      font-weight: 300;
-      letter-spacing: 0.02em;
-    }
-
-    /* Form Fields */
-    .field { margin-bottom: 20px; }
-    .field label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--blue);
-      margin-bottom: 8px;
-      font-family: 'Rajdhani', sans-serif;
-    }
-    .field label .field-num {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 20px;
-      height: 20px;
-      border-radius: 4px;
-      background: var(--blue-dim);
-      color: var(--blue);
-      font-size: 0.7rem;
-      font-weight: 700;
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .field textarea, .field input, .field select {
+    /* Chat Layout */
+    .chat-container {
+      flex: 1;
+      max-width: 780px;
       width: 100%;
-      padding: 12px 16px;
-      border: 1px solid var(--rule);
-      border-radius: 8px;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 400;
-      background: var(--bg);
-      color: var(--ink);
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .field textarea { min-height: 76px; resize: vertical; line-height: 1.5; }
-    .field select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238899AA' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
-    .field select option { background: var(--bg-light); color: var(--ink); }
-    .field textarea:focus, .field input:focus, .field select:focus {
-      outline: none;
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px var(--blue-dim);
-    }
-    .field textarea::placeholder, .field input::placeholder { color: var(--ink-dim); }
-    .field .hint { font-size: 0.8rem; color: var(--ink-dim); margin-top: 4px; font-style: italic; }
-    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-    .btn-generate {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, var(--blue), #0096B7);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1.05rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.2s;
-      margin-top: 8px;
-      position: relative;
-      overflow: hidden;
-    }
-    .btn-generate::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-      transform: translateX(-100%);
-      transition: transform 0.5s;
-    }
-    .btn-generate:hover::after { transform: translateX(100%); }
-    .btn-generate:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,180,216,0.3); }
-    .btn-generate:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
-
-    /* Processing Screen */
-    .processing-screen { max-width: 480px; margin: 0 auto; padding: 100px 24px; text-align: center; }
-    .processing-screen h3 { font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px; }
-    .processing-screen p { color: var(--ink-muted); font-size: 0.9rem; }
-    .radar-spinner {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      border: 2px solid var(--rule);
-      position: relative;
-      margin: 0 auto 32px;
-    }
-    .radar-spinner::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 50%;
-      height: 2px;
-      background: var(--blue);
-      transform-origin: left center;
-      animation: radar-sweep 1.5s linear infinite;
-      box-shadow: 0 0 12px var(--blue);
-    }
-    .radar-spinner::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%,-50%);
-      width: 6px;
-      height: 6px;
-      background: var(--blue);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--blue);
-    }
-    .radar-spinner .ring-inner {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%,-50%);
-      width: 50%;
-      height: 50%;
-      border-radius: 50%;
-      border: 1px solid var(--rule);
-    }
-    @keyframes radar-sweep { to { transform: rotate(360deg); } }
-
-    /* Results Screen — Sidebar Layout */
-    .results-screen { display: flex; min-height: calc(100vh - 52px); }
-
-    .results-sidebar {
-      width: 260px;
-      min-width: 260px;
-      background: var(--bg-light);
-      border-right: 1px solid var(--rule);
-      padding: 32px 0;
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
+      padding: 0 20px;
     }
-    .sidebar-title {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--ink-dim);
-      padding: 0 24px;
-      margin-bottom: 16px;
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px 0 24px;
     }
-    .sidebar-nav { list-style: none; flex: 1; }
-    .sidebar-nav li {
-      padding: 12px 24px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--ink-muted);
+
+    .msg {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 24px;
+      animation: msgIn 0.35s ease;
+    }
+    @keyframes msgIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .msg-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .msg-advisor .msg-avatar { background: linear-gradient(135deg, var(--blue), #0096B7); color: #fff; }
+    .msg-user .msg-avatar { background: var(--bg-elevated); color: var(--ink-muted); border: 1px solid var(--rule); }
+
+    .msg-body { flex: 1; min-width: 0; }
+    .msg-name { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+    .msg-advisor .msg-name { color: var(--blue); }
+    .msg-user .msg-name { color: var(--ink-dim); }
+
+    .msg-text {
+      background: var(--bg-light);
+      border: 1px solid var(--rule);
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--ink);
+    }
+    .msg-advisor .msg-text { border-left: 3px solid var(--blue); }
+    .msg-user .msg-text { background: var(--bg-elevated); border-left: 3px solid var(--ink-dim); }
+
+    /* Options */
+    .msg-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .opt-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      color: var(--ink);
+      font-size: 0.92rem;
       cursor: pointer;
-      border-left: 3px solid transparent;
       transition: all 0.2s;
+      text-align: left;
+      line-height: 1.4;
+    }
+    .opt-btn:hover { border-color: var(--blue); background: var(--blue-dim); }
+    .opt-btn .opt-key {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: var(--blue-dim);
+      color: var(--blue);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .opt-btn.selected {
+      border-color: var(--blue);
+      background: var(--blue-dim);
+    }
+    .opt-btn:disabled { opacity: 0.5; cursor: default; pointer-events: none; }
+
+    .freeform-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .freeform-input {
+      flex: 1;
+      padding: 12px 16px;
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      color: var(--ink);
+      font-size: 0.92rem;
+      font-family: 'Inter', sans-serif;
+    }
+    .freeform-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-dim); }
+    .freeform-input::placeholder { color: var(--ink-dim); }
+    .freeform-send {
+      padding: 12px 20px;
+      background: linear-gradient(135deg, var(--blue), #0096B7);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: transform 0.15s;
+      white-space: nowrap;
+    }
+    .freeform-send:hover { transform: translateY(-1px); }
+
+    /* Thinking indicator */
+    .thinking {
+      display: flex;
+      gap: 6px;
+      padding: 4px 0;
+    }
+    .thinking span {
+      width: 8px;
+      height: 8px;
+      background: var(--blue);
+      border-radius: 50%;
+      animation: thinkPulse 1.2s ease-in-out infinite;
+    }
+    .thinking span:nth-child(2) { animation-delay: 0.15s; }
+    .thinking span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes thinkPulse { 0%,100% { opacity: 0.25; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1); } }
+
+    /* Resolution cards */
+    .resolution-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .resolution-card {
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-radius: 12px;
+      padding: 20px;
+      transition: border-color 0.2s;
+    }
+    .resolution-card:hover { border-color: var(--blue); }
+    .resolution-card .res-header {
       display: flex;
       align-items: center;
       gap: 10px;
+      margin-bottom: 10px;
     }
-    .sidebar-nav li:hover { color: var(--ink); background: rgba(0,180,216,0.04); }
-    .sidebar-nav li.active {
-      color: var(--blue);
-      background: rgba(0,180,216,0.06);
-      border-left-color: var(--blue);
-    }
-    .sidebar-nav li .nav-icon {
-      font-size: 0.85rem;
-      width: 20px;
-      text-align: center;
-      opacity: 0.7;
-    }
-    .sidebar-actions {
-      padding: 24px;
-      border-top: 1px solid var(--rule);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .results-main {
-      flex: 1;
-      padding: 40px 48px 80px;
-      overflow-y: auto;
-      max-height: calc(100vh - 52px);
-    }
-
-    /* Section Panels */
-    .strategy-panel { display: none; animation: fadeInPanel 0.35s ease; }
-    .strategy-panel.active { display: block; }
-    @keyframes fadeInPanel { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-    .panel-header {
-      margin-bottom: 28px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--rule);
-    }
-    .panel-header h2 {
+    .resolution-card .res-badge {
       font-family: 'Rajdhani', sans-serif;
-      font-size: 1.5rem;
+      font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+    .res-badge-1 { background: var(--green-dim); color: var(--green); }
+    .res-badge-2 { background: var(--blue-dim); color: var(--blue); }
+    .res-badge-3 { background: var(--amber-dim); color: var(--amber); }
+    .resolution-card h4 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
       color: #fff;
-      margin-bottom: 4px;
     }
-    .panel-header .panel-desc {
-      color: var(--ink-muted);
+    .resolution-card .res-body { font-size: 0.9rem; line-height: 1.65; color: var(--ink-muted); margin-bottom: 10px; }
+    .resolution-card .res-steps { list-style: none; padding: 0; }
+    .resolution-card .res-steps li {
       font-size: 0.85rem;
-    }
-
-    /* Overview Panel */
-    .overview-text {
-      font-size: 1.05rem;
-      line-height: 1.8;
       color: var(--ink);
-      padding: 24px;
-      background: var(--bg-light);
-      border-radius: 12px;
-      border-left: 3px solid var(--blue);
-      margin-bottom: 24px;
+      padding: 4px 0 4px 16px;
+      position: relative;
+      line-height: 1.5;
     }
-    .exec-summary {
-      padding: 24px;
+    .resolution-card .res-steps li::before { content: '▸'; position: absolute; left: 0; color: var(--blue); }
+    .resolution-card .res-impact {
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+    .res-impact-1 { background: var(--green-dim); color: var(--green); }
+    .res-impact-2 { background: var(--blue-dim); color: var(--blue); }
+    .res-impact-3 { background: var(--amber-dim); color: var(--amber); }
+
+    .root-cause-box {
       background: linear-gradient(135deg, rgba(0,180,216,0.08), rgba(0,180,216,0.02));
+      border: 1px solid rgba(0,180,216,0.2);
       border-radius: 12px;
-      border: 1px solid rgba(0,180,216,0.15);
-      line-height: 1.8;
-      font-size: 0.95rem;
+      padding: 20px;
+      margin-top: 16px;
     }
-    .exec-summary .summary-label {
+    .root-cause-box .rc-label {
       font-family: 'Rajdhani', sans-serif;
       font-size: 0.72rem;
       font-weight: 600;
@@ -355,240 +279,86 @@
       color: var(--blue);
       margin-bottom: 8px;
     }
+    .root-cause-box p { font-size: 0.95rem; line-height: 1.7; }
 
-    /* Objectives Panel */
-    .objective-card {
-      background: var(--bg-light);
-      border: 1px solid var(--rule);
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 16px;
-      position: relative;
-      transition: border-color 0.2s;
+    /* Bottom bar */
+    .bottom-bar {
+      padding: 16px 20px 24px;
+      max-width: 780px;
+      width: 100%;
+      margin: 0 auto;
     }
-    .objective-card:hover { border-color: var(--blue); }
-    .objective-card .obj-priority {
-      position: absolute;
-      top: -1px;
-      right: 20px;
-      background: var(--blue);
-      color: #fff;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 0 0 6px 6px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .objective-card h4 {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #fff;
-      margin-bottom: 8px;
-    }
-    .objective-card .obj-rationale { color: var(--ink-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 12px; }
-    .obj-meta { display: flex; gap: 24px; }
-    .obj-meta-item { font-size: 0.8rem; }
-    .obj-meta-item .meta-label { color: var(--ink-dim); text-transform: uppercase; font-size: 0.68rem; letter-spacing: 0.08em; font-weight: 600; }
-    .obj-meta-item .meta-value { color: var(--amber); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin-top: 2px; }
 
-    /* Stakeholder Panel */
-    .stakeholder-group { margin-bottom: 28px; }
-    .stakeholder-group-title {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      margin-bottom: 12px;
+    .start-input-row {
       display: flex;
-      align-items: center;
       gap: 8px;
     }
-    .stakeholder-group-title .group-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .group-champions .group-dot { background: var(--green); box-shadow: 0 0 6px var(--green); }
-    .group-champions .stakeholder-group-title { color: var(--green); }
-    .group-blockers .group-dot { background: var(--red); box-shadow: 0 0 6px var(--red); }
-    .group-blockers .stakeholder-group-title { color: var(--red); }
-    .group-untapped .group-dot { background: var(--blue); box-shadow: 0 0 6px var(--blue); }
-    .group-untapped .stakeholder-group-title { color: var(--blue); }
-
-    .stakeholder-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
-    .stakeholder-card {
-      padding: 16px;
-      border-radius: 10px;
-      border: 1px solid var(--rule);
-      transition: transform 0.15s, border-color 0.2s;
-    }
-    .stakeholder-card:hover { transform: translateY(-2px); }
-    .stakeholder-card h5 { font-size: 0.95rem; font-weight: 600; color: #fff; margin-bottom: 6px; }
-    .stakeholder-card p { font-size: 0.85rem; color: var(--ink-muted); line-height: 1.5; }
-    .group-champions .stakeholder-card { background: var(--green-dim); border-color: rgba(6,214,160,0.2); }
-    .group-blockers .stakeholder-card { background: var(--red-dim); border-color: rgba(239,71,111,0.2); }
-    .group-untapped .stakeholder-card { background: var(--blue-dim); border-color: rgba(0,180,216,0.2); }
-
-    /* Risk Panel */
-    .risk-card {
-      background: var(--bg-light);
-      border: 1px solid var(--rule);
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 12px;
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-    .risk-badge {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 0.68rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      padding: 4px 10px;
-      border-radius: 4px;
-      white-space: nowrap;
-      min-width: 68px;
-      text-align: center;
-    }
-    .risk-high { background: var(--red-dim); color: var(--red); }
-    .risk-medium { background: var(--amber-dim); color: var(--amber); }
-    .risk-low { background: var(--green-dim); color: var(--green); }
-    .risk-content h4 { font-size: 0.95rem; font-weight: 600; color: #fff; margin-bottom: 4px; }
-    .risk-content p { font-size: 0.85rem; color: var(--ink-muted); line-height: 1.5; }
-    .risk-content .mitigation-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-dim); font-weight: 600; margin-top: 8px; }
-
-    /* Playbook Panel — Horizontal Timeline */
-    .playbook-timeline {
-      display: flex;
-      gap: 0;
-      overflow-x: auto;
-      padding-bottom: 16px;
-      position: relative;
-    }
-    .playbook-timeline::before {
-      content: '';
-      position: absolute;
-      top: 32px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--rule);
-      z-index: 0;
-    }
-    .quarter-card {
-      min-width: 260px;
+    .start-input {
       flex: 1;
-      position: relative;
-      padding-top: 48px;
-    }
-    .quarter-card::before {
-      content: '';
-      position: absolute;
-      top: 26px;
-      left: 24px;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: var(--bg);
-      border: 3px solid var(--blue);
-      z-index: 1;
-    }
-    .quarter-inner {
+      padding: 16px 20px;
       background: var(--bg-light);
       border: 1px solid var(--rule);
       border-radius: 12px;
-      padding: 20px;
-      margin: 0 8px;
-      height: 100%;
-    }
-    .quarter-inner h4 {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--blue);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 4px;
-    }
-    .quarter-inner .quarter-theme {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #fff;
-      margin-bottom: 14px;
-    }
-    .quarter-inner .section-sub {
-      font-size: 0.68rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--ink-dim);
-      margin-bottom: 6px;
-      margin-top: 10px;
-    }
-    .quarter-inner ul {
-      list-style: none;
-      padding: 0;
-    }
-    .quarter-inner ul li {
-      font-size: 0.85rem;
-      color: var(--ink-muted);
-      padding: 3px 0 3px 14px;
-      position: relative;
-      line-height: 1.4;
-    }
-    .quarter-inner ul.action-list li::before { content: '▸'; position: absolute; left: 0; color: var(--blue); font-size: 0.8rem; }
-    .quarter-inner ul.milestone-list li::before { content: '◆'; position: absolute; left: 0; color: var(--amber); font-size: 0.55rem; top: 5px; }
-
-    /* Expansion Panel */
-    .expansion-card {
-      background: var(--bg-light);
-      border: 1px solid var(--rule);
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 20px;
+      color: var(--ink);
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
       transition: border-color 0.2s;
     }
-    .expansion-card:hover { border-color: var(--amber); }
-    .expansion-info h4 { font-size: 1rem; font-weight: 600; color: #fff; margin-bottom: 6px; }
-    .expansion-info p { font-size: 0.85rem; color: var(--ink-muted); line-height: 1.5; }
-    .expansion-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--amber);
-      white-space: nowrap;
-      background: var(--amber-dim);
-      padding: 6px 14px;
-      border-radius: 6px;
-    }
-
-    /* Action Buttons */
-    .btn-action {
-      padding: 10px 20px;
-      border-radius: 6px;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
+    .start-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-dim); }
+    .start-input::placeholder { color: var(--ink-dim); }
+    .start-send {
+      padding: 16px 28px;
+      background: linear-gradient(135deg, var(--blue), #0096B7);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
       cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-      transition: all 0.2s;
-      display: block;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: transform 0.15s, box-shadow 0.2s;
+      white-space: nowrap;
     }
-    .btn-primary { background: var(--blue); color: #fff; border: none; }
-    .btn-primary:hover { background: #0096B7; }
-    .btn-outline { background: transparent; border: 1px solid var(--rule); color: var(--ink-muted); }
-    .btn-outline:hover { border-color: var(--ink-muted); color: var(--ink); }
+    .start-send:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,180,216,0.3); }
+    .start-send:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 
-    /* Footer */
+    .btn-copy-all {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      padding: 10px 18px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      color: var(--ink-muted);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-copy-all:hover { border-color: var(--blue); color: var(--ink); }
+
+    .new-topic-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      margin-left: 8px;
+      padding: 10px 18px;
+      background: transparent;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      color: var(--ink-muted);
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .new-topic-btn:hover { border-color: var(--amber); color: var(--ink); }
+
     .cs-footer {
       background: var(--bg-light);
       border-top: 1px solid var(--rule);
@@ -598,33 +368,10 @@
       font-size: 0.8rem;
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
       .cs-header { padding: 0 16px; }
-      .form-screen { padding: 32px 16px 60px; }
-      .field-row { grid-template-columns: 1fr; }
-      .results-screen { flex-direction: column; }
-      .results-sidebar {
-        width: 100%;
-        min-width: 100%;
-        flex-direction: row;
-        padding: 0;
-        overflow-x: auto;
-        border-right: none;
-        border-bottom: 1px solid var(--rule);
-      }
-      .sidebar-title { display: none; }
-      .sidebar-nav { display: flex; flex: none; }
-      .sidebar-nav li { padding: 12px 16px; white-space: nowrap; border-left: none; border-bottom: 3px solid transparent; font-size: 0.8rem; }
-      .sidebar-nav li.active { border-left-color: transparent; border-bottom-color: var(--blue); }
-      .sidebar-actions { flex-direction: row; padding: 12px 16px; border-top: none; border-left: 1px solid var(--rule); }
-      .results-main { padding: 24px 16px 60px; max-height: none; }
-      .playbook-timeline { flex-direction: column; }
-      .playbook-timeline::before { display: none; }
-      .quarter-card { min-width: 100%; padding-top: 0; }
-      .quarter-card::before { display: none; }
-      .quarter-inner { margin: 0 0 12px 0; }
-      .expansion-card { flex-direction: column; }
+      .chat-container { padding: 0 12px; }
+      .bottom-bar { padding: 12px; }
     }
   </style>
 </head>
@@ -634,333 +381,314 @@
       <div class="status-dot"></div>
       <span>Business Advisor</span>
     </div>
-    <a href="/{{SLUG}}">← Back to Hub</a>
+    <a href="/{{SLUG}}">&#8592; Back to Hub</a>
   </header>
 
-  <!-- FORM SCREEN -->
-  <div class="screen active" id="screenForm">
-    <div class="form-screen">
-      <div class="hero-area">
-        <h2>Strategic Account Planner</h2>
-        <p class="subtitle">Map stakeholders, identify entry points, and build a multi-quarter engagement strategy.</p>
+  <div class="chat-container">
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg msg-advisor">
+        <div class="msg-avatar">BA</div>
+        <div class="msg-body">
+          <div class="msg-name">Business Advisor</div>
+          <div class="msg-text">
+            Welcome. I'm here to help you work through any business challenge -- whether it's declining sales, operational inefficiency, market strategy, team performance, or anything else on your mind.<br><br>
+            <strong>What's the problem you're trying to solve?</strong>
+          </div>
+        </div>
       </div>
-      <form id="csForm">
-        <div class="field">
-          <label><span class="field-num">1</span> Target Account</label>
-          <textarea id="f_account" placeholder="Company name, size, what they do, and any relevant context about the organization." required></textarea>
-        </div>
-        <div class="field">
-          <label><span class="field-num">2</span> Your Solution</label>
-          <textarea id="f_solution" placeholder="What product or service are you selling into this account? Be specific." required></textarea>
-        </div>
-        <div class="field">
-          <label><span class="field-num">3</span> Current Relationship Status</label>
-          <select id="f_status" required>
-            <option value="" disabled selected>Select relationship status...</option>
-            <option value="New Prospect — No existing relationship">New Prospect — No existing relationship</option>
-            <option value="Warm Lead — Some initial conversations">Warm Lead — Some initial conversations</option>
-            <option value="Existing Customer — Looking to expand">Existing Customer — Looking to expand</option>
-            <option value="Revival — Previously lost or dormant account">Revival — Previously lost or dormant account</option>
-            <option value="Competitive Displacement — Replacing incumbent">Competitive Displacement — Replacing incumbent</option>
-          </select>
-        </div>
-        <div class="field">
-          <label><span class="field-num">4</span> Key Stakeholders Known</label>
-          <textarea id="f_stakeholders" placeholder="Who do you know in the account? Who do you need to reach? Include titles and roles if possible."></textarea>
-          <div class="hint">e.g., "Know the VP of IT, need to reach the CFO and CISO"</div>
-        </div>
-        <div class="field-row">
-          <div class="field">
-            <label><span class="field-num">5a</span> Current Spend</label>
-            <input type="text" id="f_current_spend" placeholder="e.g., $50K/year on legacy">
-          </div>
-          <div class="field">
-            <label><span class="field-num">5b</span> Potential Spend</label>
-            <input type="text" id="f_potential_spend" placeholder="e.g., $250K/year potential">
-          </div>
-        </div>
-        <div class="field">
-          <label><span class="field-num">6</span> Account Goals (Next 12 Months)</label>
-          <textarea id="f_goals" placeholder="What are you trying to achieve in this account? Revenue targets, relationship milestones, product adoption goals." required></textarea>
-        </div>
-        <div class="field">
-          <label><span class="field-num">7</span> Known Challenges / Blockers</label>
-          <textarea id="f_challenges" placeholder="What's standing in your way? Internal politics, budget cycles, competing priorities, etc."></textarea>
-        </div>
-        <div class="field">
-          <label><span class="field-num">8</span> Competitive Threats</label>
-          <textarea id="f_competitors" placeholder="Who else is in this account? What alternatives are they considering?"></textarea>
-        </div>
-        <div class="field">
-          <label><span class="field-num">9</span> Industry / Market Context</label>
-          <textarea id="f_industry" placeholder="What's happening in their industry that creates opportunity or urgency? Regulations, market shifts, technology trends."></textarea>
-        </div>
-        <button type="submit" class="btn-generate" id="btnGenerate">&#9670; Generate Strategy</button>
-      </form>
     </div>
   </div>
 
-  <!-- PROCESSING SCREEN -->
-  <div class="screen" id="screenProcessing">
-    <div class="processing-screen">
-      <div class="radar-spinner"><div class="ring-inner"></div></div>
-      <h3>Analyzing Account Intelligence...</h3>
-      <p>Building your strategic playbook. This usually takes 20-40 seconds.</p>
-    </div>
-  </div>
-
-  <!-- RESULTS SCREEN -->
-  <div class="screen" id="screenResults">
-    <div class="results-screen">
-      <aside class="results-sidebar">
-        <div class="sidebar-title">Strategy Briefing</div>
-        <ul class="sidebar-nav" id="sidebarNav">
-          <li class="active" data-section="overview"><span class="nav-icon">◎</span> Overview</li>
-          <li data-section="objectives"><span class="nav-icon">◆</span> Objectives</li>
-          <li data-section="stakeholders"><span class="nav-icon">◈</span> Stakeholders</li>
-          <li data-section="risks"><span class="nav-icon">⚠</span> Risks</li>
-          <li data-section="playbook"><span class="nav-icon">▶</span> Playbook</li>
-          <li data-section="expansion"><span class="nav-icon">↗</span> Expansion</li>
-        </ul>
-        <div class="sidebar-actions">
-          <button class="btn-action btn-primary" onclick="copyStrategy()">Copy Strategy</button>
-          <a href="/{{SLUG}}" class="btn-action btn-outline">Back to Hub</a>
-        </div>
-      </aside>
-      <main class="results-main" id="resultsMain">
-        <!-- Panels rendered by JS -->
-      </main>
+  <div class="bottom-bar">
+    <div class="start-input-row" id="inputRow">
+      <input type="text" class="start-input" id="problemInput" placeholder="e.g., Sales are down 20% this quarter and I can't figure out why..." autofocus>
+      <button class="start-send" id="sendBtn" onclick="startConversation()">Send</button>
     </div>
   </div>
 
   <footer class="cs-footer">Presented by {{POWERED_BY}}</footer>
 
   <script>
-    const CLIENT = {{CLIENT_CONFIG}};
-    const SLUG = '{{SLUG}}';
+    var CLIENT = {{CLIENT_CONFIG}};
+    var SLUG = '{{SLUG}}';
+    var conversationHistory = [];
+    var questionCount = 0;
+    var MAX_QUESTIONS = 6;
+    var isProcessing = false;
 
-    function showScreen(id) {
-      document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
-      document.getElementById(id).classList.add('active');
-      window.scrollTo(0, 0);
+    function esc(s) { if (!s) return ''; var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    function scrollToBottom() {
+      var el = document.getElementById('chatMessages');
+      setTimeout(function() { el.scrollTop = el.scrollHeight; }, 50);
     }
 
-    // Sidebar navigation
-    document.getElementById('sidebarNav').addEventListener('click', function(e) {
-      var li = e.target.closest('li');
-      if (!li) return;
-      var section = li.getAttribute('data-section');
-      document.querySelectorAll('.sidebar-nav li').forEach(function(l) { l.classList.remove('active'); });
-      li.classList.add('active');
-      document.querySelectorAll('.strategy-panel').forEach(function(p) { p.classList.remove('active'); });
-      var panel = document.getElementById('panel-' + section);
-      if (panel) panel.classList.add('active');
+    function addMessage(role, html, skipAnim) {
+      var msgs = document.getElementById('chatMessages');
+      var div = document.createElement('div');
+      div.className = 'msg msg-' + role;
+      if (skipAnim) div.style.animation = 'none';
+      var avatar = role === 'advisor' ? 'BA' : 'You';
+      var name = role === 'advisor' ? 'Business Advisor' : 'You';
+      div.innerHTML =
+        '<div class="msg-avatar">' + avatar + '</div>' +
+        '<div class="msg-body">' +
+          '<div class="msg-name">' + name + '</div>' +
+          '<div class="msg-text">' + html + '</div>' +
+        '</div>';
+      msgs.appendChild(div);
+      scrollToBottom();
+      return div;
+    }
+
+    function addThinking() {
+      var div = addMessage('advisor', '<div class="thinking"><span></span><span></span><span></span></div>');
+      div.id = 'thinkingMsg';
+      return div;
+    }
+
+    function removeThinking() {
+      var el = document.getElementById('thinkingMsg');
+      if (el) el.remove();
+    }
+
+    function disableAllOptions() {
+      document.querySelectorAll('.opt-btn:not([disabled])').forEach(function(b) { b.disabled = true; });
+      document.querySelectorAll('.freeform-input').forEach(function(i) { i.disabled = true; });
+      document.querySelectorAll('.freeform-send').forEach(function(b) { b.disabled = true; });
+    }
+
+    document.getElementById('problemInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); startConversation(); }
     });
 
-    // Form submit
-    document.getElementById('csForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      var btn = document.getElementById('btnGenerate');
-      btn.disabled = true;
+    async function startConversation() {
+      var input = document.getElementById('problemInput');
+      var problem = input.value.trim();
+      if (!problem || isProcessing) return;
+      isProcessing = true;
+      document.getElementById('sendBtn').disabled = true;
 
-      var answers = {
-        account: document.getElementById('f_account').value,
-        solution: document.getElementById('f_solution').value,
-        status: document.getElementById('f_status').value,
-        stakeholders: document.getElementById('f_stakeholders').value,
-        current_spend: document.getElementById('f_current_spend').value,
-        potential_spend: document.getElementById('f_potential_spend').value,
-        goals: document.getElementById('f_goals').value,
-        challenges: document.getElementById('f_challenges').value,
-        competitors: document.getElementById('f_competitors').value,
-        industry: document.getElementById('f_industry').value
-      };
+      addMessage('user', esc(problem));
+      input.value = '';
 
-      showScreen('screenProcessing');
+      conversationHistory.push({ role: 'user', content: problem });
+
+      await getNextQuestion();
+    }
+
+    async function selectOption(text) {
+      if (isProcessing) return;
+      isProcessing = true;
+      disableAllOptions();
+
+      addMessage('user', esc(text));
+      conversationHistory.push({ role: 'user', content: text });
+      questionCount++;
+
+      if (questionCount >= MAX_QUESTIONS) {
+        await getResolution();
+      } else {
+        await getNextQuestion();
+      }
+    }
+
+    function submitFreeform(inputId) {
+      var input = document.getElementById(inputId);
+      var text = input.value.trim();
+      if (!text || isProcessing) return;
+      selectOption(text);
+    }
+
+    async function getNextQuestion() {
+      addThinking();
 
       try {
         var res = await fetch('/api/corporate-strategy', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ answers: answers, clientConfig: CLIENT })
+          body: JSON.stringify({
+            mode: 'question',
+            conversation: conversationHistory,
+            questionCount: questionCount,
+            maxQuestions: MAX_QUESTIONS,
+            clientConfig: CLIENT
+          })
         });
-        var data = await res.json();
-        if (data.error) {
-          alert('Error: ' + data.error);
-          showScreen('screenForm');
-          btn.disabled = false;
+        var text = await res.text();
+        var data;
+        try { data = JSON.parse(text); } catch(pe) {
+          removeThinking();
+          addMessage('advisor', 'Something went wrong. Please try again.');
+          isProcessing = false;
           return;
         }
-        var result = data.result;
-        if (typeof result === 'string') {
-          try {
-            result = JSON.parse(result.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim());
-          } catch (pe) {
-            console.error('Parse error', pe);
-            alert('Failed to parse response. Please try again.');
-            showScreen('screenForm');
-            btn.disabled = false;
-            return;
-          }
+
+        removeThinking();
+
+        if (data.error) {
+          addMessage('advisor', 'Error: ' + esc(data.error));
+          isProcessing = false;
+          return;
         }
-        renderStrategy(result);
+
+        var q = data.result;
+
+        if (q.ready_for_resolution) {
+          conversationHistory.push({ role: 'assistant', content: q.transition_message || 'I have enough to work with.' });
+          addMessage('advisor', esc(q.transition_message || 'I have enough context now. Let me analyze this...'));
+          await getResolution();
+          return;
+        }
+
+        var qHtml = esc(q.question).replace(/\n/g, '<br>');
+        if (q.context_note) {
+          qHtml = '<span style="color:var(--ink-muted);font-size:0.88rem;">' + esc(q.context_note) + '</span><br><br><strong>' + qHtml + '</strong>';
+        } else {
+          qHtml = '<strong>' + qHtml + '</strong>';
+        }
+
+        var optionsHtml = '<div class="msg-options">';
+        var freeId = 'free_' + Date.now();
+        (q.options || []).forEach(function(opt, i) {
+          var key = String.fromCharCode(65 + i);
+          optionsHtml += '<button class="opt-btn" onclick="selectOption(this.getAttribute(\'data-val\'))" data-val="' + esc(opt) + '">' +
+            '<span class="opt-key">' + key + '</span> ' + esc(opt) +
+          '</button>';
+        });
+        optionsHtml += '<div class="freeform-row">' +
+          '<input class="freeform-input" id="' + freeId + '" placeholder="Or type your own answer..." onkeydown="if(event.key===\'Enter\'){event.preventDefault();submitFreeform(\'' + freeId + '\')}">' +
+          '<button class="freeform-send" onclick="submitFreeform(\'' + freeId + '\')">Send</button>' +
+        '</div>';
+        optionsHtml += '</div>';
+
+        addMessage('advisor', qHtml + optionsHtml);
+
+        conversationHistory.push({ role: 'assistant', content: q.question + '\nOptions: ' + (q.options || []).join(' | ') });
+        isProcessing = false;
+
       } catch (err) {
-        console.error(err);
-        alert('Strategy generation failed: ' + err.message);
-        showScreen('screenForm');
-        btn.disabled = false;
+        removeThinking();
+        addMessage('advisor', 'Connection error. Please try again.');
+        isProcessing = false;
       }
-    });
-
-    function esc(str) {
-      if (!str) return '';
-      var div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
     }
 
-    function renderStrategy(r) {
-      var main = document.getElementById('resultsMain');
-      var html = '';
+    async function getResolution() {
+      addThinking();
 
-      // Panel: Overview
-      html += '<div class="strategy-panel active" id="panel-overview">';
-      html += '<div class="panel-header"><h2>Account Overview</h2><p class="panel-desc">Strategic assessment and executive summary</p></div>';
-      html += '<div class="overview-text">' + esc(r.account_overview || '') + '</div>';
-      if (r.executive_summary) {
-        html += '<div class="exec-summary"><div class="summary-label">Executive Summary</div>' + esc(r.executive_summary) + '</div>';
-      }
-      html += '</div>';
-
-      // Panel: Objectives
-      html += '<div class="strategy-panel" id="panel-objectives">';
-      html += '<div class="panel-header"><h2>Strategic Objectives</h2><p class="panel-desc">Prioritized goals with timelines and success metrics</p></div>';
-      if (r.strategic_objectives && r.strategic_objectives.length) {
-        r.strategic_objectives.forEach(function(obj) {
-          html += '<div class="objective-card">';
-          html += '<div class="obj-priority">Priority ' + esc(String(obj.priority || '')) + '</div>';
-          html += '<h4>' + esc(obj.objective || '') + '</h4>';
-          html += '<div class="obj-rationale">' + esc(obj.rationale || '') + '</div>';
-          html += '<div class="obj-meta">';
-          html += '<div class="obj-meta-item"><div class="meta-label">Timeline</div><div class="meta-value">' + esc(obj.timeline || '') + '</div></div>';
-          html += '<div class="obj-meta-item"><div class="meta-label">Success Metric</div><div class="meta-value">' + esc(obj.success_metric || '') + '</div></div>';
-          html += '</div></div>';
+      try {
+        var res = await fetch('/api/corporate-strategy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mode: 'resolution',
+            conversation: conversationHistory,
+            clientConfig: CLIENT
+          })
         });
-      }
-      html += '</div>';
-
-      // Panel: Stakeholders
-      html += '<div class="strategy-panel" id="panel-stakeholders">';
-      html += '<div class="panel-header"><h2>Stakeholder Map</h2><p class="panel-desc">Key players, influence dynamics, and engagement strategies</p></div>';
-      if (r.stakeholder_map) {
-        var sm = r.stakeholder_map;
-        // Champions
-        if (sm.champions && sm.champions.length) {
-          html += '<div class="stakeholder-group group-champions">';
-          html += '<div class="stakeholder-group-title"><span class="group-dot"></span> Champions</div>';
-          html += '<div class="stakeholder-cards">';
-          sm.champions.forEach(function(c) {
-            html += '<div class="stakeholder-card"><h5>' + esc(c.title || '') + '</h5><p>' + esc(c.approach || '') + '</p></div>';
-          });
-          html += '</div></div>';
+        var text = await res.text();
+        var data;
+        try { data = JSON.parse(text); } catch(pe) {
+          removeThinking();
+          addMessage('advisor', 'Something went wrong generating recommendations. Please try again.');
+          isProcessing = false;
+          return;
         }
-        // Blockers
-        if (sm.blockers && sm.blockers.length) {
-          html += '<div class="stakeholder-group group-blockers">';
-          html += '<div class="stakeholder-group-title"><span class="group-dot"></span> Blockers</div>';
-          html += '<div class="stakeholder-cards">';
-          sm.blockers.forEach(function(b) {
-            html += '<div class="stakeholder-card"><h5>' + esc(b.title || '') + '</h5><p>' + esc(b.strategy || '') + '</p></div>';
-          });
-          html += '</div></div>';
+
+        removeThinking();
+
+        if (data.error) {
+          addMessage('advisor', 'Error: ' + esc(data.error));
+          isProcessing = false;
+          return;
         }
-        // Untapped
-        if (sm.untapped && sm.untapped.length) {
-          html += '<div class="stakeholder-group group-untapped">';
-          html += '<div class="stakeholder-group-title"><span class="group-dot"></span> Untapped</div>';
-          html += '<div class="stakeholder-cards">';
-          sm.untapped.forEach(function(u) {
-            html += '<div class="stakeholder-card"><h5>' + esc(u.title || '') + '</h5><p>' + esc(u.entry_point || '') + '</p></div>';
-          });
-          html += '</div></div>';
+
+        var r = data.result;
+
+        // Root cause
+        var html = '';
+        if (r.root_cause_analysis) {
+          html += '<div class="root-cause-box">' +
+            '<div class="rc-label">Root Cause Analysis</div>' +
+            '<p>' + esc(r.root_cause_analysis).replace(/\n/g, '<br>') + '</p>' +
+          '</div>';
         }
-      }
-      html += '</div>';
 
-      // Panel: Risks
-      html += '<div class="strategy-panel" id="panel-risks">';
-      html += '<div class="panel-header"><h2>Risk Assessment</h2><p class="panel-desc">Identified risks with severity ratings and mitigation plans</p></div>';
-      if (r.risk_assessment && r.risk_assessment.length) {
-        r.risk_assessment.forEach(function(risk) {
-          var sev = (risk.severity || 'medium').toLowerCase();
-          var badgeClass = 'risk-' + sev;
-          html += '<div class="risk-card">';
-          html += '<div class="risk-badge ' + badgeClass + '">' + esc(sev) + '</div>';
-          html += '<div class="risk-content">';
-          html += '<h4>' + esc(risk.risk || '') + '</h4>';
-          html += '<div class="mitigation-label">Mitigation</div>';
-          html += '<p>' + esc(risk.mitigation || '') + '</p>';
-          html += '</div></div>';
-        });
-      }
-      html += '</div>';
-
-      // Panel: Playbook
-      html += '<div class="strategy-panel" id="panel-playbook">';
-      html += '<div class="panel-header"><h2>Quarterly Playbook</h2><p class="panel-desc">Phase-by-phase execution plan with actions and milestones</p></div>';
-      if (r.quarterly_playbook && r.quarterly_playbook.length) {
-        html += '<div class="playbook-timeline">';
-        r.quarterly_playbook.forEach(function(q) {
-          html += '<div class="quarter-card"><div class="quarter-inner">';
-          html += '<h4>' + esc(q.quarter || '') + '</h4>';
-          html += '<div class="quarter-theme">' + esc(q.theme || '') + '</div>';
-          if (q.actions && q.actions.length) {
-            html += '<div class="section-sub">Actions</div>';
-            html += '<ul class="action-list">';
-            q.actions.forEach(function(a) { html += '<li>' + esc(a) + '</li>'; });
-            html += '</ul>';
-          }
-          if (q.milestones && q.milestones.length) {
-            html += '<div class="section-sub">Milestones</div>';
-            html += '<ul class="milestone-list">';
-            q.milestones.forEach(function(m) { html += '<li>' + esc(m) + '</li>'; });
-            html += '</ul>';
-          }
-          html += '</div></div>';
-        });
-        html += '</div>';
-      }
-      html += '</div>';
-
-      // Panel: Expansion
-      html += '<div class="strategy-panel" id="panel-expansion">';
-      html += '<div class="panel-header"><h2>Expansion Opportunities</h2><p class="panel-desc">Growth vectors and upsell paths within the account</p></div>';
-      if (r.expansion_opportunities && r.expansion_opportunities.length) {
-        r.expansion_opportunities.forEach(function(exp) {
-          html += '<div class="expansion-card">';
-          html += '<div class="expansion-info"><h4>' + esc(exp.opportunity || '') + '</h4><p>' + esc(exp.approach || '') + '</p></div>';
-          html += '<div class="expansion-value">' + esc(exp.estimated_value || '') + '</div>';
+        // Resolution cards
+        if (r.resolutions && r.resolutions.length) {
+          html += '<div class="resolution-cards">';
+          r.resolutions.forEach(function(res, i) {
+            var badgeLabels = ['Recommended', 'Alternative', 'Long-Term'];
+            var label = badgeLabels[i] || ('Option ' + (i + 1));
+            html += '<div class="resolution-card">' +
+              '<div class="res-header">' +
+                '<span class="res-badge res-badge-' + (i + 1) + '">' + label + '</span>' +
+                '<h4>' + esc(res.title) + '</h4>' +
+              '</div>' +
+              '<div class="res-body">' + esc(res.explanation).replace(/\n/g, '<br>') + '</div>';
+            if (res.steps && res.steps.length) {
+              html += '<ul class="res-steps">';
+              res.steps.forEach(function(s) { html += '<li>' + esc(s) + '</li>'; });
+              html += '</ul>';
+            }
+            if (res.expected_impact) {
+              html += '<div class="res-impact res-impact-' + (i + 1) + '">Expected Impact: ' + esc(res.expected_impact) + '</div>';
+            }
+            html += '</div>';
+          });
           html += '</div>';
-        });
+        }
+
+        // Summary
+        if (r.summary) {
+          html += '<p style="margin-top:20px;color:var(--ink-muted);font-size:0.9rem;line-height:1.7;">' + esc(r.summary).replace(/\n/g, '<br>') + '</p>';
+        }
+
+        html += '<button class="btn-copy-all" onclick="copyConversation()">Copy Full Conversation</button>';
+        html += '<button class="new-topic-btn" onclick="startNewTopic()">New Topic</button>';
+
+        addMessage('advisor', html);
+
+        // Hide input row
+        document.getElementById('inputRow').style.display = 'none';
+
+        isProcessing = false;
+
+      } catch (err) {
+        removeThinking();
+        addMessage('advisor', 'Connection error. Please try again.');
+        isProcessing = false;
       }
-      html += '</div>';
-
-      main.innerHTML = html;
-
-      // Reset sidebar to first item
-      document.querySelectorAll('.sidebar-nav li').forEach(function(l, i) { l.classList.toggle('active', i === 0); });
-      showScreen('screenResults');
     }
 
-    function copyStrategy() {
-      var main = document.getElementById('resultsMain');
-      var text = main.innerText;
+    function copyConversation() {
+      var msgs = document.getElementById('chatMessages');
+      var text = msgs.innerText;
       navigator.clipboard.writeText(text).then(function() {
-        var btn = event.target;
-        var orig = btn.textContent;
-        btn.textContent = 'COPIED!';
-        setTimeout(function() { btn.textContent = orig; }, 1500);
+        var btns = document.querySelectorAll('.btn-copy-all');
+        btns.forEach(function(b) {
+          b.textContent = 'Copied!';
+          setTimeout(function() { b.textContent = 'Copy Full Conversation'; }, 1500);
+        });
       });
+    }
+
+    function startNewTopic() {
+      conversationHistory = [];
+      questionCount = 0;
+      isProcessing = false;
+      var msgs = document.getElementById('chatMessages');
+      msgs.innerHTML = '';
+      addMessage('advisor',
+        'Welcome back. What\'s the next challenge you\'d like to work through?<br><br>' +
+        '<strong>What\'s the problem you\'re trying to solve?</strong>', true);
+      var inputRow = document.getElementById('inputRow');
+      inputRow.style.display = 'flex';
+      var sendBtn = document.getElementById('sendBtn');
+      sendBtn.disabled = false;
+      document.getElementById('problemInput').focus();
+      scrollToBottom();
     }
   </script>
 </body>

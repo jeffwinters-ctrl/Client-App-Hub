@@ -964,58 +964,108 @@ RULES:
 
 app.post('/api/corporate-strategy', async (req, res) => {
   try {
-    const { answers, clientConfig } = req.body;
-    if (!answers || !clientConfig) return res.status(400).json({ error: 'Missing fields' });
+    const { mode, conversation, questionCount, maxQuestions, clientConfig } = req.body;
+    if (!clientConfig) return res.status(400).json({ error: 'Missing client config' });
 
-    const systemPrompt = `You are a senior strategic account planner with 20+ years of experience in enterprise B2B sales strategy. You think like a chess player — multiple moves ahead, mapping stakeholders, identifying leverage points, and building long-term account dominance strategies.
+    if (mode === 'question') {
+      const convoText = (conversation || []).map(m => m.role.toUpperCase() + ': ' + m.content).join('\n');
+      const remaining = (maxQuestions || 6) - (questionCount || 0);
+
+      const systemPrompt = `You are a world-class business advisor — think McKinsey senior partner meets empathetic CEO coach. Your job is to diagnose business problems by asking smart, probing questions one at a time. You're having a conversation, not running a survey.
 
 CLIENT CONTEXT:
 ${buildClientContext(clientConfig)}
 
-Return ONLY valid JSON matching this schema:
+CONVERSATION SO FAR:
+${convoText}
+
+You have ${remaining} questions remaining before you must deliver your diagnosis and recommendations.
+
+Return ONLY valid JSON:
 {
-  "account_overview": "2-3 sentence strategic assessment of this account — honest and direct",
-  "strategic_objectives": [
-    { "priority": 1, "objective": "Clear objective statement", "rationale": "Why this matters", "timeline": "Q1-Q2", "success_metric": "How you measure it" },
-    { "priority": 2, "objective": "...", "rationale": "...", "timeline": "...", "success_metric": "..." },
-    { "priority": 3, "objective": "...", "rationale": "...", "timeline": "...", "success_metric": "..." }
-  ],
-  "stakeholder_map": {
-    "champions": [{ "title": "Role/title to target", "approach": "How to engage them" }],
-    "blockers": [{ "title": "Role/title that may resist", "strategy": "How to neutralize or convert them" }],
-    "untapped": [{ "title": "Role/title not yet engaged", "entry_point": "How to get introduced" }]
-  },
-  "risk_assessment": [
-    { "risk": "Specific risk to this account", "severity": "high", "mitigation": "What to do about it" },
-    { "risk": "...", "severity": "medium", "mitigation": "..." },
-    { "risk": "...", "severity": "low", "mitigation": "..." }
-  ],
-  "quarterly_playbook": [
-    { "quarter": "Q1", "theme": "Quarter theme", "actions": ["Specific action 1", "Action 2", "Action 3"], "milestones": ["Key milestone"] },
-    { "quarter": "Q2", "theme": "...", "actions": ["..."], "milestones": ["..."] },
-    { "quarter": "Q3", "theme": "...", "actions": ["..."], "milestones": ["..."] },
-    { "quarter": "Q4", "theme": "...", "actions": ["..."], "milestones": ["..."] }
-  ],
-  "expansion_opportunities": [
-    { "opportunity": "Specific expansion area", "estimated_value": "$X-$Y", "approach": "How to pursue it" }
-  ],
-  "executive_summary": "3-4 sentence summary of the entire strategy — what you'd tell your VP in an elevator"
+  "context_note": "A brief empathetic or analytical observation about what they just said (1 sentence, optional — skip if it would feel forced)",
+  "question": "Your next diagnostic question. Be specific to what they've told you so far. Dig deeper into the real issue.",
+  "options": ["Option A — a specific, common answer", "Option B — another likely scenario", "Option C — a different angle", "Option D — another possibility"],
+  "ready_for_resolution": false
+}
+
+OR if you have enough information to diagnose the problem (even before max questions):
+{
+  "transition_message": "A brief message like 'I think I see the picture now. Let me put together my analysis and recommendations...'",
+  "ready_for_resolution": true
 }
 
 RULES:
-- Be specific to THEIR account details — reference names, products, numbers they mentioned
-- Think like a strategist, not a salesperson — this is about long-term account growth
-- Stakeholder map should be actionable — real titles and real approaches
-- Risks should be honest — don't sugarcoat
-- Each quarter should build on the previous one`;
+- Ask ONE question at a time
+- Each question should build on their previous answers — show you're listening
+- Go deeper, not wider — if they say "sales are down", ask WHY, dig into specifics
+- Options should be realistic, specific scenarios (not vague) — things a real CEO would recognize
+- Options should help THEM think, not just collect data
+- The context_note should feel like a consultant who "gets it" — brief validation or insight
+- If after 3+ questions you clearly understand the root cause, set ready_for_resolution to true
+- 4 options per question`;
 
-    const userPrompt = `Build a corporate strategy for this account:\n\n${Object.entries(answers).map(([k, v]) => `${k}: ${v}`).join('\n')}`;
-    const raw = await callClaude(systemPrompt, userPrompt, 3000);
-    const result = extractJSON(raw);
-    await logEvent(clientConfig.slug, 'corporate-strategy', 'generation_complete', {}, req);
-    res.json({ result });
+      const raw = await callClaude(systemPrompt, 'Generate the next diagnostic question.', 600);
+      const result = extractJSON(raw);
+      res.json({ result });
+
+    } else if (mode === 'resolution') {
+      const convoText = (conversation || []).map(m => m.role.toUpperCase() + ': ' + m.content).join('\n');
+
+      const systemPrompt = `You are a world-class business advisor delivering your diagnosis and action plan. You've just had a diagnostic conversation with a business leader. Now synthesize everything into a clear root cause analysis and three distinct resolution options.
+
+CLIENT CONTEXT:
+${buildClientContext(clientConfig)}
+
+FULL CONVERSATION:
+${convoText}
+
+Return ONLY valid JSON:
+{
+  "root_cause_analysis": "2-4 sentences identifying the core underlying issue. Be direct and specific. Reference what they told you. This should feel like an 'aha' moment — connecting dots they may not have connected.",
+  "resolutions": [
+    {
+      "title": "Short, clear name for this approach",
+      "explanation": "2-3 sentences explaining this strategy and why it addresses the root cause",
+      "steps": ["Specific action step 1 — with timeline", "Step 2", "Step 3", "Step 4"],
+      "expected_impact": "What they can expect if they execute this well — be specific with timeframes and outcomes"
+    },
+    {
+      "title": "...",
+      "explanation": "...",
+      "steps": ["..."],
+      "expected_impact": "..."
+    },
+    {
+      "title": "...",
+      "explanation": "...",
+      "steps": ["..."],
+      "expected_impact": "..."
+    }
+  ],
+  "summary": "2-3 closing sentences. Be direct about what you'd do if you were in their shoes. End with something actionable."
+}
+
+RULES:
+- Resolution 1 = RECOMMENDED (quickest path to impact, most practical)
+- Resolution 2 = ALTERNATIVE (different angle, maybe less obvious)
+- Resolution 3 = LONG-TERM (bigger structural change, higher payoff over time)
+- Each resolution must have 3-5 specific, actionable steps with timelines
+- Reference specifics from the conversation — company details, numbers, people they mentioned
+- Be honest and direct — don't hedge. Tell them what you'd actually recommend
+- Expected impact should include timeframes ("within 60 days", "over the next quarter")
+- The root cause analysis should connect multiple things they said into one coherent diagnosis`;
+
+      const raw = await callClaude(systemPrompt, 'Deliver your diagnosis and three resolution options.', 2000);
+      const result = extractJSON(raw);
+      await logEvent(clientConfig.slug, 'corporate-strategy', 'resolution_complete', {}, req);
+      res.json({ result });
+
+    } else {
+      res.status(400).json({ error: 'Invalid mode. Use "question" or "resolution".' });
+    }
   } catch (e) {
-    console.error('Corporate strategy error:', e);
+    console.error('Business advisor error:', e);
     res.status(500).json({ error: e.message });
   }
 });
