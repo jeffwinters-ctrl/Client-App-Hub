@@ -421,11 +421,15 @@ app.post('/api/admin/analyze-website', requireAdmin, async (req, res) => {
       // Theme color
       const themeColor = (html.match(/<meta[^>]*name=["']theme-color["'][^>]*content=["']([^"']+)["']/i) || [])[1];
       if (themeColor) logoMatches.push('theme-color: ' + themeColor);
-      // Extract some CSS color hints
+      // Extract CSS color hints
       const styleBlocks = html.match(/<style[^>]*>([\s\S]*?)<\/style>/gi) || [];
+      const allStyles = styleBlocks.join(' ');
       const colorHints = [];
-      styleBlocks.join(' ').replace(/#[0-9a-fA-F]{3,8}\b/g, c => { if (!colorHints.includes(c)) colorHints.push(c); });
-      if (colorHints.length > 0) logoMatches.push('CSS colors found: ' + colorHints.slice(0, 15).join(', '));
+      allStyles.replace(/#[0-9a-fA-F]{3,8}\b/g, c => { if (!colorHints.includes(c)) colorHints.push(c); });
+      if (colorHints.length > 0) logoMatches.push('CSS colors found: ' + colorHints.slice(0, 20).join(', '));
+      // Look for inline style colors on buttons and headers
+      const btnColors = html.match(/(?:background|background-color)\s*:\s*(#[0-9a-fA-F]{3,8}|rgb[^)]+\))/gi) || [];
+      if (btnColors.length > 0) logoMatches.push('Inline background colors: ' + btnColors.slice(0, 10).join(', '));
 
       metaHints = logoMatches.join('\n');
 
@@ -457,9 +461,9 @@ app.post('/api/admin/analyze-website', requireAdmin, async (req, res) => {
   "competitors": "2-4 likely competitors based on their space",
   "differentiators": "2-3 key differentiators or value props visible from their site",
   "context": "A rich 3-4 sentence summary an AI sales coach would need to give great advice to their reps. Include what they sell, to whom, typical objections they might face, and what makes them unique.",
-  "logoUrl": "The best logo URL found in the metadata (prefer og:image or a logo img src). Return full absolute URL. If relative, prepend the site domain.",
-  "primaryColor": "The brand's primary/dominant color as a hex code (e.g. #1B3A5C) — extract from theme-color meta tag, CSS, or infer from the site's visual identity",
-  "accentColor": "The brand's secondary/accent color as a hex code (e.g. #E8A020) — often a CTA button color or highlight"
+  "logoUrl": "The best logo image URL. Prefer a transparent PNG or SVG of the company logo (look for img tags with 'logo' in class/alt/src). NOT the og:image (that's usually a banner). Return full absolute URL — if relative, prepend the site's domain.",
+  "primaryColor": "The brand's primary color as a hex code. This is the dominant color used in the header, navigation, or main brand elements. Look at the site's actual visual identity — NOT white, black, or gray. Example: a navy blue header = #1A2B4A",
+  "accentColor": "The brand's accent/CTA color as a hex code. This is typically the color of buttons, links, or highlighted elements. Example: an orange 'Schedule a Call' button = #F37021"
 }
 RULES:
 - If you can't determine a field, use your best estimate based on the industry and company type
