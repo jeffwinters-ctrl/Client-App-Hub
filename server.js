@@ -1381,7 +1381,17 @@ Return ONLY valid JSON (no markdown, no code fences):
 
     const pplxData = await pplxRes.json();
     const rawText = pplxData.choices?.[0]?.message?.content || '';
-    const result = extractJSON(rawText);
+    console.log('Perplexity sales-intel raw response (first 500 chars):', rawText.substring(0, 500));
+    let result;
+    try {
+      result = extractJSON(rawText);
+    } catch (parseErr) {
+      console.error('Failed to parse Perplexity JSON, falling back to Claude:', parseErr.message);
+      // Fallback: use Claude to re-format
+      const fixPrompt = `Extract the JSON from this text. Return ONLY valid JSON with an "items" array:\n\n${rawText}`;
+      const fixed = await callClaude('Return ONLY valid JSON. No markdown, no explanation.', fixPrompt, 2000);
+      result = extractJSON(fixed);
+    }
 
     // Cache in Supabase
     if (supabase && clientConfig.slug) {

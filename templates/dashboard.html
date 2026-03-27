@@ -734,7 +734,12 @@
         if (data.error) throw new Error(data.error);
         renderIntel(data, 'Updated just now');
       } catch (e) {
+        console.error('Sales playbook load error:', e);
         document.getElementById('feedSkeleton').style.display = 'none';
+        document.getElementById('feedError').innerHTML =
+          '<p>Couldn\'t load playbook.</p>' +
+          '<p style="font-size:0.72rem;color:var(--muted);margin:6px 0 10px;">' + (e.message || '') + '</p>' +
+          '<button onclick="loadIntel()">Retry</button>';
         document.getElementById('feedError').style.display = '';
       }
     }
