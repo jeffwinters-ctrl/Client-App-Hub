@@ -590,7 +590,7 @@ app.get('/:slug/business-case', requireAuth, async (req, res) => {
   logEvent(client.slug, 'business-case', 'app_open', {}, req);
   res.send(renderTemplate('business-case.html', {
     CLIENT_CONFIG: JSON.stringify(client),
-    PAGE_TITLE: `ROI Builder — ${client.companyName}`,
+    PAGE_TITLE: `Business Case Creator — ${client.companyName}`,
     SLUG: client.slug,
     COMPANY_NAME: client.companyName,
     PRIMARY_COLOR: client.primaryColor,
@@ -647,7 +647,7 @@ app.get('/:slug/case-study', requireAuth, async (req, res) => {
   logEvent(client.slug, 'case-study', 'app_open', {}, req);
   res.send(renderTemplate('case-study.html', {
     CLIENT_CONFIG: JSON.stringify(client),
-    PAGE_TITLE: `Win Story Builder — ${client.companyName}`,
+    PAGE_TITLE: `Case Study Builder — ${client.companyName}`,
     SLUG: client.slug,
     COMPANY_NAME: client.companyName,
     PRIMARY_COLOR: client.primaryColor,
