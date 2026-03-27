@@ -238,10 +238,10 @@
               <div class="detail-grid" style="margin-bottom:16px;">
                 <div class="detail-item">
                   <div class="detail-label">Company Name *</div>
-                  <input class="cf-input" type="text" id="cf_companyName" placeholder="Acme Industrial Supply" required>
+                  <input class="cf-input" type="text" id="cf_companyName" placeholder="Acme Industrial Supply" required oninput="autoSlug()">
                 </div>
                 <div class="detail-item">
-                  <div class="detail-label">URL Slug *</div>
+                  <div class="detail-label">URL Slug * <span style="font-size:0.7rem;color:var(--ink-light);font-weight:400;">(auto-filled)</span></div>
                   <input class="cf-input" type="text" id="cf_slug" placeholder="acme-industrial" required>
                 </div>
                 <div class="detail-item">
@@ -337,6 +337,7 @@
               <div style="margin-bottom:16px;">
                 <div class="detail-label">Initial Password</div>
                 <input class="cf-input" type="text" id="cf_password" placeholder="Set a login password for this client (min 6 chars)">
+                <div id="pwWarning" style="display:none;margin-top:6px;padding:8px 12px;background:#FFF8E1;border:1px solid #FFE082;border-radius:6px;font-size:0.82rem;color:#E65100;">&#9888; No password set — this client will not be able to log in.</div>
               </div>
               <div style="display:flex;gap:10px;flex-wrap:wrap;">
                 <button type="submit" class="btn-set-pw" id="btnSaveClient">Save Client</button>
@@ -370,15 +371,22 @@
           <select id="filterClient"><option value="">All Clients</option></select>
           <select id="filterApp">
             <option value="">All Apps</option>
-            <option value="dealcheck">DealCheck</option>
-            <option value="business-case">Business Case</option>
-            <option value="linkedin-post">LinkedIn Post</option>
-            <option value="hub">Hub</option>
+            <option value="dealcheck">Deal Coach</option>
+            <option value="business-case">Business Case Creator</option>
+            <option value="linkedin-post">LinkedIn Post Creator</option>
+            <option value="corporate-strategy">Business Advisor</option>
+            <option value="case-study">Case Study Builder</option>
+            <option value="trade-show">Event Planner</option>
+            <option value="industry-feed">Industry Feed</option>
+            <option value="research">Research Assistant</option>
+            <option value="hub">Hub / Dashboard</option>
           </select>
-          <select id="filterDays">
-            <option value="7">Last 7 Days</option>
-            <option value="30" selected>Last 30 Days</option>
-            <option value="90">Last 90 Days</option>
+          <select id="filterPeriod">
+            <option value="1">Today</option>
+            <option value="7" selected>Last 7 Days</option>
+            <option value="30">Last 30 Days</option>
+            <option value="90">This Quarter</option>
+            <option value="365">This Year</option>
           </select>
           <button class="btn-filter" onclick="loadAnalytics()">Apply</button>
         </div>
@@ -419,6 +427,19 @@
     });
 
     function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+    // Auto-fill slug from company name (only when adding, not editing)
+    function autoSlug() {
+      var slugField = document.getElementById('cf_slug');
+      if (slugField.getAttribute('readonly')) return;
+      var name = document.getElementById('cf_companyName').value;
+      slugField.value = name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+    }
+
+    // Password warning
+    document.getElementById('cf_password').addEventListener('input', function() {
+      document.getElementById('pwWarning').style.display = this.value.trim().length > 0 ? 'none' : 'block';
+    });
 
     // Init
     async function init() {
@@ -493,7 +514,7 @@
       events.filter(e => e.event_type === 'app_open').forEach(e => {
         apps[e.app_name] = (apps[e.app_name] || 0) + 1;
       });
-      const names = { 'dealcheck': 'DealCheck', 'business-case': 'Biz Case', 'linkedin-post': 'LinkedIn', 'hub': 'Hub' };
+      const names = { 'dealcheck': 'Deal Coach', 'business-case': 'Biz Case', 'linkedin-post': 'LinkedIn', 'corporate-strategy': 'Advisor', 'case-study': 'Case Study', 'trade-show': 'Events', 'industry-feed': 'Feed', 'research': 'Research', 'hub': 'Hub' };
       const max = Math.max(1, ...Object.values(apps));
       chart.innerHTML = Object.entries(apps).map(([app, count]) => {
         const pct = (count / max * 100);
@@ -524,7 +545,7 @@
           <td><strong>${c.companyName}</strong></td>
           <td><code>${c.slug}</code></td>
           <td>${c.industry}</td>
-          <td>${c.apps.map(a => `<span class="badge badge-green">${a}</span> `).join('')}${c.customConfig ? '<span class="badge badge-amber" title="Custom DealCheck config active">custom</span>' : ''}</td>
+          <td>${c.apps.map(a => `<span class="badge badge-green">${a}</span> `).join('')}</td>
           <td>
             <button class="btn-set-pw" style="font-size:0.75rem;padding:4px 12px;" onclick="showClientDetail('${c.slug}')">Manage</button>
             <button class="btn-set-pw" style="font-size:0.75rem;padding:4px 12px;" onclick="editClient('${c.slug}')">Edit</button>
@@ -558,6 +579,7 @@
       document.getElementById('cf_app_linkedin').checked = true;
       clearProfileFields();
       document.getElementById('cf_password').value = '';
+      document.getElementById('pwWarning').style.display = 'block';
       document.getElementById('clientFormMsg').textContent = '';
       document.getElementById('analyzeMsg').textContent = '';
 
@@ -574,7 +596,7 @@
       const c = CLIENTS.find(cl => cl.slug === slug);
       if (!c) return;
       document.getElementById('cf_editing').value = slug;
-      document.getElementById('formTitle').textContent = 'Edit Client: ' + c.companyName + (c.customConfig ? ' (Custom DealCheck Active)' : '');
+      document.getElementById('formTitle').textContent = 'Edit Client: ' + c.companyName;
 
       document.getElementById('cf_companyName').value = c.companyName;
       document.getElementById('cf_slug').value = c.slug;
@@ -606,6 +628,7 @@
       document.getElementById('cf_differentiators').value = c.differentiators || '';
       document.getElementById('cf_context').value = c.context || '';
       document.getElementById('cf_password').value = '';
+      document.getElementById('pwWarning').style.display = 'none';
       document.getElementById('clientFormMsg').textContent = '';
       document.getElementById('analyzeMsg').textContent = '';
       document.getElementById('clientFormWrap').style.display = 'block';
@@ -779,20 +802,12 @@
             msg.textContent += ' Warning: password may not have saved.';
             msg.style.color = 'orange';
           }
+        } else if (!editing) {
+          msg.textContent += ' WARNING: No password set — this client cannot log in until you set one.';
+          msg.style.color = 'orange';
         }
 
-        // Generate custom config in background (don't block the save)
-        const hasProfile = (payload.productDescription && payload.productDescription.length > 10) || (payload.context && payload.context.length > 20);
-        if (hasProfile && savedSlug) {
-          msg.textContent += ' Generating custom Deal Coach config (this may take a moment)...';
-          fetch('/api/admin/generate-config', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ slug: savedSlug })
-          }).then(() => {}).catch(() => {});
-        }
-
-        setTimeout(() => window.location.reload(), 2000);
+        setTimeout(() => window.location.reload(), 2500);
       } catch (err) {
         msg.textContent = 'Error: ' + err.message;
         msg.style.color = 'var(--red)';
@@ -855,61 +870,152 @@
     }
 
     // Analytics
+    var APP_NAMES = { 'dealcheck': 'Deal Coach', 'business-case': 'Business Case Creator', 'linkedin-post': 'LinkedIn Post Creator', 'corporate-strategy': 'Business Advisor', 'case-study': 'Case Study Builder', 'trade-show': 'Event Planner', 'industry-feed': 'Industry Feed', 'research': 'Research Assistant', 'hub': 'Hub / Dashboard' };
+
     async function loadAnalytics() {
-      const client = document.getElementById('filterClient').value;
-      const app = document.getElementById('filterApp').value;
-      const days = document.getElementById('filterDays').value;
-      const params = new URLSearchParams({ days });
+      var client = document.getElementById('filterClient').value;
+      var app = document.getElementById('filterApp').value;
+      var days = document.getElementById('filterPeriod').value;
+      var params = new URLSearchParams({ days: days });
       if (client) params.set('client', client);
       if (app) params.set('app', app);
 
-      const container = document.getElementById('analyticsContent');
+      var container = document.getElementById('analyticsContent');
       container.innerHTML = '<p style="color:var(--ink-light)">Loading...</p>';
 
+      var periodLabel = { '1': 'Today', '7': 'Last 7 Days', '30': 'Last 30 Days', '90': 'This Quarter', '365': 'This Year' }[days] || days + ' Days';
+
       try {
-        const res = await fetch('/api/admin/analytics?' + params);
-        const data = await res.json();
-        const events = data.events || [];
+        var res = await fetch('/api/admin/analytics?' + params);
+        var data = await res.json();
+        var events = data.events || [];
 
         if (events.length === 0) {
-          container.innerHTML = '<p style="color:var(--ink-light)">No events found for this period.</p>';
+          container.innerHTML = '<p style="color:var(--ink-light)">No events found for ' + periodLabel + '.</p>';
           return;
         }
 
-        // Summary stats
-        const byType = {};
-        const byClient = {};
-        const byApp = {};
-        events.forEach(e => {
+        // Aggregations
+        var byType = {}, byClient = {}, byApp = {}, byDay = {}, clientAppMatrix = {};
+        var logins = 0, appOpens = 0, completions = 0;
+        events.forEach(function(e) {
           byType[e.event_type] = (byType[e.event_type] || 0) + 1;
           byClient[e.client_slug] = (byClient[e.client_slug] || 0) + 1;
           byApp[e.app_name] = (byApp[e.app_name] || 0) + 1;
+          var dayKey = e.created_at.split('T')[0];
+          byDay[dayKey] = (byDay[dayKey] || 0) + 1;
+          if (!clientAppMatrix[e.client_slug]) clientAppMatrix[e.client_slug] = {};
+          clientAppMatrix[e.client_slug][e.app_name] = (clientAppMatrix[e.client_slug][e.app_name] || 0) + 1;
+          if (e.event_type === 'login') logins++;
+          if (e.event_type === 'app_open') appOpens++;
+          if (e.event_type.includes('complete')) completions++;
         });
 
-        let html = `<div class="stats-row">
-          <div class="stat-card"><div class="stat-num">${events.length}</div><div class="stat-label">Total Events</div></div>
-          <div class="stat-card"><div class="stat-num">${Object.keys(byClient).length}</div><div class="stat-label">Unique Clients</div></div>
-          <div class="stat-card"><div class="stat-num">${byType['login'] || 0}</div><div class="stat-label">Logins</div></div>
-          <div class="stat-card"><div class="stat-num">${(byType['analysis_complete'] || 0) + (byType['generation_complete'] || 0)}</div><div class="stat-label">Completions</div></div>
-        </div>`;
+        var uniqueClients = Object.keys(byClient).length;
+        var mostActiveClient = Object.entries(byClient).sort(function(a,b) { return b[1]-a[1]; })[0];
+        var mostUsedApp = Object.entries(byApp).sort(function(a,b) { return b[1]-a[1]; })[0];
 
-        // Events by type
-        html += `<div class="chart-area"><h3>Events by Type</h3>`;
-        const maxType = Math.max(1, ...Object.values(byType));
-        html += `<div class="bar-chart">${Object.entries(byType).map(([t, n]) =>
-          `<div class="bar-col"><div class="bar-value">${n}</div><div class="bar" style="height:${n/maxType*100}%"></div><div class="bar-label">${t.replace(/_/g, ' ')}</div></div>`
-        ).join('')}</div></div>`;
+        // ── Summary Cards ──
+        var html = '<div style="margin-bottom:8px;font-family:Oswald,sans-serif;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-light);">' + periodLabel + '</div>';
+        html += '<div class="stats-row">';
+        html += '<div class="stat-card"><div class="stat-num">' + events.length + '</div><div class="stat-label">Total Events</div></div>';
+        html += '<div class="stat-card"><div class="stat-num">' + uniqueClients + '</div><div class="stat-label">Active Clients</div></div>';
+        html += '<div class="stat-card"><div class="stat-num">' + logins + '</div><div class="stat-label">Logins</div></div>';
+        html += '<div class="stat-card"><div class="stat-num">' + appOpens + '</div><div class="stat-label">App Opens</div></div>';
+        html += '<div class="stat-card"><div class="stat-num">' + completions + '</div><div class="stat-label">Completions</div></div>';
+        html += '</div>';
 
-        // Client breakdown
-        html += `<div class="chart-area"><h3>Events by Client</h3>`;
-        const maxClient = Math.max(1, ...Object.values(byClient));
-        html += `<div class="bar-chart">${Object.entries(byClient).map(([c, n]) =>
-          `<div class="bar-col"><div class="bar-value">${n}</div><div class="bar" style="height:${n/maxClient*100}%"></div><div class="bar-label">${c}</div></div>`
-        ).join('')}</div></div>`;
+        // ── Activity Over Time ──
+        var dayEntries = Object.entries(byDay).sort(function(a,b) { return a[0].localeCompare(b[0]); });
+        if (dayEntries.length > 0) {
+          var maxDay = Math.max(1, Math.max.apply(null, dayEntries.map(function(d) { return d[1]; })));
+          html += '<div class="chart-area"><h3>Activity Over Time</h3>';
+          html += '<div class="bar-chart" style="height:140px;">';
+          // Show every bar for <=30 days, every 3rd for larger
+          var skipEvery = dayEntries.length > 30 ? 3 : 1;
+          dayEntries.forEach(function(entry, i) {
+            var pct = entry[1] / maxDay * 100;
+            var dateLabel = new Date(entry[0] + 'T12:00:00').toLocaleDateString('en', { month: 'short', day: 'numeric' });
+            var showLabel = (i % skipEvery === 0) ? dateLabel : '';
+            html += '<div class="bar-col"><div class="bar-value">' + (entry[1] || '') + '</div><div class="bar" style="height:' + Math.max(2, pct) + '%"></div><div class="bar-label">' + showLabel + '</div></div>';
+          });
+          html += '</div></div>';
+        }
+
+        // ── App Usage Breakdown ──
+        var appEntries = Object.entries(byApp).sort(function(a,b) { return b[1]-a[1]; });
+        if (appEntries.length > 0) {
+          var maxApp = Math.max(1, appEntries[0][1]);
+          html += '<div class="chart-area"><h3>App Usage — Which Apps Are Being Used Most?</h3>';
+          html += '<div style="display:grid;gap:8px;">';
+          appEntries.forEach(function(entry) {
+            var pct = Math.round(entry[1] / events.length * 100);
+            var barPct = entry[1] / maxApp * 100;
+            var name = APP_NAMES[entry[0]] || entry[0];
+            html += '<div style="display:flex;align-items:center;gap:12px;">';
+            html += '<div style="width:140px;font-size:0.85rem;font-weight:500;text-align:right;flex-shrink:0;">' + name + '</div>';
+            html += '<div style="flex:1;background:var(--rule);border-radius:4px;height:24px;overflow:hidden;">';
+            html += '<div style="width:' + barPct + '%;height:100%;background:var(--accent);border-radius:4px;transition:width 0.4s;"></div>';
+            html += '</div>';
+            html += '<div style="width:60px;font-size:0.82rem;font-weight:600;">' + entry[1] + ' <span style="color:var(--ink-light);font-weight:400;">(' + pct + '%)</span></div>';
+            html += '</div>';
+          });
+          html += '</div></div>';
+        }
+
+        // ── Client Usage Breakdown ──
+        var clientEntries = Object.entries(byClient).sort(function(a,b) { return b[1]-a[1]; });
+        if (clientEntries.length > 0) {
+          html += '<div class="chart-area"><h3>Client Usage — Which Clients Are Using This?</h3>';
+          html += '<table class="data-table"><thead><tr><th>Client</th><th>Total Events</th><th>Apps Used</th><th>Most Used App</th><th>Last Active</th></tr></thead><tbody>';
+          clientEntries.forEach(function(entry) {
+            var slug = entry[0];
+            var count = entry[1];
+            var clientObj = CLIENTS.find(function(c) { return c.slug === slug; });
+            var name = clientObj ? clientObj.companyName : slug;
+            var appsUsed = clientAppMatrix[slug] ? Object.keys(clientAppMatrix[slug]) : [];
+            var topApp = clientAppMatrix[slug] ? Object.entries(clientAppMatrix[slug]).sort(function(a,b) { return b[1]-a[1]; })[0] : null;
+            var topAppName = topApp ? (APP_NAMES[topApp[0]] || topApp[0]) : '—';
+            var lastEvent = events.find(function(e) { return e.client_slug === slug; });
+            var lastActive = lastEvent ? new Date(lastEvent.created_at).toLocaleDateString() : '—';
+            html += '<tr>';
+            html += '<td><strong>' + name + '</strong></td>';
+            html += '<td>' + count + '</td>';
+            html += '<td>' + appsUsed.length + ' apps</td>';
+            html += '<td><span class="badge badge-green">' + topAppName + '</span>' + (topApp ? ' (' + topApp[1] + ')' : '') + '</td>';
+            html += '<td>' + lastActive + '</td>';
+            html += '</tr>';
+          });
+          html += '</tbody></table></div>';
+        }
+
+        // ── Insights ──
+        html += '<div class="chart-area"><h3>Key Insights</h3><div style="display:grid;gap:12px;">';
+        if (mostActiveClient) {
+          var mcObj = CLIENTS.find(function(c) { return c.slug === mostActiveClient[0]; });
+          html += '<div style="padding:12px 16px;background:var(--bg);border-radius:8px;font-size:0.9rem;">' +
+            '<strong style="color:var(--green);">Most Active Client:</strong> ' +
+            (mcObj ? mcObj.companyName : mostActiveClient[0]) + ' — ' + mostActiveClient[1] + ' events' +
+            '</div>';
+        }
+        if (mostUsedApp) {
+          html += '<div style="padding:12px 16px;background:var(--bg);border-radius:8px;font-size:0.9rem;">' +
+            '<strong style="color:var(--accent);">Most Used App:</strong> ' +
+            (APP_NAMES[mostUsedApp[0]] || mostUsedApp[0]) + ' — ' + mostUsedApp[1] + ' events (' + Math.round(mostUsedApp[1] / events.length * 100) + '% of all activity)' +
+            '</div>';
+        }
+        var inactiveClients = CLIENTS.filter(function(c) { return !byClient[c.slug]; });
+        if (inactiveClients.length > 0) {
+          html += '<div style="padding:12px 16px;background:#FFF8E1;border:1px solid #FFE082;border-radius:8px;font-size:0.9rem;">' +
+            '<strong style="color:#E65100;">Inactive Clients (' + periodLabel + '):</strong> ' +
+            inactiveClients.map(function(c) { return c.companyName; }).join(', ') +
+            '</div>';
+        }
+        html += '</div></div>';
 
         container.innerHTML = html;
       } catch (e) {
-        container.innerHTML = `<p style="color:var(--red)">Error: ${e.message}</p>`;
+        container.innerHTML = '<p style="color:var(--red)">Error: ' + e.message + '</p>';
       }
     }
 
