@@ -227,7 +227,12 @@
 <body>
   <header class="dc-header">
     <span>DEAL COACH &mdash; {{INDUSTRY_LABEL}}</span>
-    <a href="/{{SLUG}}">Back to Hub</a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <select id="historySelect" style="padding:6px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:0.78rem;cursor:pointer;max-width:200px;" onchange="loadWorkItem(this.value)">
+        <option value="">Past Work</option>
+      </select>
+      <a href="/{{SLUG}}">Back to Hub</a>
+    </div>
   </header>
 
   <!-- Landing Screen -->
@@ -542,6 +547,11 @@
       });
 
       showScreen('screenResults');
+
+      // Auto-save
+      var dealName = answers.persona ? (INDUSTRY.personas[answers.persona] || '') : '';
+      var saveTitle = (dealName || 'Deal') + ' — Score: ' + calculateScore();
+      fetch('/api/save-work', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ slug: SLUG, appType: 'dealcheck', title: saveTitle, data: { answers: answers, result: result } }) }).catch(function(){});
     }
 
     function openModal(hf, finding, color) {
@@ -562,6 +572,32 @@
         btn.textContent = 'Copied!';
         setTimeout(() => btn.textContent = 'Copy', 1500);
       });
+    }
+
+    // History
+    (async function loadHistory() {
+      try {
+        var res = await fetch('/api/work/' + SLUG + '?app_type=dealcheck');
+        var d = await res.json();
+        var sel = document.getElementById('historySelect');
+        (d.items || []).forEach(function(item) {
+          var opt = document.createElement('option');
+          opt.value = item.id;
+          opt.textContent = item.title + ' — ' + new Date(item.created_at).toLocaleDateString();
+          sel.appendChild(opt);
+        });
+      } catch(e) {}
+    })();
+    async function loadWorkItem(id) {
+      if (!id) return;
+      try {
+        var res = await fetch('/api/work/' + SLUG + '/' + id);
+        var item = await res.json();
+        if (item.data && item.data.result) {
+          if (item.data.answers) answers = item.data.answers;
+          renderResults(item.data.result);
+        }
+      } catch(e) { alert('Failed to load.'); }
     }
   </script>
 </body>

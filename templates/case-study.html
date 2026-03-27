@@ -322,6 +322,9 @@
 <body>
   <header class="cs-header">
     <span class="cs-header-brand">Case Study Builder</span>
+    <select id="historySelect" style="padding:6px 10px;border-radius:6px;border:1px solid var(--rule-light);background:var(--bg);color:var(--ink);font-size:0.78rem;cursor:pointer;max-width:200px;margin-left:auto;margin-right:12px;" onchange="loadWorkItem(this.value)">
+      <option value="">Past Work</option>
+    </select>
     <a href="/{{SLUG}}">← Back to Hub</a>
   </header>
 
@@ -633,6 +636,8 @@
       // Show results
       toggleView('full');
       showScreen('screenResults');
+
+      fetch('/api/save-work', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ slug: SLUG, appType: 'case-study', title: (cs.title || 'Case Study') + ' — ' + new Date().toLocaleDateString(), data: { result: cs } }) }).catch(function(){});
     }
 
     function copyCaseStudy() {
@@ -653,6 +658,28 @@
         btn.textContent = 'Copied!';
         setTimeout(() => { btn.textContent = 'Copy One-Pager'; }, 1500);
       });
+    }
+
+    (async function loadHistory() {
+      try {
+        var res = await fetch('/api/work/' + SLUG + '?app_type=case-study');
+        var d = await res.json();
+        var sel = document.getElementById('historySelect');
+        (d.items || []).forEach(function(item) {
+          var opt = document.createElement('option');
+          opt.value = item.id;
+          opt.textContent = item.title;
+          sel.appendChild(opt);
+        });
+      } catch(e) {}
+    })();
+    async function loadWorkItem(id) {
+      if (!id) return;
+      try {
+        var res = await fetch('/api/work/' + SLUG + '/' + id);
+        var item = await res.json();
+        if (item.data && item.data.result) { _caseStudy = item.data.result; renderCaseStudy(item.data.result); }
+      } catch(e) { alert('Failed to load.'); }
     }
   </script>
 </body>

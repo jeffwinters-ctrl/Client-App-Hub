@@ -534,7 +534,12 @@
       <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 0 0-8 0v2"/><circle cx="12" cy="14" r="2"/></svg>
       <span>Event Planner</span>
     </div>
-    <a href="/{{SLUG}}">← Back to Hub</a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <select id="historySelect" style="padding:6px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:0.78rem;cursor:pointer;max-width:200px;" onchange="loadWorkItem(this.value)">
+        <option value="">Past Work</option>
+      </select>
+      <a href="/{{SLUG}}">← Back to Hub</a>
+    </div>
   </header>
 
   <!-- ===== FORM SCREEN ===== -->
@@ -864,7 +869,9 @@
     }
 
     /* ===== Render Results ===== */
+    var _lastResult = null;
     function renderResults(r) {
+      _lastResult = r;
       const eventName = document.getElementById('f_eventname').value;
 
       // Countdown banner
@@ -1068,6 +1075,9 @@
       document.getElementById('panel-postshow').innerHTML = postHtml;
 
       showScreen('screenResults');
+
+      var evName = document.getElementById('f_event_name') ? document.getElementById('f_event_name').value : 'Event';
+      fetch('/api/save-work', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ slug: SLUG, appType: 'trade-show', title: (evName || 'Event') + ' — ' + new Date().toLocaleDateString(), data: { result: _lastResult } }) }).catch(function(){});
     }
 
     /* ===== Utility: HTML-escape ===== */
@@ -1082,6 +1092,28 @@
     function escJs(str) {
       if (!str) return '';
       return String(str).replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+    }
+
+    (async function loadHistory() {
+      try {
+        var res = await fetch('/api/work/' + SLUG + '?app_type=trade-show');
+        var d = await res.json();
+        var sel = document.getElementById('historySelect');
+        (d.items || []).forEach(function(item) {
+          var opt = document.createElement('option');
+          opt.value = item.id;
+          opt.textContent = item.title;
+          sel.appendChild(opt);
+        });
+      } catch(e) {}
+    })();
+    async function loadWorkItem(id) {
+      if (!id) return;
+      try {
+        var res = await fetch('/api/work/' + SLUG + '/' + id);
+        var item = await res.json();
+        if (item.data && item.data.result) renderResults(item.data.result);
+      } catch(e) { alert('Failed to load.'); }
     }
   </script>
 </body>

@@ -1498,6 +1498,53 @@ When answering research queries:
   }
 });
 
+// ─── WORK HISTORY ────────────────────────────────────────
+
+app.post('/api/save-work', async (req, res) => {
+  try {
+    const { slug, appType, title, data } = req.body;
+    if (!slug || !appType || !title || !data) return res.status(400).json({ error: 'Missing fields' });
+    if (!supabase) return res.json({ success: true, id: null });
+    const { data: row, error } = await supabase.from('client_work').insert({
+      slug, app_type: appType, title, data
+    }).select('id').single();
+    if (error) throw error;
+    res.json({ success: true, id: row.id });
+  } catch (e) {
+    console.error('Save work error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.get('/api/work/:slug', async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const { app_type } = req.query;
+    if (!supabase) return res.json({ items: [] });
+    let query = supabase.from('client_work').select('id, app_type, title, created_at').eq('slug', slug).order('created_at', { ascending: false }).limit(50);
+    if (app_type) query = query.eq('app_type', app_type);
+    const { data, error } = await query;
+    if (error) throw error;
+    res.json({ items: data || [] });
+  } catch (e) {
+    console.error('Load work list error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.get('/api/work/:slug/:id', async (req, res) => {
+  try {
+    const { slug, id } = req.params;
+    if (!supabase) return res.status(404).json({ error: 'Not found' });
+    const { data, error } = await supabase.from('client_work').select('*').eq('id', id).eq('slug', slug).single();
+    if (error) throw error;
+    res.json(data);
+  } catch (e) {
+    console.error('Load work error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 // ─── 404 ─────────────────────────────────────────────────
 
 app.use((req, res) => {

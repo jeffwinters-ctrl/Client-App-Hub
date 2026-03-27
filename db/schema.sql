@@ -48,3 +48,21 @@ CREATE POLICY "Service role full access on passwords" ON client_passwords
 
 CREATE POLICY "Service role full access on analytics" ON analytics_events
   FOR ALL USING (true) WITH CHECK (true);
+
+-- Client work history (saved outputs from all apps)
+CREATE TABLE IF NOT EXISTS client_work (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  slug TEXT NOT NULL,
+  app_type TEXT NOT NULL,
+  title TEXT NOT NULL,
+  data JSONB NOT NULL DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_work_slug ON client_work(slug);
+CREATE INDEX IF NOT EXISTS idx_work_app ON client_work(slug, app_type);
+CREATE INDEX IF NOT EXISTS idx_work_created ON client_work(created_at DESC);
+
+ALTER TABLE client_work ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Service role full access on client_work" ON client_work
+  FOR ALL USING (true) WITH CHECK (true);

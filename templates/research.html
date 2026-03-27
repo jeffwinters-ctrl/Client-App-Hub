@@ -346,7 +346,12 @@
       </div>
       <span class="header-title">Research Assistant</span>
     </div>
-    <a href="/{{SLUG}}">&#8592; Back to Hub</a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <select id="historySelect" style="padding:6px 10px;border-radius:6px;border:1px solid var(--rule);background:var(--bg);color:var(--ink-light);font-size:0.78rem;cursor:pointer;max-width:200px;" onchange="loadWorkItem(this.value)">
+        <option value="">Past Work</option>
+      </select>
+      <a href="/{{SLUG}}">&#8592; Back to Hub</a>
+    </div>
   </header>
 
   <div class="main-container">
@@ -483,6 +488,8 @@
 
         results.innerHTML = html;
 
+        fetch('/api/save-work', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ slug: SLUG, appType: 'research', title: query.substring(0, 60) + ' — ' + new Date().toLocaleDateString(), data: { query: query, answer: data.answer, citations: data.citations } }) }).catch(function(){});
+
       } catch (err) {
         results.innerHTML =
           '<div class="query-display">' +
@@ -509,6 +516,48 @@
           setTimeout(function() { b.textContent = 'Copy Answer'; }, 1500);
         });
       });
+    }
+
+    (async function loadHistory() {
+      try {
+        var res = await fetch('/api/work/' + SLUG + '?app_type=research');
+        var d = await res.json();
+        var sel = document.getElementById('historySelect');
+        (d.items || []).forEach(function(item) {
+          var opt = document.createElement('option');
+          opt.value = item.id;
+          opt.textContent = item.title;
+          sel.appendChild(opt);
+        });
+      } catch(e) {}
+    })();
+    async function loadWorkItem(id) {
+      if (!id) return;
+      try {
+        var res = await fetch('/api/work/' + SLUG + '/' + id);
+        var item = await res.json();
+        if (item.data && item.data.answer) {
+          document.getElementById('welcomeArea').style.display = 'none';
+          var results = document.getElementById('resultsArea');
+          results.className = 'results-area visible';
+          var answerHtml = markdownToHtml(item.data.answer);
+          var citations = item.data.citations || [];
+          var html =
+            '<div class="query-display"><div class="q-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div><div class="q-text">' + esc(item.data.query || '') + '</div></div>' +
+            '<div class="answer-card"><div class="answer-header"><span class="perplexity-badge">Perplexity</span><span class="answer-label">Research Results</span></div>' +
+            '<div class="answer-body" id="answerBody"><p>' + answerHtml + '</p></div>';
+          if (citations.length > 0) {
+            html += '<div class="citations"><div class="citations-label">Sources</div><ul class="citation-list">';
+            citations.forEach(function(url, i) {
+              var domain = ''; try { domain = new URL(url).hostname.replace('www.', ''); } catch(e) { domain = url; }
+              html += '<li><a href="' + esc(url) + '" target="_blank" rel="noopener"><span class="citation-num">' + (i+1) + '</span>' + esc(domain) + '</a></li>';
+            });
+            html += '</ul></div>';
+          }
+          html += '<div class="answer-actions"><button class="btn-copy" onclick="copyAnswer()">Copy Answer</button></div></div>';
+          results.innerHTML = html;
+        }
+      } catch(e) { alert('Failed to load.'); }
     }
   </script>
 </body>

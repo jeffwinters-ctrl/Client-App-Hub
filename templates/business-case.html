@@ -135,7 +135,12 @@
 <body>
   <header class="bc-header">
     <span>BUSINESS CASE CREATOR</span>
-    <a href="/{{SLUG}}">Back to Hub</a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <select id="historySelect" style="padding:6px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:0.78rem;cursor:pointer;max-width:200px;" onchange="loadWorkItem(this.value)">
+        <option value="">Past Work</option>
+      </select>
+      <a href="/{{SLUG}}">Back to Hub</a>
+    </div>
   </header>
 
   <div class="screen active" id="screenForm">
@@ -317,6 +322,10 @@
 
       doc.innerHTML = html;
       showScreen('screenResults');
+
+      // Auto-save
+      var saveTitle = (result.title || 'Business Case') + ' — ' + new Date().toLocaleDateString();
+      fetch('/api/save-work', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ slug: SLUG, appType: 'business-case', title: saveTitle, data: { result: result } }) }).catch(function(){});
     }
 
     function copyDocument() {
@@ -327,6 +336,28 @@
         btn.textContent = 'COPIED!';
         setTimeout(() => btn.textContent = 'COPY TO CLIPBOARD', 1500);
       });
+    }
+
+    (async function loadHistory() {
+      try {
+        var res = await fetch('/api/work/' + SLUG + '?app_type=business-case');
+        var d = await res.json();
+        var sel = document.getElementById('historySelect');
+        (d.items || []).forEach(function(item) {
+          var opt = document.createElement('option');
+          opt.value = item.id;
+          opt.textContent = item.title;
+          sel.appendChild(opt);
+        });
+      } catch(e) {}
+    })();
+    async function loadWorkItem(id) {
+      if (!id) return;
+      try {
+        var res = await fetch('/api/work/' + SLUG + '/' + id);
+        var item = await res.json();
+        if (item.data && item.data.result) renderBusinessCase(item.data.result);
+      } catch(e) { alert('Failed to load.'); }
     }
   </script>
 </body>

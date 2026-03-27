@@ -584,7 +584,12 @@
       <div class="status-dot"></div>
       <span>Business Advisor</span>
     </div>
-    <a href="/{{SLUG}}">&#8592; Back to Hub</a>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <select id="historySelect" style="padding:6px 10px;border-radius:6px;border:1px solid var(--rule);background:var(--bg-light);color:var(--ink-muted);font-size:0.78rem;cursor:pointer;max-width:200px;" onchange="loadWorkItem(this.value)">
+        <option value="">Past Work</option>
+      </select>
+      <a href="/{{SLUG}}">&#8592; Back to Hub</a>
+    </div>
   </header>
 
   <div class="chat-container">
@@ -946,6 +951,10 @@
         document.getElementById('inputRow').style.display = 'none';
         isProcessing = false;
 
+        var problem = conversationHistory.length > 0 ? conversationHistory[0].content : 'Advisory';
+        var saveTitle = problem.substring(0, 60) + (problem.length > 60 ? '...' : '') + ' — ' + new Date().toLocaleDateString();
+        fetch('/api/save-work', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ slug: SLUG, appType: 'corporate-strategy', title: saveTitle, data: { conversation: conversationHistory, result: r } }) }).catch(function(){});
+
       } catch (err) {
         removeThinking();
         addMessage('advisor', 'Connection error. Please try again.');
@@ -964,6 +973,54 @@
           setTimeout(function() { b.textContent = 'Copy Report'; }, 1500);
         });
       });
+    }
+
+    (async function loadHistory() {
+      try {
+        var res = await fetch('/api/work/' + SLUG + '?app_type=corporate-strategy');
+        var d = await res.json();
+        var sel = document.getElementById('historySelect');
+        (d.items || []).forEach(function(item) {
+          var opt = document.createElement('option');
+          opt.value = item.id;
+          opt.textContent = item.title;
+          sel.appendChild(opt);
+        });
+      } catch(e) {}
+    })();
+    async function loadWorkItem(id) {
+      if (!id) return;
+      try {
+        var res = await fetch('/api/work/' + SLUG + '/' + id);
+        var item = await res.json();
+        if (item.data) {
+          conversationHistory = item.data.conversation || [];
+          var msgs = document.getElementById('chatMessages');
+          msgs.innerHTML = '';
+          conversationHistory.forEach(function(m) {
+            if (m.role === 'user') addMessage('user', esc(m.content), true);
+            else addMessage('advisor', esc(m.content), true);
+          });
+          if (item.data.result) {
+            addMessage('advisor', 'Here\'s the briefing from this session:', true);
+            // Re-trigger resolution render would be complex, so show summary
+            var r = item.data.result;
+            var html = '<div style="padding:16px;background:var(--bg-light);border-radius:10px;border:1px solid var(--rule);margin-top:8px;">';
+            html += '<div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);margin-bottom:8px;">Root Cause</div>';
+            html += '<p style="font-size:0.9rem;line-height:1.7;">' + esc(r.root_cause_analysis || '') + '</p>';
+            if (r.resolutions && r.resolutions.length) {
+              html += '<div style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);margin:16px 0 8px;">Recommendations</div>';
+              r.resolutions.forEach(function(res, i) {
+                html += '<p style="margin-bottom:8px;"><strong>' + (i+1) + '. ' + esc(res.title) + '</strong> — ' + esc(res.explanation) + '</p>';
+              });
+            }
+            html += '</div>';
+            addMessage('advisor', html, true);
+          }
+          document.getElementById('inputRow').style.display = 'none';
+          scrollToBottom();
+        }
+      } catch(e) { alert('Failed to load.'); }
     }
 
     function startNewTopic() {
