@@ -1250,6 +1250,69 @@ RULES:
 
 // ─── INDUSTRY FEED API ───────────────────────────────────
 
+// Helper: fetch RSS headlines
+async function fetchRssHeadlines(clientConfig) {
+  const searchTerms = clientConfig.productDescription
+    ? clientConfig.productDescription.split(/[,.]/).slice(0, 2).join(' ').trim()
+    : (clientConfig.context || clientConfig.companyName || '').split('.')[0];
+
+  let articles = [];
+  const queries = [searchTerms];
+  if (clientConfig.industry && clientConfig.industry !== 'general') {
+    queries.push(clientConfig.industry + ' industry news');
+  }
+
+  for (const q of queries) {
+    if (articles.length >= 10) break;
+    try {
+      const rssUrl = 'https://news.google.com/rss/search?q=' + encodeURIComponent(q) + '&hl=en-US&gl=US&ceid=US:en';
+      const rssRes = await fetch(rssUrl, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SapperBot/1.0)' },
+        signal: AbortSignal.timeout(5000)
+      });
+      const rssXml = await rssRes.text();
+      const items = rssXml.split('<item>').slice(1, 8);
+      items.forEach(item => {
+        const title = (item.match(/<title><!\[CDATA\[(.*?)\]\]>/) || item.match(/<title>(.*?)<\/title>/) || [])[1] || '';
+        const link = (item.match(/<link\/>(.*?)</) || item.match(/<link>(.*?)<\/link>/) || [])[1] || '';
+        const pubDate = (item.match(/<pubDate>(.*?)<\/pubDate>/) || [])[1] || '';
+        const source = (item.match(/<source[^>]*>(.*?)<\/source>/) || [])[1] || '';
+        if (title && link) {
+          articles.push({
+            title: title.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/<!\[CDATA\[|\]\]>/g, ''),
+            link: link.trim(),
+            source,
+            date: pubDate ? new Date(pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''
+          });
+        }
+      });
+    } catch (e) {
+      console.error('RSS fetch error for query "' + q + '":', e.message);
+    }
+  }
+
+  const seen = new Set();
+  return articles.filter(a => {
+    const key = a.title.toLowerCase().substring(0, 60);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).slice(0, 8);
+}
+
+// Fast RSS-only endpoint (2-3s)
+app.post('/api/industry-feed/headlines', async (req, res) => {
+  try {
+    const { clientConfig } = req.body;
+    if (!clientConfig) return res.status(400).json({ error: 'Missing client config' });
+    const articles = await fetchRssHeadlines(clientConfig);
+    res.json({ articles, _raw: true });
+  } catch (e) {
+    console.error('Headlines error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
 app.post('/api/industry-feed', async (req, res) => {
   try {
     const { clientConfig, cacheOnly } = req.body;
@@ -1270,100 +1333,44 @@ app.post('/api/industry-feed', async (req, res) => {
       } catch (e) { /* cache miss, continue */ }
     }
 
-    // If cacheOnly was requested but no cache exists, return empty
     if (cacheOnly) {
       return res.json({ articles: [], _noCache: true });
     }
 
-    // Build a smart search query from the client profile
-    const queryParts = [
-      clientConfig.productDescription,
-      clientConfig.industry,
-      clientConfig.context
-    ].filter(Boolean).join('. ');
-
-    const searchTerms = clientConfig.productDescription
-      ? clientConfig.productDescription.split(/[,.]/).slice(0, 2).join(' ').trim()
-      : (clientConfig.context || clientConfig.companyName || '').split('.')[0];
-
-    // Fetch real articles via Google News RSS
-    let articles = [];
-    const queries = [searchTerms];
-    if (clientConfig.industry && clientConfig.industry !== 'general') {
-      queries.push(clientConfig.industry + ' industry news');
-    }
-
-    for (const q of queries) {
-      if (articles.length >= 10) break;
-      try {
-        const rssUrl = 'https://news.google.com/rss/search?q=' + encodeURIComponent(q) + '&hl=en-US&gl=US&ceid=US:en';
-        const rssRes = await fetch(rssUrl, {
-          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SapperBot/1.0)' },
-          signal: AbortSignal.timeout(8000)
-        });
-        const rssXml = await rssRes.text();
-        const items = rssXml.split('<item>').slice(1, 8);
-        items.forEach(item => {
-          const title = (item.match(/<title><!\[CDATA\[(.*?)\]\]>/) || item.match(/<title>(.*?)<\/title>/) || [])[1] || '';
-          const link = (item.match(/<link\/>(.*?)</) || item.match(/<link>(.*?)<\/link>/) || [])[1] || '';
-          const pubDate = (item.match(/<pubDate>(.*?)<\/pubDate>/) || [])[1] || '';
-          const source = (item.match(/<source[^>]*>(.*?)<\/source>/) || [])[1] || '';
-          if (title && link) {
-            articles.push({
-              title: title.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/<!\[CDATA\[|\]\]>/g, ''),
-              link: link.trim(),
-              source,
-              date: pubDate ? new Date(pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''
-            });
-          }
-        });
-      } catch (e) {
-        console.error('RSS fetch error for query "' + q + '":', e.message);
-      }
-    }
-
-    // Deduplicate by title
-    const seen = new Set();
-    articles = articles.filter(a => {
-      const key = a.title.toLowerCase().substring(0, 60);
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    }).slice(0, 10);
+    const articles = await fetchRssHeadlines(clientConfig);
 
     if (articles.length === 0) {
-      return res.json({ articles: [], feed_context: 'No recent articles found. Try refreshing later.' });
+      return res.json({ articles: [], feed_context: 'No recent articles found.' });
     }
 
-    const systemPrompt = `You are a sales intelligence analyst. Given a list of real news articles and a company profile, curate the most relevant articles for this sales team. For each article, write a summary and a "sales angle."
+    const systemPrompt = `You are a sales intelligence analyst. Given real news articles and a company profile, add a brief summary and sales angle to each.
 
 CLIENT CONTEXT:
 ${buildClientContext(clientConfig)}
 
 Return ONLY valid JSON:
 {
-  "feed_context": "Brief 1-sentence description of the industry/topics covered",
+  "feed_context": "Brief 1-sentence description of the topics covered",
   "articles": [
     {
       "title": "Exact original article title",
       "link": "Exact original URL",
       "source": "Source name",
       "date": "Date string",
-      "summary": "2-sentence summary of what the article is about",
-      "sales_angle": "1-2 actionable sentences — how a rep can use this in conversations. Be specific: mention buyer types, objections it counters, or opportunities it creates."
+      "summary": "1-2 sentence summary",
+      "sales_angle": "1 actionable sentence for sales reps"
     }
   ]
 }
 
 RULES:
-- Keep the 6-8 MOST relevant articles — skip anything not useful for this sales team
-- Preserve the exact title, link, source, and date from the input
-- Summaries should be factual and concise
-- Sales angles must be specific and actionable
-- Order by most useful to the sales team first`;
+- Keep the 6 MOST relevant articles for this sales team
+- Preserve exact title, link, source, and date from input
+- Be concise — short summaries, punchy sales angles
+- Order by most useful first`;
 
     const userPrompt = 'Articles:\n' + articles.map((a, i) => (i + 1) + '. "' + a.title + '" — ' + a.source + ' (' + a.date + ') [' + a.link + ']').join('\n');
-    const raw = await callClaude(systemPrompt, userPrompt, 2000);
+    const raw = await callClaude(systemPrompt, userPrompt, 1200);
     const result = extractJSON(raw);
 
     // Cache result in Supabase

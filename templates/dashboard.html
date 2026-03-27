@@ -623,7 +623,7 @@
       window.location.href = '/' + SLUG + '/login';
     }
 
-    // ── Industry Feed (instant cache, background refresh) ──
+    // ── Industry Feed (3-phase: cache -> raw headlines -> AI-enhanced) ──
     function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
     function timeAgo(isoStr) {
@@ -655,10 +655,14 @@
           : esc(a.title);
         html += '<div class="feed-item">' +
           '<div class="feed-item-source">' + esc(a.source || '') + (a.date ? ' &middot; ' + esc(a.date) : '') + '</div>' +
-          '<div class="feed-item-title">' + titleHtml + '</div>' +
-          '<div class="feed-item-summary">' + esc(a.summary || '') + '</div>' +
-          '<div class="feed-item-angle"><div class="feed-item-angle-label">Sales Angle</div>' + esc(a.sales_angle || '') + '</div>' +
-        '</div>';
+          '<div class="feed-item-title">' + titleHtml + '</div>';
+        if (a.summary) {
+          html += '<div class="feed-item-summary">' + esc(a.summary) + '</div>';
+        }
+        if (a.sales_angle) {
+          html += '<div class="feed-item-angle"><div class="feed-item-angle-label">Sales Angle</div>' + esc(a.sales_angle) + '</div>';
+        }
+        html += '</div>';
       });
       document.getElementById('feedSkeleton').style.display = 'none';
       document.getElementById('feedContent').innerHTML = html;
@@ -671,7 +675,7 @@
       document.getElementById('feedContent').style.display = 'none';
       document.getElementById('feedError').style.display = 'none';
 
-      // Phase 1: Try to get cached version instantly
+      // Phase 1: Try cached version (instant)
       try {
         var cacheRes = await fetch('/api/industry-feed', {
           method: 'POST',
@@ -686,49 +690,47 @@
           if (cacheData._stale) note += ' &middot; Refreshing...';
           renderFeed(cacheData, note);
 
-          // Phase 2: If stale, refresh in background
           if (cacheData._stale) {
             fetch('/api/industry-feed', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ clientConfig: CLIENT_CONFIG })
-            }).then(function(r) { return r.json(); }).then(function(freshData) {
-              if (freshData.articles && freshData.articles.length > 0) {
-                renderFeed(freshData, 'Updated just now');
-              }
+            }).then(function(r) { return r.json(); }).then(function(d) {
+              if (d.articles && d.articles.length > 0) renderFeed(d, 'Updated just now');
             }).catch(function() {});
           }
           return;
         }
       } catch (e) { /* no cache, fall through */ }
 
-      // Phase 1 had no cache — do a full load (first time only)
-      document.getElementById('feedSkeleton').innerHTML =
-        '<div style="text-align:center;padding:24px 16px;">' +
-          '<div style="font-size:0.9rem;font-weight:600;margin-bottom:6px;">Loading industry news...</div>' +
-          '<div style="font-size:0.78rem;color:var(--muted);">First load takes 20-30 seconds. After this, it\'ll be instant.</div>' +
-        '</div>';
+      // Phase 2: No cache — fetch raw headlines instantly (~2-3s)
       try {
-        var res = await fetch('/api/industry-feed', {
+        var headRes = await fetch('/api/industry-feed/headlines', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ clientConfig: CLIENT_CONFIG })
         });
-        var text = await res.text();
-        var data;
-        try { data = JSON.parse(text); } catch(pe) {
-          throw new Error('timeout');
+        var headText = await headRes.text();
+        var headData;
+        try { headData = JSON.parse(headText); } catch(pe) { headData = { articles: [] }; }
+
+        if (headData.articles && headData.articles.length > 0) {
+          renderFeed(headData, 'Headlines &middot; Loading analysis...');
+
+          // Phase 3: Enhance with AI in background
+          fetch('/api/industry-feed', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ clientConfig: CLIENT_CONFIG })
+          }).then(function(r) { return r.json(); }).then(function(d) {
+            if (d.articles && d.articles.length > 0) renderFeed(d, 'Updated just now');
+          }).catch(function() {});
+          return;
         }
-        if (data.error) throw new Error(data.error);
-        renderFeed(data, 'Updated just now');
-      } catch (e) {
-        document.getElementById('feedSkeleton').style.display = 'none';
-        document.getElementById('feedError').innerHTML =
-          '<p style="margin-bottom:8px;">Feed is loading in the background.</p>' +
-          '<p style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;">Refresh the page in a moment to see articles.</p>' +
-          '<button onclick="loadFeed()" style="padding:8px 16px;border:1px solid var(--border);border-radius:6px;background:var(--bg);cursor:pointer;font-size:0.82rem;">Retry Now</button>';
-        document.getElementById('feedError').style.display = '';
-      }
+      } catch (e) { /* headlines failed too */ }
+
+      document.getElementById('feedSkeleton').style.display = 'none';
+      document.getElementById('feedError').style.display = '';
     }
     loadFeed();
   </script>
