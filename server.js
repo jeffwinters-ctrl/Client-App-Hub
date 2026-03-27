@@ -1357,7 +1357,7 @@ Return ONLY valid JSON (no markdown, no code fences):
   ]
 }`;
 
-    const pplxRes = await fetch('https://api.perplexity.ai/chat/completions', {
+    const pplxRes = await fetch('https://api.perplexity.ai/v1/sonar', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1375,6 +1375,7 @@ Return ONLY valid JSON (no markdown, no code fences):
 
     if (!pplxRes.ok) {
       const err = await pplxRes.text();
+      console.error('Perplexity sales-intel error:', pplxRes.status, err);
       throw new Error('Perplexity API error: ' + pplxRes.status);
     }
 
@@ -1419,7 +1420,7 @@ When answering research queries:
 - Structure your response with clear sections
 - Always cite your sources`;
 
-    const pplxRes = await fetch('https://api.perplexity.ai/chat/completions', {
+    const pplxRes = await fetch('https://api.perplexity.ai/v1/sonar', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1437,6 +1438,7 @@ When answering research queries:
 
     if (!pplxRes.ok) {
       const err = await pplxRes.text();
+      console.error('Perplexity research error:', pplxRes.status, err);
       throw new Error('Perplexity API error: ' + pplxRes.status + ' ' + err);
     }
 
