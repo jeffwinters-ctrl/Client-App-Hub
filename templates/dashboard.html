@@ -703,17 +703,30 @@
       } catch (e) { /* no cache, fall through */ }
 
       // Phase 1 had no cache — do a full load (first time only)
+      document.getElementById('feedSkeleton').innerHTML =
+        '<div style="text-align:center;padding:24px 16px;">' +
+          '<div style="font-size:0.9rem;font-weight:600;margin-bottom:6px;">Loading industry news...</div>' +
+          '<div style="font-size:0.78rem;color:var(--muted);">First load takes 20-30 seconds. After this, it\'ll be instant.</div>' +
+        '</div>';
       try {
         var res = await fetch('/api/industry-feed', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ clientConfig: CLIENT_CONFIG })
         });
-        var data = await res.json();
+        var text = await res.text();
+        var data;
+        try { data = JSON.parse(text); } catch(pe) {
+          throw new Error('timeout');
+        }
         if (data.error) throw new Error(data.error);
         renderFeed(data, 'Updated just now');
       } catch (e) {
         document.getElementById('feedSkeleton').style.display = 'none';
+        document.getElementById('feedError').innerHTML =
+          '<p style="margin-bottom:8px;">Feed is loading in the background.</p>' +
+          '<p style="font-size:0.78rem;color:var(--muted);margin-bottom:12px;">Refresh the page in a moment to see articles.</p>' +
+          '<button onclick="loadFeed()" style="padding:8px 16px;border:1px solid var(--border);border-radius:6px;background:var(--bg);cursor:pointer;font-size:0.82rem;">Retry Now</button>';
         document.getElementById('feedError').style.display = '';
       }
     }
