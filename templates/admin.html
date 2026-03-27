@@ -262,6 +262,11 @@
                   <div class="detail-label">Powered By</div>
                   <input class="cf-input" type="text" id="cf_poweredBy" placeholder="Sapper" value="Sapper">
                 </div>
+                <div class="detail-item" style="grid-column:1/-1;">
+                  <div class="detail-label">Logo URL</div>
+                  <input class="cf-input" type="text" id="cf_logoUrl" placeholder="https://example.com/logo.png">
+                  <div id="logoPreview" style="margin-top:8px;"></div>
+                </div>
               </div>
 
               <!-- Apps -->
@@ -546,6 +551,8 @@
       document.getElementById('cf_primaryColor').value = '#1B3A5C';
       document.getElementById('cf_accentColor').value = '#E8A020';
       document.getElementById('cf_poweredBy').value = 'Sapper';
+      document.getElementById('cf_logoUrl').value = '';
+      document.getElementById('logoPreview').innerHTML = '';
       document.getElementById('cf_app_dealcheck').checked = true;
       document.getElementById('cf_app_bizcase').checked = true;
       document.getElementById('cf_app_linkedin').checked = true;
@@ -578,6 +585,12 @@
       document.getElementById('cf_primaryColor').value = c.primaryColor || '#1B3A5C';
       document.getElementById('cf_accentColor').value = c.accentColor || '#E8A020';
       document.getElementById('cf_poweredBy').value = c.poweredBy || 'Sapper';
+      document.getElementById('cf_logoUrl').value = c.logo || '';
+      if (c.logo) {
+        document.getElementById('logoPreview').innerHTML = '<img src="' + c.logo + '" style="max-height:40px;max-width:200px;border-radius:4px;" onerror="this.style.display=\'none\'">';
+      } else {
+        document.getElementById('logoPreview').innerHTML = '';
+      }
       document.getElementById('cf_app_dealcheck').checked = c.apps.includes('dealcheck');
       document.getElementById('cf_app_bizcase').checked = c.apps.includes('business-case');
       document.getElementById('cf_app_linkedin').checked = c.apps.includes('linkedin-post');
@@ -628,6 +641,12 @@
         if (p.competitors) document.getElementById('cf_competitors').value = p.competitors;
         if (p.differentiators) document.getElementById('cf_differentiators').value = p.differentiators;
         if (p.context) document.getElementById('cf_context').value = p.context;
+        if (p.logoUrl) {
+          document.getElementById('cf_logoUrl').value = p.logoUrl;
+          document.getElementById('logoPreview').innerHTML = '<img src="' + p.logoUrl + '" style="max-height:40px;max-width:200px;border-radius:4px;" onerror="this.style.display=\'none\'">';
+        }
+        if (p.primaryColor) document.getElementById('cf_primaryColor').value = p.primaryColor;
+        if (p.accentColor) document.getElementById('cf_accentColor').value = p.accentColor;
         msg.textContent = 'Profile generated! Review and edit the fields below, then save.';
         msg.style.color = 'var(--green)';
       } catch (e) {
@@ -722,6 +741,7 @@
         primaryColor: document.getElementById('cf_primaryColor').value.trim(),
         accentColor: document.getElementById('cf_accentColor').value.trim(),
         poweredBy: document.getElementById('cf_poweredBy').value.trim(),
+        logo: document.getElementById('cf_logoUrl').value.trim(),
         apps: apps,
         website: document.getElementById('cf_website').value.trim(),
         productDescription: document.getElementById('cf_productDescription').value.trim(),

@@ -398,12 +398,37 @@ app.post('/api/admin/analyze-website', requireAdmin, async (req, res) => {
     let fullUrl = url;
     if (!/^https?:\/\//i.test(fullUrl)) fullUrl = 'https://' + fullUrl;
     let pageText = '';
+    let metaHints = '';
     try {
       const response = await fetch(fullUrl, {
         headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SapperBot/1.0)' },
         signal: AbortSignal.timeout(10000)
       });
       const html = await response.text();
+
+      // Extract branding hints from raw HTML before stripping
+      const logoMatches = [];
+      const ogImage = (html.match(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i) || [])[1];
+      if (ogImage) logoMatches.push('og:image: ' + ogImage);
+      const favicon = (html.match(/<link[^>]*rel=["'](?:icon|shortcut icon|apple-touch-icon)["'][^>]*href=["']([^"']+)["']/i) || [])[1];
+      if (favicon) logoMatches.push('favicon: ' + favicon);
+      // Look for logo in img tags
+      const logoImgs = html.match(/<img[^>]*(?:class|id|alt|src)=["'][^"']*logo[^"']*["'][^>]*/gi) || [];
+      logoImgs.slice(0, 3).forEach(tag => {
+        const src = (tag.match(/src=["']([^"']+)["']/i) || [])[1];
+        if (src) logoMatches.push('logo img: ' + src);
+      });
+      // Theme color
+      const themeColor = (html.match(/<meta[^>]*name=["']theme-color["'][^>]*content=["']([^"']+)["']/i) || [])[1];
+      if (themeColor) logoMatches.push('theme-color: ' + themeColor);
+      // Extract some CSS color hints
+      const styleBlocks = html.match(/<style[^>]*>([\s\S]*?)<\/style>/gi) || [];
+      const colorHints = [];
+      styleBlocks.join(' ').replace(/#[0-9a-fA-F]{3,8}\b/g, c => { if (!colorHints.includes(c)) colorHints.push(c); });
+      if (colorHints.length > 0) logoMatches.push('CSS colors found: ' + colorHints.slice(0, 15).join(', '));
+
+      metaHints = logoMatches.join('\n');
+
       pageText = html
         .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
         .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
@@ -421,7 +446,7 @@ app.post('/api/admin/analyze-website', requireAdmin, async (req, res) => {
       .filter(f => f.endsWith('.json'))
       .map(f => f.replace('.json', ''));
 
-    const systemPrompt = `You are a sales operations analyst. Given website content, extract a company profile for a sales enablement platform. Return ONLY valid JSON matching this schema:
+    const systemPrompt = `You are a sales operations analyst. Given website content and branding metadata, extract a company profile for a sales enablement platform. Return ONLY valid JSON matching this schema:
 {
   "companyName": "The company's official name",
   "industry": "Best match from: ${industries.join(', ')}",
@@ -431,15 +456,20 @@ app.post('/api/admin/analyze-website', requireAdmin, async (req, res) => {
   "salesCycle": "Estimated sales cycle length (e.g. 3-6 months)",
   "competitors": "2-4 likely competitors based on their space",
   "differentiators": "2-3 key differentiators or value props visible from their site",
-  "context": "A rich 3-4 sentence summary an AI sales coach would need to give great advice to their reps. Include what they sell, to whom, typical objections they might face, and what makes them unique."
+  "context": "A rich 3-4 sentence summary an AI sales coach would need to give great advice to their reps. Include what they sell, to whom, typical objections they might face, and what makes them unique.",
+  "logoUrl": "The best logo URL found in the metadata (prefer og:image or a logo img src). Return full absolute URL. If relative, prepend the site domain.",
+  "primaryColor": "The brand's primary/dominant color as a hex code (e.g. #1B3A5C) — extract from theme-color meta tag, CSS, or infer from the site's visual identity",
+  "accentColor": "The brand's secondary/accent color as a hex code (e.g. #E8A020) — often a CTA button color or highlight"
 }
 RULES:
 - If you can't determine a field, use your best estimate based on the industry and company type
 - For industry, pick the closest match from the list. Use "general" if none fit well
 - Be specific and practical — this data trains an AI coach for their sales team
+- For logoUrl, pick the clearest logo image — prefer SVG or PNG logo files over favicons
+- For colors, look at the CSS colors and meta hints provided — pick the dominant brand color and a contrasting accent
 - Return ONLY the JSON object`;
 
-    const raw = await callClaude(systemPrompt, `Website content from ${url}:\n\n${pageText}`, 1000);
+    const raw = await callClaude(systemPrompt, `Website content from ${url}:\n\n${pageText}\n\nBRANDING METADATA:\n${metaHints}`, 1000);
     const profile = extractJSON(raw);
     res.json({ profile });
   } catch (e) {
