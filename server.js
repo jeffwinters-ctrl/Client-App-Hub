@@ -725,26 +725,35 @@ async function callClaude(systemPrompt, userPrompt, maxTokens = 1800) {
   if (!apiKey || !apiKey.startsWith('sk-ant-')) {
     throw new Error('Invalid or missing Anthropic API key');
   }
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01'
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: maxTokens,
-      messages: [{ role: 'user', content: userPrompt }],
-      system: systemPrompt
-    })
-  });
-  if (!response.ok) {
-    const err = await response.text();
-    throw new Error(`Anthropic API error: ${response.status} ${err}`);
+  const maxRetries = 3;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: maxTokens,
+        messages: [{ role: 'user', content: userPrompt }],
+        system: systemPrompt
+      })
+    });
+    if (response.status === 529 && attempt < maxRetries) {
+      const delay = attempt * 2000;
+      console.log(`Anthropic overloaded (529), retrying in ${delay}ms (attempt ${attempt}/${maxRetries})...`);
+      await new Promise(r => setTimeout(r, delay));
+      continue;
+    }
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(`Anthropic API error: ${response.status} ${err}`);
+    }
+    const data = await response.json();
+    return data.content[0].text;
   }
-  const data = await response.json();
-  return data.content[0].text;
 }
 
 // DealCheck analyze
