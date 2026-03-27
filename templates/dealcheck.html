@@ -27,17 +27,13 @@
       --red-bg: rgba(239,68,68,0.12);
       --blue: #3B82F6;
       --blue-bg: rgba(59,130,246,0.12);
+      --purple: #8B5CF6;
     }
     body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
 
     .dc-header {
-      background: var(--bg-card);
-      border-bottom: 1px solid var(--border);
-      padding: 0 32px;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      background: var(--bg-card); border-bottom: 1px solid var(--border);
+      padding: 0 32px; height: 52px; display: flex; align-items: center; justify-content: space-between;
     }
     .dc-header .brand { font-size: 0.82rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-muted); }
     .dc-header .nav-right { display: flex; align-items: center; gap: 12px; }
@@ -52,42 +48,51 @@
     .screen { display: none; }
     .screen.active { display: block; }
 
-    /* ─── INTAKE ─── */
-    .intake { max-width: 640px; margin: 0 auto; padding: 80px 24px 60px; }
-    .intake-icon { width: 56px; height: 56px; border-radius: 14px; background: linear-gradient(135deg, var(--blue), #8B5CF6); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; font-size: 1.6rem; }
-    .intake h1 { font-size: 2rem; font-weight: 700; line-height: 1.2; margin-bottom: 8px; }
-    .intake .subtitle { font-size: 1.05rem; color: var(--ink-muted); line-height: 1.6; margin-bottom: 36px; font-family: 'Source Serif 4', serif; }
-    .intake label { display: block; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-muted); margin-bottom: 8px; }
-    .intake textarea {
-      width: 100%; min-height: 180px; padding: 16px; border: 1px solid var(--border);
+    /* ─── PROGRESS BAR (top of page) ─── */
+    .top-progress { position: fixed; top: 52px; left: 0; right: 0; height: 3px; background: var(--surface); z-index: 50; }
+    .top-progress-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--purple)); width: 0%; transition: width 0.4s ease; }
+
+    /* ─── QUESTIONS FLOW ─── */
+    .question-screen { max-width: 620px; margin: 0 auto; padding: 60px 24px 80px; }
+    .q-progress { display: flex; align-items: center; gap: 6px; margin-bottom: 36px; }
+    .q-dot {
+      width: 32px; height: 4px; border-radius: 2px; background: var(--border); transition: background 0.3s;
+    }
+    .q-dot.done { background: var(--green); }
+    .q-dot.active { background: var(--blue); }
+    .q-counter { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-dim); margin-bottom: 12px; }
+    .q-title { font-size: 1.5rem; font-weight: 700; line-height: 1.3; margin-bottom: 6px; }
+    .q-subtitle { font-size: 0.92rem; color: var(--ink-muted); line-height: 1.5; margin-bottom: 24px; font-family: 'Source Serif 4', serif; }
+    .q-textarea {
+      width: 100%; min-height: 140px; padding: 16px; border: 1px solid var(--border);
       border-radius: 10px; font-family: 'Source Serif 4', serif; font-size: 1rem; resize: vertical;
       line-height: 1.7; background: var(--bg-input); color: var(--ink); transition: border-color 0.2s;
     }
-    .intake textarea:focus { outline: none; border-color: var(--blue); }
-    .intake textarea::placeholder { color: var(--ink-dim); }
-    .intake .hint { font-size: 0.82rem; color: var(--ink-dim); margin-top: 8px; line-height: 1.5; }
-    .intake .examples { margin-top: 24px; }
-    .intake .examples-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-dim); margin-bottom: 10px; }
-    .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip {
+    .q-textarea:focus { outline: none; border-color: var(--blue); }
+    .q-textarea::placeholder { color: var(--ink-dim); }
+    .q-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .q-chip {
       padding: 8px 14px; border-radius: 8px; background: var(--surface); border: 1px solid var(--border);
       color: var(--ink-muted); font-size: 0.82rem; cursor: pointer; transition: all 0.15s;
     }
-    .chip:hover { background: var(--blue-bg); border-color: var(--blue); color: var(--ink); }
-    .btn-analyze {
-      display: block; width: 100%; margin-top: 28px; padding: 16px;
-      background: linear-gradient(135deg, var(--blue), #7C3AED); color: #fff; border: none;
-      border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer;
-      transition: opacity 0.2s; letter-spacing: 0.01em;
+    .q-chip:hover { background: var(--blue-bg); border-color: var(--blue); color: var(--ink); }
+    .q-chip.selected { background: var(--blue-bg); border-color: var(--blue); color: var(--blue); }
+    .q-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+    .btn-q {
+      padding: 12px 28px; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: all 0.15s; border: none; font-family: inherit;
     }
-    .btn-analyze:hover { opacity: 0.9; }
-    .btn-analyze:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-back { background: var(--surface); color: var(--ink-muted); border: 1px solid var(--border); }
+    .btn-back:hover { color: var(--ink); }
+    .btn-next { background: linear-gradient(135deg, var(--blue), var(--purple)); color: #fff; }
+    .btn-next:hover { opacity: 0.9; }
+    .btn-next:disabled { opacity: 0.3; cursor: not-allowed; }
 
     /* ─── PROCESSING ─── */
     .processing { max-width: 480px; margin: 0 auto; padding: 100px 24px; text-align: center; }
     .processing h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 28px; color: var(--ink); }
     .proc-bar { background: var(--surface); height: 4px; border-radius: 2px; margin-bottom: 28px; overflow: hidden; }
-    .proc-fill { height: 100%; background: linear-gradient(90deg, var(--blue), #7C3AED); border-radius: 2px; width: 0%; transition: width 0.6s ease; }
+    .proc-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--purple)); border-radius: 2px; width: 0%; transition: width 0.6s ease; }
     .proc-steps { text-align: left; }
     .proc-step { padding: 8px 0; font-size: 0.9rem; color: var(--ink-dim); display: flex; align-items: center; gap: 10px; opacity: 0.4; transition: all 0.3s; }
     .proc-step.active { opacity: 1; color: var(--ink); }
@@ -98,28 +103,17 @@
 
     /* ─── RESULTS ─── */
     .results { max-width: 880px; margin: 0 auto; padding: 40px 24px 80px; }
-
-    .diagnosis-card {
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
-      padding: 28px; margin-bottom: 28px;
-    }
+    .diagnosis-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 28px; }
     .diagnosis-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-    .diagnosis-badge {
-      font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
-      padding: 4px 10px; border-radius: 6px;
-    }
+    .diagnosis-badge { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 6px; }
     .badge-critical { background: var(--red-bg); color: var(--red); }
     .badge-risky { background: var(--amber-bg); color: var(--amber); }
     .badge-healthy { background: var(--green-bg); color: var(--green); }
     .diagnosis-title { font-size: 1.1rem; font-weight: 600; }
     .diagnosis-body { font-family: 'Source Serif 4', serif; font-size: 1rem; line-height: 1.8; color: var(--ink-muted); }
     .diagnosis-body strong { color: var(--ink); font-family: 'Inter', sans-serif; font-weight: 600; }
-
     .signals-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 20px; }
-    .signal-pill {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
-      padding: 12px 14px; display: flex; align-items: center; gap: 8px;
-    }
+    .signal-pill { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; display: flex; align-items: center; gap: 8px; }
     .signal-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .signal-dot.green { background: var(--green); }
     .signal-dot.amber { background: var(--amber); }
@@ -131,24 +125,13 @@
     .plays-header h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; }
     .plays-header p { font-size: 0.9rem; color: var(--ink-muted); }
 
-    .play-card {
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
-      margin-bottom: 16px; overflow: hidden;
-      animation: slideUp 0.4s ease both;
-    }
+    .play-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 16px; overflow: hidden; animation: slideUp 0.4s ease both; }
     .play-card:nth-child(2) { animation-delay: 0.08s; }
     .play-card:nth-child(3) { animation-delay: 0.16s; }
     @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-    .play-top {
-      padding: 20px 24px; display: flex; align-items: flex-start; justify-content: space-between;
-      cursor: pointer; user-select: none; transition: background 0.15s;
-    }
+    .play-top { padding: 20px 24px; display: flex; align-items: flex-start; justify-content: space-between; cursor: pointer; user-select: none; transition: background 0.15s; }
     .play-top:hover { background: rgba(255,255,255,0.02); }
-    .play-badge {
-      font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
-      padding: 4px 10px; border-radius: 6px; display: inline-block; margin-bottom: 6px;
-    }
+    .play-badge { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 6px; display: inline-block; margin-bottom: 6px; }
     .badge-aggressive { background: var(--red-bg); color: var(--red); }
     .badge-normal { background: var(--blue-bg); color: var(--blue); }
     .badge-conservative { background: var(--green-bg); color: var(--green); }
@@ -156,59 +139,36 @@
     .play-oneliner { font-size: 0.85rem; color: var(--ink-muted); margin-top: 4px; }
     .play-chevron { color: var(--ink-dim); font-size: 1.2rem; margin-top: 4px; transition: transform 0.2s; }
     .play-card.open .play-chevron { transform: rotate(180deg); }
-
     .play-detail { display: none; padding: 0 24px 24px; border-top: 1px solid var(--border); }
     .play-card.open .play-detail { display: block; }
-
     .detail-section { margin-top: 20px; }
     .detail-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-dim); margin-bottom: 8px; }
     .detail-text { font-family: 'Source Serif 4', serif; font-size: 0.95rem; line-height: 1.8; color: var(--ink-muted); }
     .detail-text strong { color: var(--ink); font-family: 'Inter', sans-serif; }
-
-    .script-box {
-      background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
-      padding: 18px; margin-top: 8px; position: relative;
-      font-family: 'Source Serif 4', serif; font-size: 0.95rem; line-height: 1.8; color: var(--ink);
-    }
-    .btn-copy {
-      position: absolute; top: 10px; right: 10px; background: var(--surface); border: 1px solid var(--border);
-      padding: 4px 12px; border-radius: 6px; font-size: 0.72rem; cursor: pointer; color: var(--ink-muted);
-      font-family: inherit; transition: all 0.15s;
-    }
+    .script-box { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-top: 8px; position: relative; font-family: 'Source Serif 4', serif; font-size: 0.95rem; line-height: 1.8; color: var(--ink); }
+    .btn-copy { position: absolute; top: 10px; right: 10px; background: var(--surface); border: 1px solid var(--border); padding: 4px 12px; border-radius: 6px; font-size: 0.72rem; cursor: pointer; color: var(--ink-muted); font-family: inherit; transition: all 0.15s; }
     .btn-copy:hover { background: var(--blue-bg); color: var(--blue); border-color: var(--blue); }
-
     .steps-list { list-style: none; margin-top: 8px; }
     .steps-list li { padding: 8px 0; font-size: 0.9rem; color: var(--ink-muted); display: flex; gap: 10px; line-height: 1.5; }
     .steps-list li .step-num { color: var(--blue); font-weight: 700; flex-shrink: 0; min-width: 20px; }
-
-    .research-box {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-      padding: 16px 18px; margin-top: 8px;
-    }
+    .research-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; margin-top: 8px; }
     .research-box p { font-size: 0.88rem; color: var(--ink-muted); line-height: 1.7; }
     .research-box p strong { color: var(--ink); }
-
     .risk-tag { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; }
     .risk-high { background: var(--red-bg); color: var(--red); }
     .risk-medium { background: var(--amber-bg); color: var(--amber); }
     .risk-low { background: var(--green-bg); color: var(--green); }
-
     .results-footer { text-align: center; margin-top: 36px; }
-    .btn-new {
-      display: inline-block; padding: 14px 36px; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
-      cursor: pointer; text-decoration: none; transition: opacity 0.2s; border: none;
-      background: linear-gradient(135deg, var(--blue), #7C3AED); color: #fff;
-    }
+    .btn-new { display: inline-block; padding: 14px 36px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: opacity 0.2s; border: none; background: linear-gradient(135deg, var(--blue), var(--purple)); color: #fff; }
     .btn-new:hover { opacity: 0.9; }
     .btn-hub { display: inline-block; margin-left: 12px; padding: 14px 36px; background: var(--surface); border: 1px solid var(--border); color: var(--ink-muted); border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none; }
     .btn-hub:hover { color: var(--ink); }
-
     .dc-footer { background: var(--bg-card); border-top: 1px solid var(--border); color: var(--ink-dim); text-align: center; padding: 16px; font-size: 0.78rem; }
 
     @media (max-width: 640px) {
       .dc-header { padding: 0 16px; }
-      .intake { padding: 48px 16px; }
-      .intake h1 { font-size: 1.5rem; }
+      .question-screen { padding: 40px 16px 60px; }
+      .q-title { font-size: 1.2rem; }
       .results { padding: 24px 16px 60px; }
       .signals-grid { grid-template-columns: 1fr; }
     }
@@ -224,38 +184,27 @@
       <a href="/{{SLUG}}">Back to Hub</a>
     </div>
   </header>
+  <div class="top-progress"><div class="top-progress-fill" id="topProgress"></div></div>
 
-  <!-- INTAKE -->
-  <div class="screen active" id="screenIntake">
-    <div class="intake">
-      <div class="intake-icon">&#127919;</div>
-      <h1>What's happening in your deal?</h1>
-      <p class="subtitle">Tell me everything about where you are in this deal. I'll diagnose what's going on and give you 3 plays &mdash; aggressive, normal, and conservative &mdash; so you know exactly what to do next.</p>
-
-      <label for="dealInput">Describe your deal situation</label>
-      <textarea id="dealInput" placeholder="Example: I've had 2 good meetings with the VP of Operations at a mid-size manufacturer. They liked our demo but went quiet after I sent the proposal 2 weeks ago. The champion told me there's a competing vendor and the CFO is pushing back on budget. Our price is $85K/year..."></textarea>
-      <p class="hint">Include: who you're selling to, where you are in the process, what's going well, what's stuck, deal size, competition &mdash; anything relevant.</p>
-
-      <div class="examples">
-        <div class="examples-label">Quick starters</div>
-        <div class="chip-row">
-          <div class="chip" onclick="useExample(this)">Deal went silent after proposal</div>
-          <div class="chip" onclick="useExample(this)">Stuck in procurement / legal</div>
-          <div class="chip" onclick="useExample(this)">Competitor showed up late</div>
-          <div class="chip" onclick="useExample(this)">Champion left the company</div>
-          <div class="chip" onclick="useExample(this)">Budget got cut mid-deal</div>
-          <div class="chip" onclick="useExample(this)">Multiple decision makers disagree</div>
-        </div>
+  <!-- QUESTIONS -->
+  <div class="screen active" id="screenQuestions">
+    <div class="question-screen">
+      <div class="q-progress" id="qDots"></div>
+      <div class="q-counter" id="qCounter"></div>
+      <div class="q-title" id="qTitle"></div>
+      <div class="q-subtitle" id="qSubtitle"></div>
+      <div id="qBody"></div>
+      <div class="q-nav">
+        <button class="btn-q btn-back" id="btnBack" onclick="prevQ()">Back</button>
+        <button class="btn-q btn-next" id="btnNext" onclick="nextQ()">Next</button>
       </div>
-
-      <button class="btn-analyze" id="btnAnalyze" onclick="runAnalysis()">Analyze My Deal</button>
     </div>
   </div>
 
   <!-- PROCESSING -->
   <div class="screen" id="screenProcessing">
     <div class="processing">
-      <h3>Analyzing your deal...</h3>
+      <h3>Coaching your deal...</h3>
       <div class="proc-bar"><div class="proc-fill" id="procFill"></div></div>
       <div class="proc-steps" id="procSteps"></div>
     </div>
@@ -271,7 +220,7 @@
       </div>
       <div id="playsContainer"></div>
       <div class="results-footer">
-        <button class="btn-new" onclick="newDeal()">Coach Another Deal</button>
+        <button class="btn-new" onclick="startOver()">Coach Another Deal</button>
         <a href="/{{SLUG}}" class="btn-hub">Back to Hub</a>
       </div>
     </div>
@@ -282,6 +231,69 @@
   <script>
     var CLIENT = {{CLIENT_CONFIG}};
     var SLUG = '{{SLUG}}';
+    var currentQ = 0;
+    var answers = {};
+
+    var QUESTIONS = [
+      {
+        key: 'situation',
+        title: "What's happening in this deal right now?",
+        subtitle: "Give me the overview — who you're selling to, what stage you're at, and what's going on.",
+        type: 'textarea',
+        placeholder: "Example: I've had 2 meetings with the VP of Operations at Acme Corp. They loved our demo but went quiet after I sent the proposal 2 weeks ago. Deal is around $85K/year...",
+        chips: ['Deal went silent after proposal', 'Stuck in procurement', 'Competitor showed up late', 'Champion left the company']
+      },
+      {
+        key: 'stuck',
+        title: "What feels stuck or off about this deal?",
+        subtitle: "What's the thing keeping you up at night? Be honest — the more specific, the better I can coach you.",
+        type: 'textarea',
+        placeholder: "Example: The economic buyer won't take a meeting. My champion says they're 'working on it internally' but I haven't heard anything concrete in 10 days...",
+        chips: ['Ghosted by decision maker', 'Budget pushback', 'Internal politics', 'Lost momentum', "They're talking to competitors"]
+      },
+      {
+        key: 'stakeholders',
+        title: "Who are the key players in this deal?",
+        subtitle: "Tell me about the people involved — who's your champion, who's the decision maker, who could block this?",
+        type: 'textarea',
+        placeholder: "Example: My champion is Sarah (Director of Ops) — she loves us but doesn't control budget. The CFO (Mike) is the final sign-off and he's known for being conservative. There's also a VP of IT who hasn't been involved yet but could derail things...",
+        chips: ['Strong champion, weak authority', 'No access to decision maker', 'Multiple stakeholders disagree', 'New executive entered the picture']
+      },
+      {
+        key: 'competition',
+        title: "What's the competitive landscape?",
+        subtitle: "Are they looking at other vendors? Do they have an incumbent? What do you know about your position vs. alternatives?",
+        type: 'textarea',
+        placeholder: "Example: They're also evaluating CompetitorX who came in 20% cheaper. I think we're stronger on features but they might not see the value difference. There's also a 'do nothing' risk — they could just keep their current manual process...",
+        chips: ['Competing on price', 'Incumbent has relationship advantage', "They're evaluating 3+ vendors", 'Do-nothing is the real competitor']
+      },
+      {
+        key: 'value',
+        title: "What's the business case? Why should they buy from you?",
+        subtitle: "What ROI, pain points, or outcomes are you selling? Have they acknowledged the value?",
+        type: 'textarea',
+        placeholder: "Example: We'd save them roughly 15 hours/week in manual reporting and reduce errors by 80%. Sarah agrees on the value but I haven't been able to quantify it in dollars for the CFO yet...",
+        chips: ['ROI is clear but not quantified', "They see the value but it's not urgent", 'Pain point is real but not well-articulated', 'They agreed on value in meetings']
+      },
+      {
+        key: 'timeline',
+        title: "What's the timeline and what happens if they don't buy?",
+        subtitle: "Is there a deadline, a trigger event, or urgency? What are the consequences of inaction for them?",
+        type: 'textarea',
+        placeholder: "Example: Their current contract expires in Q3 so there's natural urgency. But they could also renew month-to-month with their current vendor. No hard deadline forcing a decision...",
+        chips: ['No real urgency on their side', 'Contract expiry creates deadline', 'Budget window closing', 'Trigger event coming up']
+      },
+      {
+        key: 'ask',
+        title: "What do you need help with most?",
+        subtitle: "What's the one thing you want coaching on? This helps me prioritize my plays for you.",
+        type: 'textarea',
+        placeholder: "Example: How do I get past the CFO's budget objection and create urgency without being pushy? I don't want to blow the relationship with my champion...",
+        chips: ['How to create urgency', 'How to get to the decision maker', 'How to differentiate from competition', 'How to unstick a stalled deal', 'How to handle price objections']
+      }
+    ];
+
+    function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
 
     function showScreen(id) {
       document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
@@ -289,32 +301,103 @@
       window.scrollTo(0, 0);
     }
 
-    function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+    function updateProgress() {
+      var pct = ((currentQ + 1) / QUESTIONS.length) * 100;
+      document.getElementById('topProgress').style.width = pct + '%';
 
-    function useExample(el) {
-      var ta = document.getElementById('dealInput');
-      ta.value = el.textContent;
-      ta.focus();
+      var dots = '';
+      for (var i = 0; i < QUESTIONS.length; i++) {
+        var cls = 'q-dot';
+        if (i < currentQ) cls += ' done';
+        else if (i === currentQ) cls += ' active';
+        dots += '<div class="' + cls + '"></div>';
+      }
+      document.getElementById('qDots').innerHTML = dots;
     }
 
-    function newDeal() {
-      document.getElementById('dealInput').value = '';
-      showScreen('screenIntake');
+    function renderQuestion() {
+      var q = QUESTIONS[currentQ];
+      updateProgress();
+
+      document.getElementById('qCounter').textContent = 'Question ' + (currentQ + 1) + ' of ' + QUESTIONS.length;
+      document.getElementById('qTitle').textContent = q.title;
+      document.getElementById('qSubtitle').textContent = q.subtitle;
+
+      var html = '<textarea class="q-textarea" id="qField" placeholder="' + esc(q.placeholder) + '">' + (answers[q.key] || '') + '</textarea>';
+      if (q.chips && q.chips.length) {
+        html += '<div class="q-chips">';
+        q.chips.forEach(function(chip) {
+          html += '<div class="q-chip" onclick="useChip(this)">' + esc(chip) + '</div>';
+        });
+        html += '</div>';
+      }
+      document.getElementById('qBody').innerHTML = html;
+
+      document.getElementById('btnBack').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+      document.getElementById('btnNext').textContent = currentQ === QUESTIONS.length - 1 ? 'Get My Plays' : 'Next';
+
+      setTimeout(function() { var f = document.getElementById('qField'); if (f) f.focus(); }, 50);
+    }
+
+    function useChip(el) {
+      var field = document.getElementById('qField');
+      var current = field.value.trim();
+      if (current) {
+        field.value = current + '. ' + el.textContent;
+      } else {
+        field.value = el.textContent;
+      }
+      el.classList.add('selected');
+      field.focus();
+    }
+
+    function saveAnswer() {
+      var q = QUESTIONS[currentQ];
+      var field = document.getElementById('qField');
+      if (field) answers[q.key] = field.value.trim();
+    }
+
+    function nextQ() {
+      saveAnswer();
+      if (currentQ < QUESTIONS.length - 1) {
+        currentQ++;
+        renderQuestion();
+      } else {
+        runAnalysis();
+      }
+    }
+
+    function prevQ() {
+      saveAnswer();
+      if (currentQ > 0) {
+        currentQ--;
+        renderQuestion();
+      }
+    }
+
+    function startOver() {
+      currentQ = 0;
+      answers = {};
+      showScreen('screenQuestions');
+      renderQuestion();
     }
 
     async function runAnalysis() {
-      var input = document.getElementById('dealInput').value.trim();
-      if (!input) { document.getElementById('dealInput').focus(); return; }
-
-      var btn = document.getElementById('btnAnalyze');
-      btn.disabled = true;
-      btn.textContent = 'Analyzing...';
+      // Need at least the first question answered
+      if (!answers.situation) {
+        alert('Please describe your deal situation first.');
+        currentQ = 0;
+        renderQuestion();
+        return;
+      }
 
       showScreen('screenProcessing');
+      document.getElementById('topProgress').style.width = '100%';
 
       var steps = [
-        'Reading your deal situation...',
-        'Diagnosing deal health signals...',
+        'Reading your deal intel...',
+        'Mapping stakeholder dynamics...',
+        'Diagnosing deal health...',
         'Researching winning strategies...',
         'Building aggressive play...',
         'Building normal play...',
@@ -336,13 +419,13 @@
           procFill.style.width = ((stepIdx + 1) / steps.length * 100) + '%';
           stepIdx++;
         } else { clearInterval(stepInterval); }
-      }, 900);
+      }, 800);
 
       try {
         var res = await fetch('/api/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ dealDescription: input, clientConfig: CLIENT })
+          body: JSON.stringify({ answers: answers, clientConfig: CLIENT })
         });
         var data = await res.json();
         clearInterval(stepInterval);
@@ -356,30 +439,27 @@
 
         if (data.error) {
           alert('Error: ' + data.error);
-          showScreen('screenIntake');
-          btn.disabled = false;
-          btn.textContent = 'Analyze My Deal';
+          showScreen('screenQuestions');
+          renderQuestion();
           return;
         }
 
         var result = data.result;
         if (typeof result === 'string') {
           try { result = JSON.parse(result.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim()); }
-          catch (pe) { alert('Failed to parse response. Please try again.'); showScreen('screenIntake'); btn.disabled = false; btn.textContent = 'Analyze My Deal'; return; }
+          catch (pe) { alert('Failed to parse response. Please try again.'); showScreen('screenQuestions'); renderQuestion(); return; }
         }
 
-        setTimeout(function() { renderResults(result, input); }, 500);
+        setTimeout(function() { renderResults(result); }, 500);
       } catch (e) {
         clearInterval(stepInterval);
         alert('Analysis failed: ' + e.message);
-        showScreen('screenIntake');
+        showScreen('screenQuestions');
+        renderQuestion();
       }
-      btn.disabled = false;
-      btn.textContent = 'Analyze My Deal';
     }
 
-    function renderResults(r, dealText) {
-      // Diagnosis
+    function renderResults(r) {
       var diag = r.diagnosis || {};
       var severity = (diag.severity || 'risky').toLowerCase();
       var badgeClass = severity === 'critical' ? 'badge-critical' : severity === 'healthy' ? 'badge-healthy' : 'badge-risky';
@@ -391,7 +471,6 @@
         '</div>' +
         '<div class="diagnosis-body">' + (diag.summary || '') + '</div>';
 
-      // Signals
       var signals = diag.signals || [];
       if (signals.length > 0) {
         diagHtml += '<div class="signals-grid">';
@@ -405,7 +484,6 @@
       document.getElementById('diagnosisCard').innerHTML = diagHtml;
       document.getElementById('playsSubtitle').textContent = r.plays_context || 'Pick the approach that matches your style and risk tolerance.';
 
-      // Plays
       var container = document.getElementById('playsContainer');
       container.innerHTML = '';
       var plays = r.plays || [];
@@ -417,13 +495,10 @@
 
         var card = document.createElement('div');
         card.className = 'play-card' + (idx === 0 ? ' open' : '');
-
         var detailHtml = '';
 
-        // Strategy
         detailHtml += '<div class="detail-section"><div class="detail-label">Strategy</div><div class="detail-text">' + (play.strategy || '') + '</div></div>';
 
-        // Steps
         if (play.steps && play.steps.length) {
           detailHtml += '<div class="detail-section"><div class="detail-label">Action Steps</div><ol class="steps-list">';
           play.steps.forEach(function(step, si) {
@@ -432,17 +507,14 @@
           detailHtml += '</ol></div>';
         }
 
-        // Script
         if (play.script) {
           detailHtml += '<div class="detail-section"><div class="detail-label">What to Say</div><div class="script-box"><button class="btn-copy" onclick="event.stopPropagation();copyScript(this)">Copy</button>' + esc(play.script) + '</div></div>';
         }
 
-        // Research
         if (play.research) {
           detailHtml += '<div class="detail-section"><div class="detail-label">Why This Works</div><div class="research-box"><p>' + (play.research || '') + '</p></div></div>';
         }
 
-        // Risk
         if (play.risk) {
           detailHtml += '<div class="detail-section" style="display:flex;align-items:flex-start;gap:8px;"><span class="risk-tag ' + riskCls + '">Risk: ' + esc(play.risk_level || 'medium') + '</span><span style="font-size:0.85rem;color:var(--ink-muted);">' + esc(play.risk) + '</span></div>';
         }
@@ -453,15 +525,13 @@
           '<div class="play-oneliner">' + esc(play.one_liner) + '</div></div>' +
           '<span class="play-chevron">&#9660;</span></div>' +
           '<div class="play-detail">' + detailHtml + '</div>';
-
         container.appendChild(card);
       });
 
       showScreen('screenResults');
 
-      // Auto-save
       var saveTitle = (diag.headline || 'Deal').substring(0, 50) + ' — ' + badgeLabel;
-      fetch('/api/save-work', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: SLUG, appType: 'dealcheck', title: saveTitle, data: { dealDescription: dealText, result: r } }) }).catch(function() {});
+      fetch('/api/save-work', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ slug: SLUG, appType: 'dealcheck', title: saveTitle, data: { answers: answers, result: r } }) }).catch(function() {});
     }
 
     function copyScript(btn) {
@@ -484,16 +554,22 @@
           opt.textContent = item.title + ' — ' + new Date(item.created_at).toLocaleDateString();
           sel.appendChild(opt);
         });
-      } catch (e) {}
+      } catch (e) { console.log('History load failed:', e); }
     })();
     async function loadWorkItem(id) {
       if (!id) return;
       try {
         var res = await fetch('/api/work/' + SLUG + '/' + id);
         var item = await res.json();
-        if (item.data && item.data.result) renderResults(item.data.result, item.data.dealDescription || '');
+        if (item.data && item.data.result) {
+          if (item.data.answers) answers = item.data.answers;
+          renderResults(item.data.result);
+        }
       } catch (e) { alert('Failed to load.'); }
     }
+
+    // Init
+    renderQuestion();
   </script>
 </body>
 </html>

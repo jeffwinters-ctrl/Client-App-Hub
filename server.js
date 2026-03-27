@@ -715,28 +715,43 @@ async function callClaude(systemPrompt, userPrompt, maxTokens = 1800) {
 // Deal Coach analyze
 app.post('/api/analyze', async (req, res) => {
   try {
-    const { dealDescription, clientConfig } = req.body;
-    if (!dealDescription || !clientConfig) {
+    const { answers, clientConfig } = req.body;
+    if (!answers || !clientConfig) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
+
+    const dealIntel = [
+      answers.situation ? `DEAL SITUATION:\n${answers.situation}` : '',
+      answers.stuck ? `WHAT'S STUCK:\n${answers.stuck}` : '',
+      answers.stakeholders ? `KEY STAKEHOLDERS:\n${answers.stakeholders}` : '',
+      answers.competition ? `COMPETITIVE LANDSCAPE:\n${answers.competition}` : '',
+      answers.value ? `BUSINESS CASE / VALUE:\n${answers.value}` : '',
+      answers.timeline ? `TIMELINE & URGENCY:\n${answers.timeline}` : '',
+      answers.ask ? `SPECIFIC COACHING REQUEST:\n${answers.ask}` : ''
+    ].filter(Boolean).join('\n\n');
 
     const systemPrompt = `You are an elite sales coach who has closed thousands of deals and coached hundreds of reps across every industry. You think like a strategist, talk like a mentor, and back every recommendation with real sales methodology (Challenger, MEDDIC, Sandler, SPIN — whatever fits). You are direct, practical, and never generic.
 
 CLIENT CONTEXT (this is who the rep works for):
 ${buildClientContext(clientConfig)}
 
-A sales rep has described their current deal situation. Your job:
-1. DIAGNOSE what is actually happening in this deal — read between the lines, identify the real blockers, power dynamics, and buying signals (or lack thereof).
+A sales rep has answered diagnostic questions about their current deal. You have detailed intel on their situation, blockers, stakeholders, competition, value prop, timeline, and what they need help with. Your job:
+1. DIAGNOSE what is actually happening — read between the lines, identify the real blockers, power dynamics, and buying signals (or lack thereof). Use ALL the intel they gave you.
 2. Deliver 3 DISTINCT PLAYS — Aggressive, Normal, and Conservative — each a genuinely different strategic approach, not just variations of the same idea.
+3. If they specified what they need help with most, make sure your plays directly address that ask.
 
 Return ONLY valid JSON matching this exact schema:
 {
   "diagnosis": {
     "severity": "critical|risky|healthy",
     "headline": "One punchy sentence summarizing the deal state (e.g. 'You're being used as Column B' or 'This deal is winnable but you're playing too safe')",
-    "summary": "3-4 sentences diagnosing what's really going on. Be specific — reference their details. Identify the root cause of whatever is stuck or working. Use <strong> tags around key phrases for emphasis.",
+    "summary": "3-4 sentences diagnosing what's really going on. Be specific — reference their details, names, companies, numbers. Identify the root cause of whatever is stuck or working. Use <strong> tags around key phrases for emphasis.",
     "signals": [
-      { "name": "Signal name (e.g. 'Champion Strength', 'Budget Certainty', 'Competitive Position', 'Decision Timeline', 'Stakeholder Alignment')", "status": "green|amber|red", "reading": "One-line assessment" }
+      { "name": "Champion Strength", "status": "green|amber|red", "reading": "One-line assessment based on their stakeholder intel" },
+      { "name": "Budget Certainty", "status": "green|amber|red", "reading": "..." },
+      { "name": "Competitive Position", "status": "green|amber|red", "reading": "..." },
+      { "name": "Decision Timeline", "status": "green|amber|red", "reading": "..." },
+      { "name": "Value Alignment", "status": "green|amber|red", "reading": "..." }
     ]
   },
   "plays_context": "One sentence framing why these 3 plays are different (e.g. 'Your timeline pressure changes what's possible — here are your options from bold to safe.')",
@@ -748,7 +763,7 @@ Return ONLY valid JSON matching this exact schema:
       "strategy": "2-3 sentences explaining the strategic thinking behind this play. Reference sales research or methodology where relevant. Use <strong> tags for key concepts.",
       "steps": ["Step 1 — specific action", "Step 2 — specific action", "Step 3 — specific action", "Step 4 — specific action"],
       "script": "The exact words to say or write. 3-5 sentences. Must sound like a real human, not a template. Reference their specific deal details — names, products, numbers.",
-      "research": "Why this approach works — cite sales methodology, psychology, or data. Use <strong> tags. (e.g. '<strong>Challenger research</strong> shows that 53% of customer loyalty is driven by the sales experience itself. By taking control now...')",
+      "research": "Why this approach works — cite sales methodology, psychology, or data. Use <strong> tags. (e.g. '<strong>Challenger research</strong> shows that 53% of customer loyalty is driven by the sales experience itself.')",
       "risk_level": "high",
       "risk": "One sentence on what could go wrong"
     },
@@ -782,12 +797,12 @@ CRITICAL RULES:
 - Each play must be a genuinely different strategic approach, not just the same idea at different intensities
 - Scripts must sound like a real person talking — natural, conversational, not robotic
 - Be honest and direct. If the deal looks dead, say so. Don't sugarcoat.
-- Diagnosis signals should be 4-6 key health indicators you can infer from their description
+- Use the stakeholder intel to craft plays that account for the specific people and power dynamics involved
 - Research backing should cite real methodologies and principles (Challenger Sale, MEDDIC, Sandler, SPIN, loss aversion, etc.)
 - The aggressive play should be bold enough to make them nervous; the conservative play should be safe enough to never blow up
 - Return ONLY the JSON object, no markdown, no explanation`;
 
-    const raw = await callClaude(systemPrompt, `Here is the deal situation from the sales rep:\n\n${dealDescription}`, 4000);
+    const raw = await callClaude(systemPrompt, dealIntel, 4000);
     const result = extractJSON(raw);
     await logEvent(clientConfig.slug, 'dealcheck', 'analysis_complete', {}, req);
     res.json({ result });
@@ -1410,11 +1425,15 @@ app.post('/api/save-work', async (req, res) => {
     const { data: row, error } = await supabase.from('client_work').insert({
       slug, app_type: appType, title, data
     }).select('id').single();
-    if (error) throw error;
+    if (error) {
+      // Table may not exist yet -- log but don't crash
+      console.error('Save work error (table may not exist):', error.message);
+      return res.json({ success: false, id: null });
+    }
     res.json({ success: true, id: row.id });
   } catch (e) {
     console.error('Save work error:', e);
-    res.status(500).json({ error: e.message });
+    res.json({ success: false, id: null });
   }
 });
 
@@ -1426,11 +1445,14 @@ app.get('/api/work/:slug', async (req, res) => {
     let query = supabase.from('client_work').select('id, app_type, title, created_at').eq('slug', slug).order('created_at', { ascending: false }).limit(50);
     if (app_type) query = query.eq('app_type', app_type);
     const { data, error } = await query;
-    if (error) throw error;
+    if (error) {
+      console.error('Load work list error (table may not exist):', error.message);
+      return res.json({ items: [] });
+    }
     res.json({ items: data || [] });
   } catch (e) {
     console.error('Load work list error:', e);
-    res.status(500).json({ error: e.message });
+    res.json({ items: [] });
   }
 });
 

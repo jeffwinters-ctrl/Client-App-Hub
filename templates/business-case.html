@@ -356,7 +356,7 @@
       try {
         var res = await fetch('/api/work/' + SLUG + '/' + id);
         var item = await res.json();
-        if (item.data && item.data.result) renderBusinessCase(item.data.result);
+        if (item.data && item.data.result) renderDocument(item.data.result);
       } catch(e) { alert('Failed to load.'); }
     }
   </script>
