@@ -293,99 +293,7 @@ app.post('/api/admin/set-password', requireAdmin, async (req, res) => {
 
 // ─── GENERATE CUSTOM DEALCHECK CONFIG ────────────────────
 
-app.post('/api/admin/generate-config', requireAdmin, async (req, res) => {
-  try {
-    const { slug } = req.body;
-    const client = await getClient(slug);
-    if (!client) return res.status(404).json({ error: 'Client not found' });
 
-    const clientCtx = buildClientContext(client);
-    const baseConfig = loadIndustry(client.industry) || loadIndustry('general');
-    if (!baseConfig) return res.status(500).json({ error: 'No base industry config found' });
-
-    const questionKeys = baseConfig.questions.map(q => `- ${q.key}: "${q.text}" (${q.type})`).join('\n');
-
-    const systemPrompt = `You are a sales enablement specialist who customizes AI coaching tools for specific companies. Given a company profile, generate customizations that make every dropdown, example, and coaching text feel specifically built for this company's sales team.
-
-Return ONLY valid JSON matching this schema:
-{
-  "label": "Their specific industry/market label (e.g. 'Office Furniture', 'IT Consulting')",
-  "tagline": "Short tagline (e.g. 'For Reps Who Sell [Their Product Category]')",
-  "headline": "3-line headline with <br> and <em> tags (e.g. Is this deal<br><em>real</em> or just<br>a wish list?)",
-  "description": "2-3 sentences describing what DealCheck does for them specifically. Mention their product/market.",
-  "industryKnowledge": "3-4 paragraphs of sales knowledge specific to their market. Include: typical deal sizes, cycle lengths, buyer dynamics, common objections, competitive landscape, and what separates wins from losses. Write like a veteran coach in their space.",
-  "personas": {
-    "Persona 1 Label": "1-2 paragraph description of this buyer type — how they think, what they care about, how to win them...",
-    "Persona 2 Label": "...",
-    "Persona 3 Label": "...",
-    "Persona 4 Label": "...",
-    "Persona 5 Label": "...",
-    "Persona 6 Label": "..."
-  },
-  "verticals": {
-    "Vertical 1 Label": "1-2 paragraph description of selling into this type of organization...",
-    "Vertical 2 Label": "...",
-    "Vertical 3 Label": "...",
-    "Vertical 4 Label": "...",
-    "Vertical 5 Label": "...",
-    "Vertical 6 Label": "..."
-  },
-  "questionUpdates": [
-    { "key": "ctx", "placeholder": "Realistic example using their product...", "hint": "Updated hint for their context..." }
-  ]
-}
-
-RULES:
-- Personas must be the 6 buyer types THIS company's reps actually encounter (use their target buyers info)
-- Verticals must be the 6 organization types they most commonly sell into
-- Question placeholders must reference their actual product/service with realistic scenarios
-- Industry knowledge must be specific to their market, not generic B2B advice
-- Everything should make a sales rep think "this was built just for us"
-- Only include questionUpdates for questions where a custom placeholder adds real value (skip generic ones)`;
-
-    const raw = await callClaude(systemPrompt, `Company Profile:\n${clientCtx}\n\nQuestion keys to customize:\n${questionKeys}`, 6000);
-    const overrides = extractJSON(raw);
-
-    const customConfig = JSON.parse(JSON.stringify(baseConfig));
-    if (overrides.label) customConfig.label = overrides.label;
-    if (overrides.tagline) customConfig.tagline = overrides.tagline;
-    if (overrides.headline) customConfig.headline = overrides.headline;
-    if (overrides.description) customConfig.description = overrides.description;
-    if (overrides.industryKnowledge) customConfig.industryKnowledge = overrides.industryKnowledge;
-    if (overrides.personas) {
-      customConfig.personas = overrides.personas;
-      const personaQ = customConfig.questions.find(q => q.key === 'persona');
-      if (personaQ) personaQ.options = Object.keys(overrides.personas);
-    }
-    if (overrides.verticals) {
-      customConfig.verticals = overrides.verticals;
-      const verticalQ = customConfig.questions.find(q => q.key === 'vertical');
-      if (verticalQ) verticalQ.options = Object.keys(overrides.verticals);
-    }
-    if (overrides.questionUpdates) {
-      overrides.questionUpdates.forEach(u => {
-        const q = customConfig.questions.find(q => q.key === u.key);
-        if (q) {
-          if (u.placeholder) q.placeholder = u.placeholder;
-          if (u.hint) q.hint = u.hint;
-        }
-      });
-    }
-
-    const updatedClient = { ...client, customConfig };
-    if (supabase) {
-      const { error } = await supabase.from('clients').update({
-        data: updatedClient, updated_at: new Date().toISOString()
-      }).eq('slug', slug);
-      if (error) throw error;
-    }
-
-    res.json({ success: true });
-  } catch (e) {
-    console.error('Generate config error:', e);
-    res.status(500).json({ error: e.message });
-  }
-});
 
 // ─── WEBSITE ANALYZER ────────────────────────────────────
 
@@ -597,21 +505,16 @@ app.get('/:slug/dealcheck', requireAuth, async (req, res) => {
   const client = await getClient(req.params.slug);
   if (!client) return res.status(404).send(renderTemplate('404.html', {}));
   if (!client.apps.includes('dealcheck')) return res.status(403).send('App not available');
-  let industry = client.customConfig || loadIndustry(client.industry);
-  if (!industry) industry = loadIndustry('general');
-  if (!industry) return res.status(500).send('Industry config missing');
   logEvent(client.slug, 'dealcheck', 'app_open', {}, req);
   res.send(renderTemplate('dealcheck.html', {
     CLIENT_CONFIG: JSON.stringify(client),
-    INDUSTRY_CONFIG: JSON.stringify(industry),
     PAGE_TITLE: `Deal Coach — ${client.companyName}`,
     SLUG: client.slug,
     COMPANY_NAME: client.companyName,
-    PRIMARY_COLOR: client.primaryColor,
-    ACCENT_COLOR: client.accentColor,
+    PRIMARY_COLOR: client.primaryColor || '#3B82F6',
+    ACCENT_COLOR: client.accentColor || '#7C3AED',
     LOGO_URL: client.logo,
-    POWERED_BY: client.poweredBy,
-    INDUSTRY_LABEL: industry.label
+    POWERED_BY: client.poweredBy
   }));
 });
 
@@ -809,83 +712,82 @@ async function callClaude(systemPrompt, userPrompt, maxTokens = 1800) {
   }
 }
 
-// DealCheck analyze
+// Deal Coach analyze
 app.post('/api/analyze', async (req, res) => {
   try {
-    const { answers, clientConfig, industryConfig } = req.body;
-    if (!answers || !clientConfig || !industryConfig) {
+    const { dealDescription, clientConfig } = req.body;
+    if (!dealDescription || !clientConfig) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const persona = industryConfig.personas ? industryConfig.personas[answers.persona] || '' : '';
-    const vertical = industryConfig.verticals ? industryConfig.verticals[answers.vertical] || '' : '';
+    const systemPrompt = `You are an elite sales coach who has closed thousands of deals and coached hundreds of reps across every industry. You think like a strategist, talk like a mentor, and back every recommendation with real sales methodology (Challenger, MEDDIC, Sandler, SPIN — whatever fits). You are direct, practical, and never generic.
 
-    const healthFactorKeys = (industryConfig.healthFactors || []).map(h =>
-      `"${h.key}": "Your finding about ${h.name} — 2-3 sentences referencing their specific answers."`
-    ).join(',\n    ');
-
-    const systemPrompt = `You are an elite sales coach with 20+ years of experience in ${industryConfig.label || 'B2B'} sales. You speak like a real sales veteran — direct, practical, no fluff, no marketing speak. You've closed deals from $50K to $5M and coached hundreds of reps.
-
-INDUSTRY KNOWLEDGE:
-${industryConfig.industryKnowledge || ''}
-
-CLIENT CONTEXT:
+CLIENT CONTEXT (this is who the rep works for):
 ${buildClientContext(clientConfig)}
 
-${persona ? `PERSONA INSIGHT:\n${persona}` : ''}
-${vertical ? `VERTICAL CONTEXT:\n${vertical}` : ''}
+A sales rep has described their current deal situation. Your job:
+1. DIAGNOSE what is actually happening in this deal — read between the lines, identify the real blockers, power dynamics, and buying signals (or lack thereof).
+2. Deliver 3 DISTINCT PLAYS — Aggressive, Normal, and Conservative — each a genuinely different strategic approach, not just variations of the same idea.
 
-You must return ONLY valid JSON matching this exact schema:
+Return ONLY valid JSON matching this exact schema:
 {
-  "bottom_line": "2-3 sentence honest assessment of this deal. Talk like a coach in a 1-on-1, not a textbook.",
-  "health_findings": {
-    ${healthFactorKeys}
+  "diagnosis": {
+    "severity": "critical|risky|healthy",
+    "headline": "One punchy sentence summarizing the deal state (e.g. 'You're being used as Column B' or 'This deal is winnable but you're playing too safe')",
+    "summary": "3-4 sentences diagnosing what's really going on. Be specific — reference their details. Identify the root cause of whatever is stuck or working. Use <strong> tags around key phrases for emphasis.",
+    "signals": [
+      { "name": "Signal name (e.g. 'Champion Strength', 'Budget Certainty', 'Competitive Position', 'Decision Timeline', 'Stakeholder Alignment')", "status": "green|amber|red", "reading": "One-line assessment" }
+    ]
   },
-  "play_instruction": "One sentence framing the three plays below.",
+  "plays_context": "One sentence framing why these 3 plays are different (e.g. 'Your timeline pressure changes what's possible — here are your options from bold to safe.')",
   "plays": [
     {
       "mode": "aggressive",
-      "channel": "Phone/Email/LinkedIn/In-Person",
-      "timing": "Today",
-      "title": "Bold, specific action title",
-      "body": "2-3 sentences explaining what to do and why it works.",
-      "script": "Exact words the rep can say or write. Make it sound natural, not robotic."
+      "title": "Bold, specific play name (e.g. 'Go Over Their Head' or 'Force the Decision This Week')",
+      "one_liner": "One sentence summary of the approach",
+      "strategy": "2-3 sentences explaining the strategic thinking behind this play. Reference sales research or methodology where relevant. Use <strong> tags for key concepts.",
+      "steps": ["Step 1 — specific action", "Step 2 — specific action", "Step 3 — specific action", "Step 4 — specific action"],
+      "script": "The exact words to say or write. 3-5 sentences. Must sound like a real human, not a template. Reference their specific deal details — names, products, numbers.",
+      "research": "Why this approach works — cite sales methodology, psychology, or data. Use <strong> tags. (e.g. '<strong>Challenger research</strong> shows that 53% of customer loyalty is driven by the sales experience itself. By taking control now...')",
+      "risk_level": "high",
+      "risk": "One sentence on what could go wrong"
     },
     {
-      "mode": "moderate",
-      "channel": "...",
-      "timing": "This Week",
+      "mode": "normal",
       "title": "...",
-      "body": "...",
-      "script": "..."
+      "one_liner": "...",
+      "strategy": "...",
+      "steps": ["...", "...", "...", "..."],
+      "script": "...",
+      "research": "...",
+      "risk_level": "medium",
+      "risk": "..."
     },
     {
-      "mode": "passive",
-      "channel": "...",
-      "timing": "This Week",
+      "mode": "conservative",
       "title": "...",
-      "body": "...",
-      "script": "..."
+      "one_liner": "...",
+      "strategy": "...",
+      "steps": ["...", "...", "...", "..."],
+      "script": "...",
+      "research": "...",
+      "risk_level": "low",
+      "risk": "..."
     }
   ]
 }
 
 CRITICAL RULES:
 - Reference THEIR specific deal details — company names, products, people, numbers they mentioned
-- Use industry terminology naturally (not forced)
-- Scripts should sound like a real person talking, not a template
-- Be honest. If the deal looks weak, say so. Don't sugarcoat.
-- Each play must be genuinely different in approach, not just variations of the same idea
+- Each play must be a genuinely different strategic approach, not just the same idea at different intensities
+- Scripts must sound like a real person talking — natural, conversational, not robotic
+- Be honest and direct. If the deal looks dead, say so. Don't sugarcoat.
+- Diagnosis signals should be 4-6 key health indicators you can infer from their description
+- Research backing should cite real methodologies and principles (Challenger Sale, MEDDIC, Sandler, SPIN, loss aversion, etc.)
+- The aggressive play should be bold enough to make them nervous; the conservative play should be safe enough to never blow up
 - Return ONLY the JSON object, no markdown, no explanation`;
 
-    const answersFormatted = Object.entries(answers)
-      .filter(([k]) => k !== 'persona' && k !== 'vertical')
-      .map(([k, v]) => `${k}: ${v}`)
-      .join('\n');
-
-    const userPrompt = `Here is the deal information from the sales rep:\n\n${answersFormatted}`;
-
-    const raw = await callClaude(systemPrompt, userPrompt);
+    const raw = await callClaude(systemPrompt, `Here is the deal situation from the sales rep:\n\n${dealDescription}`, 4000);
     const result = extractJSON(raw);
     await logEvent(clientConfig.slug, 'dealcheck', 'analysis_complete', {}, req);
     res.json({ result });

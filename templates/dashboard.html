@@ -152,7 +152,7 @@
       gap: 24px;
     }
 
-    /* ── Sales Playbook Sidebar ── */
+    /* ── Insights Sidebar ── */
     .feed-sidebar {
       background: var(--surface);
       border: 1px solid var(--rule);
@@ -495,7 +495,6 @@
   <header class="header">
     <div class="header-brand">
       <img src="{{LOGO_URL}}" alt="" onerror="this.style.display='none'">
-      <h1>{{COMPANY_NAME}}</h1>
     </div>
     <button class="btn-sign-out" onclick="logout()">Sign Out</button>
   </header>
@@ -511,7 +510,7 @@
   <main class="main">
     <aside class="feed-sidebar">
       <div class="feed-header-bar">
-        <h3><span class="feed-dot"></span> Sales Playbook</h3>
+        <h3><span class="feed-dot"></span> Insights</h3>
         <div class="feed-status" id="intelStatus"></div>
       </div>
       <div class="feed-scroll" id="feedScroll">
@@ -650,7 +649,7 @@
       window.location.href = '/' + SLUG + '/login';
     }
 
-    // ── Sales Playbook (Perplexity-powered, cached) ──
+    // ── Insights (Perplexity-powered, cached) ──
     function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
     function timeAgo(isoStr) {
