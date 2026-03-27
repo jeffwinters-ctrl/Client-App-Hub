@@ -609,7 +609,7 @@ app.get('/:slug/linkedin-post', requireAuth, async (req, res) => {
   logEvent(client.slug, 'linkedin-post', 'app_open', {}, req);
   res.send(renderTemplate('linkedin-post.html', {
     CLIENT_CONFIG: JSON.stringify(client),
-    PAGE_TITLE: `Post Writer — ${client.companyName}`,
+    PAGE_TITLE: `LinkedIn Post Creator — ${client.companyName}`,
     SLUG: client.slug,
     COMPANY_NAME: client.companyName,
     PRIMARY_COLOR: client.primaryColor,
