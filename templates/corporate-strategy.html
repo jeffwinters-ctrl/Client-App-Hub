@@ -202,84 +202,287 @@
     .thinking span:nth-child(3) { animation-delay: 0.3s; }
     @keyframes thinkPulse { 0%,100% { opacity: 0.25; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1); } }
 
-    /* Resolution cards */
-    .resolution-cards {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-top: 16px;
+    /* ─── Executive Briefing Report ─── */
+    .report-wrapper {
+      animation: reportIn 0.5s ease;
     }
-    .resolution-card {
-      background: var(--bg);
+    @keyframes reportIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .report {
+      background: var(--bg-light);
       border: 1px solid var(--rule);
-      border-radius: 12px;
-      padding: 20px;
-      transition: border-color 0.2s;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 24px;
     }
-    .resolution-card:hover { border-color: var(--blue); }
-    .resolution-card .res-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
+
+    .report-header {
+      background: linear-gradient(135deg, #0D2137 0%, #132D46 50%, #0D2137 100%);
+      border-bottom: 1px solid var(--rule);
+      padding: 36px 36px 28px;
+      position: relative;
+      overflow: hidden;
     }
-    .resolution-card .res-badge {
+    .report-header::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(0,180,216,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .report-header .report-label {
       font-family: 'Rajdhani', sans-serif;
       font-size: 0.68rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      padding: 4px 10px;
-      border-radius: 5px;
-      white-space: nowrap;
+      letter-spacing: 0.18em;
+      color: var(--blue);
+      margin-bottom: 10px;
     }
-    .res-badge-1 { background: var(--green-dim); color: var(--green); }
-    .res-badge-2 { background: var(--blue-dim); color: var(--blue); }
-    .res-badge-3 { background: var(--amber-dim); color: var(--amber); }
-    .resolution-card h4 {
+    .report-header h2 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.02em;
+      margin-bottom: 6px;
+    }
+    .report-header .report-meta {
+      font-size: 0.78rem;
+      color: var(--ink-dim);
+    }
+    .report-header .report-meta span { color: var(--ink-muted); }
+
+    .report-body { padding: 0; }
+
+    /* Section within report */
+    .report-section {
+      padding: 28px 36px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .report-section:last-child { border-bottom: none; }
+    .report-section-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--blue);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .report-section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    .report-exec-summary {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--ink);
+    }
+
+    /* Root Cause */
+    .report-root-cause {
+      background: linear-gradient(135deg, rgba(239,71,111,0.06), rgba(239,71,111,0.02));
+      border: 1px solid rgba(239,71,111,0.15);
+      border-radius: 10px;
+      padding: 20px 24px;
+    }
+    .report-root-cause p { font-size: 0.95rem; line-height: 1.75; color: var(--ink); }
+
+    /* Key Findings */
+    .findings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .finding-card {
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .finding-card .finding-icon {
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    .finding-card h5 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .finding-card p {
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      line-height: 1.5;
+    }
+
+    /* KPI Targets */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .kpi-card {
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+    }
+    .kpi-card .kpi-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--amber);
+      margin-bottom: 4px;
+    }
+    .kpi-card .kpi-label {
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .kpi-card .kpi-timeframe {
+      font-size: 0.7rem;
+      color: var(--ink-dim);
+      margin-top: 2px;
+    }
+
+    /* Resolution Options */
+    .resolution-options { display: flex; flex-direction: column; gap: 16px; }
+    .resolution-option {
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .resolution-option:hover { border-color: var(--blue); }
+    .res-opt-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .res-opt-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .res-opt-1 .res-opt-number { background: var(--green-dim); color: var(--green); }
+    .res-opt-2 .res-opt-number { background: var(--blue-dim); color: var(--blue); }
+    .res-opt-3 .res-opt-number { background: var(--amber-dim); color: var(--amber); }
+    .res-opt-title-area { flex: 1; }
+    .res-opt-tag {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .res-opt-1 .res-opt-tag { color: var(--green); }
+    .res-opt-2 .res-opt-tag { color: var(--blue); }
+    .res-opt-3 .res-opt-tag { color: var(--amber); }
+    .res-opt-title-area h4 {
       font-family: 'Rajdhani', sans-serif;
       font-size: 1.1rem;
       font-weight: 600;
       color: #fff;
+      margin-top: 2px;
     }
-    .resolution-card .res-body { font-size: 0.9rem; line-height: 1.65; color: var(--ink-muted); margin-bottom: 10px; }
-    .resolution-card .res-steps { list-style: none; padding: 0; }
-    .resolution-card .res-steps li {
+    .res-opt-body { padding: 20px 24px; }
+    .res-opt-body .res-explanation {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--ink-muted);
+      margin-bottom: 14px;
+    }
+    .res-opt-body .res-steps { list-style: none; padding: 0; margin-bottom: 14px; }
+    .res-opt-body .res-steps li {
       font-size: 0.85rem;
       color: var(--ink);
-      padding: 4px 0 4px 16px;
+      padding: 5px 0 5px 18px;
       position: relative;
       line-height: 1.5;
     }
-    .resolution-card .res-steps li::before { content: '▸'; position: absolute; left: 0; color: var(--blue); }
-    .resolution-card .res-impact {
-      margin-top: 10px;
-      padding: 10px 14px;
-      border-radius: 6px;
+    .res-opt-body .res-steps li::before { content: '▸'; position: absolute; left: 0; color: var(--blue); font-weight: 600; }
+    .res-opt-impact {
+      padding: 12px 16px;
+      border-radius: 8px;
       font-size: 0.82rem;
       font-weight: 500;
+      line-height: 1.5;
     }
-    .res-impact-1 { background: var(--green-dim); color: var(--green); }
-    .res-impact-2 { background: var(--blue-dim); color: var(--blue); }
-    .res-impact-3 { background: var(--amber-dim); color: var(--amber); }
+    .res-opt-1 .res-opt-impact { background: var(--green-dim); color: var(--green); }
+    .res-opt-2 .res-opt-impact { background: var(--blue-dim); color: var(--blue); }
+    .res-opt-3 .res-opt-impact { background: var(--amber-dim); color: var(--amber); }
 
-    .root-cause-box {
-      background: linear-gradient(135deg, rgba(0,180,216,0.08), rgba(0,180,216,0.02));
-      border: 1px solid rgba(0,180,216,0.2);
-      border-radius: 12px;
-      padding: 20px;
-      margin-top: 16px;
+    /* Risk factors */
+    .risk-factors { display: flex; flex-direction: column; gap: 10px; }
+    .risk-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
     }
-    .root-cause-box .rc-label {
+    .risk-severity {
       font-family: 'Rajdhani', sans-serif;
-      font-size: 0.72rem;
-      font-weight: 600;
+      font-size: 0.65rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--blue);
-      margin-bottom: 8px;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: 4px;
+      min-width: 56px;
+      text-align: center;
     }
-    .root-cause-box p { font-size: 0.95rem; line-height: 1.7; }
+    .risk-sev-high { background: var(--red-dim); color: var(--red); }
+    .risk-sev-medium { background: var(--amber-dim); color: var(--amber); }
+    .risk-sev-low { background: var(--green-dim); color: var(--green); }
+    .risk-text { font-size: 0.85rem; color: var(--ink-muted); line-height: 1.4; }
+
+    /* Report footer / advisor note */
+    .report-advisor-note {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--ink-muted);
+      font-style: italic;
+      border-left: 3px solid var(--blue);
+      padding-left: 16px;
+    }
+
+    .report-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      .report-header { padding: 24px 20px 20px; }
+      .report-section { padding: 20px; }
+      .findings-grid { grid-template-columns: 1fr; }
+      .kpi-strip { grid-template-columns: 1fr; }
+    }
 
     /* Bottom bar */
     .bottom-bar {
@@ -605,54 +808,142 @@
         }
 
         var r = data.result;
+        var today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        var companyName = (CLIENT && CLIENT.companyName) ? CLIENT.companyName : 'Your Company';
 
-        // Root cause
-        var html = '';
-        if (r.root_cause_analysis) {
-          html += '<div class="root-cause-box">' +
-            '<div class="rc-label">Root Cause Analysis</div>' +
-            '<p>' + esc(r.root_cause_analysis).replace(/\n/g, '<br>') + '</p>' +
+        // Build the report outside the chat bubble
+        var msgs = document.getElementById('chatMessages');
+
+        // Transition message in chat
+        addMessage('advisor', 'I\'ve completed my analysis. Here\'s your executive briefing:');
+
+        // Report container
+        var reportDiv = document.createElement('div');
+        reportDiv.className = 'report-wrapper';
+        var html = '<div class="report" id="reportDocument">';
+
+        // Header
+        html += '<div class="report-header">' +
+          '<div class="report-label">Executive Briefing</div>' +
+          '<h2>' + esc(r.report_title || 'Strategic Analysis & Recommendations') + '</h2>' +
+          '<div class="report-meta">Prepared for <span>' + esc(companyName) + '</span> &mdash; ' + today + '</div>' +
+        '</div>';
+
+        html += '<div class="report-body">';
+
+        // Executive Summary
+        if (r.executive_summary) {
+          html += '<div class="report-section">' +
+            '<div class="report-section-label">Executive Summary</div>' +
+            '<div class="report-exec-summary">' + esc(r.executive_summary).replace(/\n/g, '<br>') + '</div>' +
           '</div>';
         }
 
-        // Resolution cards
+        // Root Cause Analysis
+        if (r.root_cause_analysis) {
+          html += '<div class="report-section">' +
+            '<div class="report-section-label">Root Cause Analysis</div>' +
+            '<div class="report-root-cause"><p>' + esc(r.root_cause_analysis).replace(/\n/g, '<br>') + '</p></div>' +
+          '</div>';
+        }
+
+        // Key Findings
+        if (r.key_findings && r.key_findings.length) {
+          html += '<div class="report-section">' +
+            '<div class="report-section-label">Key Findings</div>' +
+            '<div class="findings-grid">';
+          var findingIcons = ['&#9672;', '&#9670;', '&#9654;', '&#9650;'];
+          r.key_findings.forEach(function(f, i) {
+            html += '<div class="finding-card">' +
+              '<div class="finding-icon">' + (findingIcons[i] || '&#9672;') + '</div>' +
+              '<h5>' + esc(f.finding) + '</h5>' +
+              '<p>' + esc(f.detail) + '</p>' +
+            '</div>';
+          });
+          html += '</div></div>';
+        }
+
+        // KPI Targets
+        if (r.kpi_targets && r.kpi_targets.length) {
+          html += '<div class="report-section">' +
+            '<div class="report-section-label">Target KPIs</div>' +
+            '<div class="kpi-strip">';
+          r.kpi_targets.forEach(function(kpi) {
+            html += '<div class="kpi-card">' +
+              '<div class="kpi-value">' + esc(kpi.target) + '</div>' +
+              '<div class="kpi-label">' + esc(kpi.metric) + '</div>' +
+              '<div class="kpi-timeframe">' + esc(kpi.timeframe) + '</div>' +
+            '</div>';
+          });
+          html += '</div></div>';
+        }
+
+        // Recommended Actions (3 options)
         if (r.resolutions && r.resolutions.length) {
-          html += '<div class="resolution-cards">';
-          r.resolutions.forEach(function(res, i) {
-            var badgeLabels = ['Recommended', 'Alternative', 'Long-Term'];
-            var label = badgeLabels[i] || ('Option ' + (i + 1));
-            html += '<div class="resolution-card">' +
-              '<div class="res-header">' +
-                '<span class="res-badge res-badge-' + (i + 1) + '">' + label + '</span>' +
-                '<h4>' + esc(res.title) + '</h4>' +
+          html += '<div class="report-section">' +
+            '<div class="report-section-label">Recommended Actions</div>' +
+            '<div class="resolution-options">';
+          var tagLabels = ['Recommended', 'Alternative', 'Long-Term Play'];
+          r.resolutions.forEach(function(opt, i) {
+            html += '<div class="resolution-option res-opt-' + (i + 1) + '">' +
+              '<div class="res-opt-header">' +
+                '<div class="res-opt-number">' + (i + 1) + '</div>' +
+                '<div class="res-opt-title-area">' +
+                  '<div class="res-opt-tag">' + (tagLabels[i] || 'Option ' + (i+1)) + '</div>' +
+                  '<h4>' + esc(opt.title) + '</h4>' +
+                '</div>' +
               '</div>' +
-              '<div class="res-body">' + esc(res.explanation).replace(/\n/g, '<br>') + '</div>';
-            if (res.steps && res.steps.length) {
+              '<div class="res-opt-body">' +
+                '<div class="res-explanation">' + esc(opt.explanation).replace(/\n/g, '<br>') + '</div>';
+            if (opt.steps && opt.steps.length) {
               html += '<ul class="res-steps">';
-              res.steps.forEach(function(s) { html += '<li>' + esc(s) + '</li>'; });
+              opt.steps.forEach(function(s) { html += '<li>' + esc(s) + '</li>'; });
               html += '</ul>';
             }
-            if (res.expected_impact) {
-              html += '<div class="res-impact res-impact-' + (i + 1) + '">Expected Impact: ' + esc(res.expected_impact) + '</div>';
+            if (opt.expected_impact) {
+              html += '<div class="res-opt-impact">Expected Impact: ' + esc(opt.expected_impact) + '</div>';
             }
-            html += '</div>';
+            html += '</div></div>';
           });
-          html += '</div>';
+          html += '</div></div>';
         }
 
-        // Summary
-        if (r.summary) {
-          html += '<p style="margin-top:20px;color:var(--ink-muted);font-size:0.9rem;line-height:1.7;">' + esc(r.summary).replace(/\n/g, '<br>') + '</p>';
+        // Risk Factors
+        if (r.risk_factors && r.risk_factors.length) {
+          html += '<div class="report-section">' +
+            '<div class="report-section-label">Risk Factors</div>' +
+            '<div class="risk-factors">';
+          r.risk_factors.forEach(function(rf) {
+            var sev = (rf.severity || 'medium').toLowerCase();
+            html += '<div class="risk-row">' +
+              '<span class="risk-severity risk-sev-' + sev + '">' + esc(sev) + '</span>' +
+              '<span class="risk-text">' + esc(rf.risk) + '</span>' +
+            '</div>';
+          });
+          html += '</div></div>';
         }
 
-        html += '<button class="btn-copy-all" onclick="copyConversation()">Copy Full Conversation</button>';
-        html += '<button class="new-topic-btn" onclick="startNewTopic()">New Topic</button>';
+        // Advisor's Note
+        if (r.advisors_note) {
+          html += '<div class="report-section">' +
+            '<div class="report-section-label">Advisor\'s Note</div>' +
+            '<div class="report-advisor-note">' + esc(r.advisors_note).replace(/\n/g, '<br>') + '</div>' +
+          '</div>';
+        }
 
-        addMessage('advisor', html);
+        html += '</div></div>'; // close report-body and report
 
-        // Hide input row
+        // Action buttons
+        html += '<div class="report-actions">' +
+          '<button class="btn-copy-all" onclick="copyReport()">Copy Report</button>' +
+          '<button class="new-topic-btn" onclick="startNewTopic()">New Topic</button>' +
+        '</div>';
+
+        reportDiv.innerHTML = html;
+        msgs.appendChild(reportDiv);
+        scrollToBottom();
+
         document.getElementById('inputRow').style.display = 'none';
-
         isProcessing = false;
 
       } catch (err) {
@@ -662,14 +953,15 @@
       }
     }
 
-    function copyConversation() {
-      var msgs = document.getElementById('chatMessages');
-      var text = msgs.innerText;
+    function copyReport() {
+      var report = document.getElementById('reportDocument');
+      if (!report) return;
+      var text = report.innerText;
       navigator.clipboard.writeText(text).then(function() {
         var btns = document.querySelectorAll('.btn-copy-all');
         btns.forEach(function(b) {
           b.textContent = 'Copied!';
-          setTimeout(function() { b.textContent = 'Copy Full Conversation'; }, 1500);
+          setTimeout(function() { b.textContent = 'Copy Report'; }, 1500);
         });
       });
     }

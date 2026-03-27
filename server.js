@@ -1018,7 +1018,7 @@ RULES:
     } else if (mode === 'resolution') {
       const convoText = (conversation || []).map(m => m.role.toUpperCase() + ': ' + m.content).join('\n');
 
-      const systemPrompt = `You are a world-class business advisor delivering your diagnosis and action plan. You've just had a diagnostic conversation with a business leader. Now synthesize everything into a clear root cause analysis and three distinct resolution options.
+      const systemPrompt = `You are a world-class business advisor delivering a formal executive briefing. You've just completed a diagnostic conversation with a business leader. Now produce a polished, boardroom-ready report that they could present to their leadership team.
 
 CLIENT CONTEXT:
 ${buildClientContext(clientConfig)}
@@ -1028,13 +1028,26 @@ ${convoText}
 
 Return ONLY valid JSON:
 {
-  "root_cause_analysis": "2-4 sentences identifying the core underlying issue. Be direct and specific. Reference what they told you. This should feel like an 'aha' moment — connecting dots they may not have connected.",
+  "report_title": "A specific, professional title for this briefing (e.g., 'Revenue Recovery Strategy: Addressing Q1 Pipeline Decline')",
+  "executive_summary": "3-4 sentences. Written like a McKinsey executive summary — crisp, direct, and authoritative. Summarize the problem, the root cause, and the recommended path forward. This should stand alone as a complete overview.",
+  "root_cause_analysis": "3-5 sentences. Connect the dots from the conversation into one coherent diagnosis. Reference specific things they said. This should feel like an 'aha' moment — the real underlying issue, not just symptoms.",
+  "key_findings": [
+    { "finding": "Short finding headline", "detail": "1-2 sentences with supporting evidence from the conversation" },
+    { "finding": "...", "detail": "..." },
+    { "finding": "...", "detail": "..." },
+    { "finding": "...", "detail": "..." }
+  ],
+  "kpi_targets": [
+    { "metric": "Metric name (e.g., Win Rate)", "target": "Target value (e.g., +15%)", "timeframe": "Timeline (e.g., 90 days)" },
+    { "metric": "...", "target": "...", "timeframe": "..." },
+    { "metric": "...", "target": "...", "timeframe": "..." }
+  ],
   "resolutions": [
     {
-      "title": "Short, clear name for this approach",
-      "explanation": "2-3 sentences explaining this strategy and why it addresses the root cause",
-      "steps": ["Specific action step 1 — with timeline", "Step 2", "Step 3", "Step 4"],
-      "expected_impact": "What they can expect if they execute this well — be specific with timeframes and outcomes"
+      "title": "Clear, action-oriented name",
+      "explanation": "2-3 sentences — why this works and how it addresses the root cause",
+      "steps": ["Specific action with timeline", "Step 2", "Step 3", "Step 4"],
+      "expected_impact": "Specific outcome with timeframe"
     },
     {
       "title": "...",
@@ -1049,20 +1062,28 @@ Return ONLY valid JSON:
       "expected_impact": "..."
     }
   ],
-  "summary": "2-3 closing sentences. Be direct about what you'd do if you were in their shoes. End with something actionable."
+  "risk_factors": [
+    { "risk": "What could go wrong if they act (or don't act)", "severity": "high" },
+    { "risk": "...", "severity": "medium" },
+    { "risk": "...", "severity": "low" }
+  ],
+  "advisors_note": "2-3 sentences of candid, personal advice. Written in first person as a trusted advisor. Be direct about what you'd do in their position and what the stakes are."
 }
 
 RULES:
-- Resolution 1 = RECOMMENDED (quickest path to impact, most practical)
-- Resolution 2 = ALTERNATIVE (different angle, maybe less obvious)
-- Resolution 3 = LONG-TERM (bigger structural change, higher payoff over time)
-- Each resolution must have 3-5 specific, actionable steps with timelines
-- Reference specifics from the conversation — company details, numbers, people they mentioned
-- Be honest and direct — don't hedge. Tell them what you'd actually recommend
-- Expected impact should include timeframes ("within 60 days", "over the next quarter")
-- The root cause analysis should connect multiple things they said into one coherent diagnosis`;
+- This is a FORMAL BRIEFING — write like a senior consultant presenting to a CEO, not a chatbot responding
+- Resolution 1 = RECOMMENDED (quickest path to impact)
+- Resolution 2 = ALTERNATIVE (different angle, possibly less obvious)
+- Resolution 3 = LONG-TERM PLAY (bigger structural change, higher payoff over time)
+- Each resolution must have 3-5 specific, actionable steps WITH timelines
+- Key findings should be 4 data-driven observations from the conversation — things that stood out
+- KPI targets should be 3 measurable goals tied to the resolutions — realistic but ambitious
+- Risk factors: 3 risks, one each of high/medium/low severity
+- Reference specifics from the conversation — numbers, people, situations they mentioned
+- The executive summary should read like it belongs in a boardroom presentation
+- The advisor's note should feel personal and authentic — "If I were in your position, I would..."`;
 
-      const raw = await callClaude(systemPrompt, 'Deliver your diagnosis and three resolution options.', 2000);
+      const raw = await callClaude(systemPrompt, 'Produce the formal executive briefing.', 3000);
       const result = extractJSON(raw);
       await logEvent(clientConfig.slug, 'corporate-strategy', 'resolution_complete', {}, req);
       res.json({ result });
