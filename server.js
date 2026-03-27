@@ -1252,20 +1252,27 @@ RULES:
 
 app.post('/api/industry-feed', async (req, res) => {
   try {
-    const { clientConfig } = req.body;
+    const { clientConfig, cacheOnly } = req.body;
     if (!clientConfig) return res.status(400).json({ error: 'Missing client config' });
 
-    // Check Supabase cache (4-hour TTL)
+    // Check Supabase cache
     if (supabase && clientConfig.slug) {
       try {
         const { data: row } = await supabase.from('clients').select('data').eq('slug', clientConfig.slug).single();
         if (row?.data?._feedCache && row?.data?._feedCacheTime) {
           const age = Date.now() - new Date(row.data._feedCacheTime).getTime();
-          if (age < 4 * 60 * 60 * 1000) {
-            return res.json(row.data._feedCache);
+          const isFresh = age < 4 * 60 * 60 * 1000;
+          if (isFresh || cacheOnly) {
+            const cachedAt = row.data._feedCacheTime;
+            return res.json({ ...row.data._feedCache, _cachedAt: cachedAt, _stale: !isFresh });
           }
         }
       } catch (e) { /* cache miss, continue */ }
+    }
+
+    // If cacheOnly was requested but no cache exists, return empty
+    if (cacheOnly) {
+      return res.json({ articles: [], _noCache: true });
     }
 
     // Build a smart search query from the client profile
