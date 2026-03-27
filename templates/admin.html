@@ -743,40 +743,54 @@
             body: JSON.stringify(payload)
           });
         }
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try { data = JSON.parse(text); } catch (pe) {
+          msg.textContent = 'Server error — client may not have saved. Try again.';
+          msg.style.color = 'var(--red)';
+          return;
+        }
         if (data.error) { msg.textContent = data.error; msg.style.color = 'var(--red)'; return; }
+
+        const savedSlug = payload.slug || editing;
+        msg.textContent = (editing ? 'Client updated!' : 'Client added!');
+        msg.style.color = 'var(--green)';
 
         // Set password if provided
         const pw = document.getElementById('cf_password').value.trim();
         if (pw && pw.length >= 6) {
-          await fetch('/api/admin/set-password', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ slug: payload.slug || editing, password: pw })
-          });
-        }
-
-        const savedSlug = payload.slug || editing;
-        const hasProfile = (payload.productDescription && payload.productDescription.length > 10) || (payload.context && payload.context.length > 20);
-
-        if (hasProfile && savedSlug) {
-          msg.textContent = (editing ? 'Client updated!' : 'Client added!') + ' Generating custom DealCheck config...';
-          msg.style.color = 'var(--green)';
           try {
-            await fetch('/api/admin/generate-config', {
+            const pwRes = await fetch('/api/admin/set-password', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ slug: savedSlug })
+              body: JSON.stringify({ slug: savedSlug, password: pw })
             });
-            msg.textContent += ' Done! Reloading...';
-          } catch (ge) {
-            msg.textContent += ' Config generation failed — you can retry from Edit. Reloading...';
+            const pwText = await pwRes.text();
+            const pwData = JSON.parse(pwText);
+            if (pwData.error) {
+              msg.textContent += ' Warning: password not set — ' + pwData.error;
+              msg.style.color = 'orange';
+            } else {
+              msg.textContent += ' Password set!';
+            }
+          } catch (pe) {
+            msg.textContent += ' Warning: password may not have saved.';
+            msg.style.color = 'orange';
           }
-        } else {
-          msg.textContent = editing ? 'Client updated! Reloading...' : 'Client added! Reloading...';
-          msg.style.color = 'var(--green)';
         }
-        setTimeout(() => window.location.reload(), 1200);
+
+        // Generate custom config in background (don't block the save)
+        const hasProfile = (payload.productDescription && payload.productDescription.length > 10) || (payload.context && payload.context.length > 20);
+        if (hasProfile && savedSlug) {
+          msg.textContent += ' Generating custom Deal Coach config (this may take a moment)...';
+          fetch('/api/admin/generate-config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ slug: savedSlug })
+          }).then(() => {}).catch(() => {});
+        }
+
+        setTimeout(() => window.location.reload(), 2000);
       } catch (err) {
         msg.textContent = 'Error: ' + err.message;
         msg.style.color = 'var(--red)';
