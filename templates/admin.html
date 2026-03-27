@@ -289,6 +289,9 @@
                   <label style="font-size:0.9rem;display:flex;align-items:center;gap:6px;cursor:pointer;">
                     <input type="checkbox" id="cf_app_feed" value="industry-feed" checked> Industry Feed
                   </label>
+                  <label style="font-size:0.9rem;display:flex;align-items:center;gap:6px;cursor:pointer;">
+                    <input type="checkbox" id="cf_app_research" value="research" checked> Research Assistant
+                  </label>
                 </div>
               </div>
 
@@ -582,6 +585,7 @@
       document.getElementById('cf_app_casestudy').checked = c.apps.includes('case-study');
       document.getElementById('cf_app_tradeshow').checked = c.apps.includes('trade-show');
       document.getElementById('cf_app_feed').checked = c.apps.includes('industry-feed');
+      document.getElementById('cf_app_research').checked = c.apps.includes('research');
       document.getElementById('cf_website').value = c.website || '';
       document.getElementById('cf_productDescription').value = c.productDescription || '';
       document.getElementById('cf_targetBuyers').value = c.targetBuyers || '';
@@ -709,6 +713,7 @@
       if (document.getElementById('cf_app_casestudy').checked) apps.push('case-study');
       if (document.getElementById('cf_app_tradeshow').checked) apps.push('trade-show');
       if (document.getElementById('cf_app_feed').checked) apps.push('industry-feed');
+      if (document.getElementById('cf_app_research').checked) apps.push('research');
 
       const payload = {
         slug: document.getElementById('cf_slug').value.trim(),

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{PAGE_TITLE}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary: {{PRIMARY_COLOR}};
+      --accent: {{ACCENT_COLOR}};
+      --bg: #FAFBFC;
+      --surface: #fff;
+      --ink: #1a1a2e;
+      --ink-mid: #4a4a5a;
+      --ink-light: #8a8a9a;
+      --rule: #e8e8ee;
+      --blue: #3B82F6;
+      --blue-light: #EFF6FF;
+      --green: #10B981;
+      --green-light: #ECFDF5;
+      --purple: #8B5CF6;
+      --purple-light: #F5F3FF;
+    }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; }
+
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--rule);
+      padding: 0 32px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .header-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .header-icon svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.5; }
+    .header-title { font-size: 0.9rem; font-weight: 600; }
+    .header a { color: var(--ink-light); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s; }
+    .header a:hover { color: var(--blue); }
+
+    .main-container {
+      flex: 1;
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 32px 20px 120px;
+    }
+
+    /* Welcome */
+    .welcome {
+      text-align: center;
+      padding: 48px 24px;
+    }
+    .welcome h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .welcome p {
+      color: var(--ink-mid);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-width: 500px;
+      margin: 0 auto 28px;
+    }
+    .suggestion-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .suggestion-chip {
+      padding: 8px 16px;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 20px;
+      font-size: 0.82rem;
+      color: var(--ink-mid);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .suggestion-chip:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+
+    /* Results */
+    .results-area { display: none; }
+    .results-area.visible { display: block; }
+
+    .query-display {
+      padding: 16px 20px;
+      background: var(--blue-light);
+      border: 1px solid rgba(59,130,246,0.15);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .query-display .q-icon {
+      width: 24px;
+      height: 24px;
+      background: var(--blue);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .query-display .q-icon svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2.5; }
+    .query-display .q-text { font-size: 0.95rem; font-weight: 500; line-height: 1.5; }
+
+    .answer-card {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .answer-header {
+      padding: 16px 24px;
+      background: linear-gradient(135deg, #FAFBFC, #F3F4F6);
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .answer-header .perplexity-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--purple);
+      background: var(--purple-light);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .answer-header .answer-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--ink-light);
+    }
+    .answer-body {
+      padding: 24px;
+      font-size: 0.95rem;
+      line-height: 1.85;
+      color: var(--ink);
+    }
+    .answer-body h1, .answer-body h2, .answer-body h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 20px 0 8px;
+      color: var(--ink);
+    }
+    .answer-body h1:first-child, .answer-body h2:first-child, .answer-body h3:first-child { margin-top: 0; }
+    .answer-body p { margin-bottom: 12px; }
+    .answer-body ul, .answer-body ol { margin: 8px 0 12px 20px; }
+    .answer-body li { margin-bottom: 6px; line-height: 1.6; }
+    .answer-body strong { font-weight: 600; color: var(--ink); }
+    .answer-body code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      background: #F3F4F6;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .answer-body blockquote {
+      border-left: 3px solid var(--blue);
+      padding: 8px 16px;
+      margin: 12px 0;
+      background: var(--blue-light);
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: var(--ink-mid);
+    }
+
+    /* Citations */
+    .citations {
+      padding: 16px 24px;
+      border-top: 1px solid var(--rule);
+      background: #FAFBFC;
+    }
+    .citations-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-light);
+      margin-bottom: 10px;
+    }
+    .citation-list { list-style: none; padding: 0; }
+    .citation-list li {
+      margin-bottom: 6px;
+    }
+    .citation-list a {
+      font-size: 0.82rem;
+      color: var(--blue);
+      text-decoration: none;
+      line-height: 1.5;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .citation-list a:hover { text-decoration: underline; }
+    .citation-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      background: var(--blue-light);
+      color: var(--blue);
+      font-size: 0.68rem;
+      font-weight: 700;
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .answer-actions {
+      display: flex;
+      gap: 8px;
+      padding: 0 24px 20px;
+    }
+    .btn-copy {
+      padding: 8px 16px;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--ink-mid);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-copy:hover { border-color: var(--blue); color: var(--blue); }
+
+    /* Loading */
+    .loading-state {
+      text-align: center;
+      padding: 48px 24px;
+    }
+    .loading-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .loading-dots span {
+      width: 10px;
+      height: 10px;
+      background: var(--blue);
+      border-radius: 50%;
+      animation: loadPulse 1.2s ease-in-out infinite;
+    }
+    .loading-dots span:nth-child(2) { animation-delay: 0.15s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes loadPulse { 0%,100% { opacity: 0.25; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1); } }
+    .loading-text { font-size: 0.9rem; color: var(--ink-light); }
+
+    /* Input bar */
+    .input-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--rule);
+      padding: 16px 20px;
+      z-index: 100;
+    }
+    .input-bar-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      gap: 10px;
+    }
+    .research-input {
+      flex: 1;
+      padding: 14px 18px;
+      border: 1px solid var(--rule);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      transition: border-color 0.2s;
+    }
+    .research-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+    .research-input::placeholder { color: var(--ink-light); }
+    .research-send {
+      padding: 14px 24px;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      white-space: nowrap;
+    }
+    .research-send:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(59,130,246,0.3); }
+    .research-send:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .footer {
+      background: var(--surface);
+      border-top: 1px solid var(--rule);
+      text-align: center;
+      padding: 16px;
+      font-size: 0.8rem;
+      color: var(--ink-light);
+    }
+
+    @media (max-width: 768px) {
+      .header { padding: 0 16px; }
+      .main-container { padding: 20px 12px 120px; }
+      .suggestion-chips { flex-direction: column; align-items: center; }
+      .answer-body { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </div>
+      <span class="header-title">Research Assistant</span>
+    </div>
+    <a href="/{{SLUG}}">&#8592; Back to Hub</a>
+  </header>
+
+  <div class="main-container">
+    <div id="welcomeArea" class="welcome">
+      <h1>What do you need to know?</h1>
+      <p>Find real statistics, market data, competitive intelligence, and research to strengthen your pitch. Powered by real-time web search.</p>
+      <div class="suggestion-chips" id="suggestions"></div>
+    </div>
+
+    <div id="resultsArea" class="results-area"></div>
+  </div>
+
+  <div class="input-bar">
+    <div class="input-bar-inner">
+      <input type="text" class="research-input" id="queryInput" placeholder="e.g., What percentage of manufacturers still use manual quality inspection?" autofocus>
+      <button class="research-send" id="sendBtn" onclick="doSearch()">Search</button>
+    </div>
+  </div>
+
+  <script>
+    var CLIENT = {{CLIENT_CONFIG}};
+    var SLUG = '{{SLUG}}';
+
+    var industry = CLIENT.industry || 'general';
+    var product = CLIENT.productDescription || CLIENT.context || '';
+    var suggestions = [
+      'Average ROI of ' + (industry !== 'general' ? industry : 'B2B technology') + ' solutions',
+      'Market size and growth rate for ' + (industry !== 'general' ? industry : 'our') + ' industry',
+      'Common pain points for ' + (CLIENT.targetBuyers || 'decision-makers') + ' in 2025',
+      'Cost of inaction statistics for ' + (industry !== 'general' ? industry : 'B2B'),
+      product ? 'Competitive landscape for ' + product.split('.')[0] : 'Industry benchmark data'
+    ];
+
+    var chipsEl = document.getElementById('suggestions');
+    suggestions.forEach(function(s) {
+      var chip = document.createElement('button');
+      chip.className = 'suggestion-chip';
+      chip.textContent = s;
+      chip.onclick = function() {
+        document.getElementById('queryInput').value = s;
+        doSearch();
+      };
+      chipsEl.appendChild(chip);
+    });
+
+    document.getElementById('queryInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); doSearch(); }
+    });
+
+    function esc(s) { if (!s) return ''; var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    function markdownToHtml(text) {
+      return text
+        .replace(/^### (.*?)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.*?)$/gm, '<h2>$1</h2>')
+        .replace(/^# (.*?)$/gm, '<h1>$1</h1>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`(.*?)`/g, '<code>$1</code>')
+        .replace(/^> (.*?)$/gm, '<blockquote>$1</blockquote>')
+        .replace(/^- (.*?)$/gm, '<li>$1</li>')
+        .replace(/^(\d+)\. (.*?)$/gm, '<li>$2</li>')
+        .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>');
+    }
+
+    async function doSearch() {
+      var input = document.getElementById('queryInput');
+      var query = input.value.trim();
+      if (!query) return;
+
+      var btn = document.getElementById('sendBtn');
+      btn.disabled = true;
+
+      document.getElementById('welcomeArea').style.display = 'none';
+      var results = document.getElementById('resultsArea');
+      results.className = 'results-area visible';
+
+      // Show query + loading
+      var loadingHtml =
+        '<div class="query-display">' +
+          '<div class="q-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div>' +
+          '<div class="q-text">' + esc(query) + '</div>' +
+        '</div>' +
+        '<div class="loading-state" id="loadingState">' +
+          '<div class="loading-dots"><span></span><span></span><span></span></div>' +
+          '<div class="loading-text">Searching the web...</div>' +
+        '</div>';
+      results.innerHTML = loadingHtml;
+
+      try {
+        var res = await fetch('/api/research', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: query, clientConfig: CLIENT })
+        });
+        var text = await res.text();
+        var data;
+        try { data = JSON.parse(text); } catch(pe) { throw new Error('Server error. Try again.'); }
+        if (data.error) throw new Error(data.error);
+
+        var answerHtml = markdownToHtml(data.answer || '');
+        var citations = data.citations || [];
+
+        var html =
+          '<div class="query-display">' +
+            '<div class="q-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div>' +
+            '<div class="q-text">' + esc(query) + '</div>' +
+          '</div>' +
+          '<div class="answer-card">' +
+            '<div class="answer-header">' +
+              '<span class="perplexity-badge">Perplexity</span>' +
+              '<span class="answer-label">Research Results</span>' +
+            '</div>' +
+            '<div class="answer-body" id="answerBody"><p>' + answerHtml + '</p></div>';
+
+        if (citations.length > 0) {
+          html += '<div class="citations">' +
+            '<div class="citations-label">Sources</div>' +
+            '<ul class="citation-list">';
+          citations.forEach(function(url, i) {
+            var domain = '';
+            try { domain = new URL(url).hostname.replace('www.', ''); } catch(e) { domain = url; }
+            html += '<li><a href="' + esc(url) + '" target="_blank" rel="noopener"><span class="citation-num">' + (i + 1) + '</span>' + esc(domain) + '</a></li>';
+          });
+          html += '</ul></div>';
+        }
+
+        html += '<div class="answer-actions">' +
+          '<button class="btn-copy" onclick="copyAnswer()">Copy Answer</button>' +
+        '</div>' +
+        '</div>';
+
+        results.innerHTML = html;
+
+      } catch (err) {
+        results.innerHTML =
+          '<div class="query-display">' +
+            '<div class="q-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></div>' +
+            '<div class="q-text">' + esc(query) + '</div>' +
+          '</div>' +
+          '<div style="text-align:center;padding:32px;color:var(--ink-light);">' +
+            '<p>' + esc(err.message) + '</p>' +
+          '</div>';
+      }
+
+      btn.disabled = false;
+      input.value = '';
+      input.focus();
+    }
+
+    function copyAnswer() {
+      var el = document.getElementById('answerBody');
+      if (!el) return;
+      navigator.clipboard.writeText(el.innerText).then(function() {
+        var btns = document.querySelectorAll('.btn-copy');
+        btns.forEach(function(b) {
+          b.textContent = 'Copied!';
+          setTimeout(function() { b.textContent = 'Copy Answer'; }, 1500);
+        });
+      });
+    }
+  </script>
+</body>
+</html>

@@ -152,7 +152,7 @@
       gap: 24px;
     }
 
-    /* ── Feed Sidebar ── */
+    /* ── Sales Playbook Sidebar ── */
     .feed-sidebar {
       background: var(--surface);
       border: 1px solid var(--rule);
@@ -188,9 +188,15 @@
       border-radius: 50%;
       animation: feedPulse 2s ease-in-out infinite;
     }
-    @keyframes feedPulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+    @keyframes feedPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .feed-header-bar .feed-status {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--muted);
+      margin-top: 4px;
     }
     .feed-scroll {
       overflow-y: auto;
@@ -199,44 +205,50 @@
     }
     .feed-scroll::-webkit-scrollbar { width: 4px; }
     .feed-scroll::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 2px; }
-    .feed-item {
+
+    .intel-card {
       padding: 14px 0;
       border-bottom: 1px solid var(--rule);
       opacity: 0;
-      animation: feedItemIn 0.3s ease forwards;
+      animation: intelIn 0.3s ease forwards;
     }
-    .feed-item:last-child { border-bottom: none; }
-    .feed-item:nth-child(1) { animation-delay: 0.5s; }
-    .feed-item:nth-child(2) { animation-delay: 0.6s; }
-    .feed-item:nth-child(3) { animation-delay: 0.7s; }
-    .feed-item:nth-child(4) { animation-delay: 0.8s; }
-    .feed-item:nth-child(5) { animation-delay: 0.9s; }
-    .feed-item:nth-child(6) { animation-delay: 1.0s; }
-    .feed-item:nth-child(7) { animation-delay: 1.1s; }
-    .feed-item:nth-child(8) { animation-delay: 1.2s; }
-    @keyframes feedItemIn { to { opacity: 1; } }
-    .feed-item-source {
-      font-size: 0.68rem;
-      font-weight: 600;
+    .intel-card:last-child { border-bottom: none; }
+    .intel-card:nth-child(1) { animation-delay: 0.1s; }
+    .intel-card:nth-child(2) { animation-delay: 0.2s; }
+    .intel-card:nth-child(3) { animation-delay: 0.3s; }
+    .intel-card:nth-child(4) { animation-delay: 0.4s; }
+    .intel-card:nth-child(5) { animation-delay: 0.5s; }
+    .intel-card:nth-child(6) { animation-delay: 0.6s; }
+    @keyframes intelIn { to { opacity: 1; } }
+
+    .intel-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .intel-card-icon { font-size: 0.9rem; }
+    .intel-card-type {
+      font-size: 0.62rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--ink-light);
-      margin-bottom: 4px;
+      letter-spacing: 0.08em;
+      color: var(--accent);
     }
-    .feed-item-title {
+    .intel-card-title {
       font-size: 0.88rem;
       font-weight: 600;
       line-height: 1.4;
       margin-bottom: 6px;
       color: var(--ink);
     }
-    .feed-item-summary {
+    .intel-card-body {
       font-size: 0.8rem;
       color: var(--ink-light);
       line-height: 1.5;
       margin-bottom: 8px;
     }
-    .feed-item-angle {
+    .intel-card-use {
       font-size: 0.78rem;
       line-height: 1.5;
       padding: 8px 10px;
@@ -244,7 +256,7 @@
       border-radius: 6px;
       color: var(--ink);
     }
-    .feed-item-angle-label {
+    .intel-card-use-label {
       font-size: 0.62rem;
       font-weight: 700;
       text-transform: uppercase;
@@ -252,7 +264,8 @@
       color: var(--accent);
       margin-bottom: 3px;
     }
-    /* Feed skeleton */
+
+    /* Skeleton */
     .feed-skeleton-item { padding: 14px 0; border-bottom: 1px solid var(--rule); }
     .feed-skeleton-item:last-child { border-bottom: none; }
     .feed-skel {
@@ -504,19 +517,19 @@
 
     <aside class="feed-sidebar">
       <div class="feed-header-bar">
-        <h3><span class="feed-dot"></span> Industry Intelligence</h3>
+        <h3><span class="feed-dot"></span> Sales Playbook</h3>
+        <div class="feed-status" id="intelStatus"></div>
       </div>
       <div class="feed-scroll" id="feedScroll">
         <div id="feedSkeleton">
           <div class="feed-skeleton-item"><div class="feed-skel feed-skel-source"></div><div class="feed-skel feed-skel-title"></div><div class="feed-skel feed-skel-title2"></div><div class="feed-skel feed-skel-text"></div><div class="feed-skel feed-skel-text2"></div></div>
           <div class="feed-skeleton-item"><div class="feed-skel feed-skel-source"></div><div class="feed-skel feed-skel-title"></div><div class="feed-skel feed-skel-title2"></div><div class="feed-skel feed-skel-text"></div><div class="feed-skel feed-skel-text2"></div></div>
           <div class="feed-skeleton-item"><div class="feed-skel feed-skel-source"></div><div class="feed-skel feed-skel-title"></div><div class="feed-skel feed-skel-title2"></div><div class="feed-skel feed-skel-text"></div><div class="feed-skel feed-skel-text2"></div></div>
-          <div class="feed-skeleton-item"><div class="feed-skel feed-skel-source"></div><div class="feed-skel feed-skel-title"></div><div class="feed-skel feed-skel-title2"></div><div class="feed-skel feed-skel-text"></div><div class="feed-skel feed-skel-text2"></div></div>
         </div>
         <div id="feedContent" style="display:none;"></div>
         <div id="feedError" class="feed-error" style="display:none;">
-          <p>Couldn't load feed.</p>
-          <button onclick="loadFeed()">Retry</button>
+          <p>Couldn't load playbook.</p>
+          <button onclick="loadIntel()">Retry</button>
         </div>
       </div>
     </aside>
@@ -581,6 +594,12 @@
         iconClass: 'icon-industry-feed',
         icon: '<svg fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 5c7.18 0 13 5.82 13 13M6 11a7 7 0 017 7m-6 0a1 1 0 110-2 1 1 0 010 2z"/></svg>',
         description: 'AI-curated industry news with sales angles. See what matters in your market and how to use it in prospect conversations — updated in real time.'
+      },
+      'research': {
+        name: 'Research Assistant',
+        iconClass: 'icon-research',
+        icon: '<svg fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>',
+        description: 'Find real stats, data, and research to back up your pitch. Ask any question and get sourced answers you can drop into proposals and presentations.'
       }
     };
 
@@ -623,7 +642,7 @@
       window.location.href = '/' + SLUG + '/login';
     }
 
-    // ── Industry Feed (3-phase: cache -> raw headlines -> AI-enhanced) ──
+    // ── Sales Playbook (Perplexity-powered, cached) ──
     function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
     function timeAgo(isoStr) {
@@ -637,32 +656,30 @@
       return Math.floor(hrs / 24) + 'd ago';
     }
 
-    function renderFeed(data, statusNote) {
-      var articles = data.articles || [];
-      if (articles.length === 0) {
+    function renderIntel(data, statusText) {
+      var items = data.items || [];
+      if (items.length === 0) {
         document.getElementById('feedSkeleton').style.display = 'none';
         document.getElementById('feedContent').style.display = 'none';
         document.getElementById('feedError').style.display = '';
         return;
       }
+      document.getElementById('intelStatus').textContent = statusText || '';
+      var typeLabels = { trend: 'Trend', objection: 'Objection Buster', opener: 'Conversation Starter', stat: 'Key Stat', competitor: 'Competitive Intel', tip: 'Sales Tip' };
       var html = '';
-      if (statusNote) {
-        html += '<div style="text-align:center;padding:6px 10px;margin-bottom:10px;font-size:0.72rem;color:var(--muted);opacity:0.7;border-radius:6px;background:rgba(0,0,0,0.05);">' + statusNote + '</div>';
-      }
-      articles.forEach(function(a) {
-        var titleHtml = a.link
-          ? '<a href="' + esc(a.link) + '" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">' + esc(a.title) + '</a>'
-          : esc(a.title);
-        html += '<div class="feed-item">' +
-          '<div class="feed-item-source">' + esc(a.source || '') + (a.date ? ' &middot; ' + esc(a.date) : '') + '</div>' +
-          '<div class="feed-item-title">' + titleHtml + '</div>';
-        if (a.summary) {
-          html += '<div class="feed-item-summary">' + esc(a.summary) + '</div>';
-        }
-        if (a.sales_angle) {
-          html += '<div class="feed-item-angle"><div class="feed-item-angle-label">Sales Angle</div>' + esc(a.sales_angle) + '</div>';
-        }
-        html += '</div>';
+      items.forEach(function(item) {
+        html += '<div class="intel-card">' +
+          '<div class="intel-card-header">' +
+            '<span class="intel-card-icon">' + esc(item.icon || '') + '</span>' +
+            '<span class="intel-card-type">' + esc(typeLabels[item.type] || item.type || '') + '</span>' +
+          '</div>' +
+          '<div class="intel-card-title">' + esc(item.title) + '</div>' +
+          '<div class="intel-card-body">' + esc(item.body) + '</div>' +
+          '<div class="intel-card-use">' +
+            '<div class="intel-card-use-label">Use It</div>' +
+            esc(item.use_it || '') +
+          '</div>' +
+        '</div>';
       });
       document.getElementById('feedSkeleton').style.display = 'none';
       document.getElementById('feedContent').innerHTML = html;
@@ -670,69 +687,58 @@
       document.getElementById('feedError').style.display = 'none';
     }
 
-    async function loadFeed() {
+    async function loadIntel() {
       document.getElementById('feedSkeleton').style.display = '';
       document.getElementById('feedContent').style.display = 'none';
       document.getElementById('feedError').style.display = 'none';
+      document.getElementById('intelStatus').textContent = '';
 
-      // Phase 1: Try cached version (instant)
+      // Phase 1: Show cached version instantly
       try {
-        var cacheRes = await fetch('/api/industry-feed', {
+        var cacheRes = await fetch('/api/sales-intel', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ clientConfig: CLIENT_CONFIG, cacheOnly: true })
         });
         var cacheData = await cacheRes.json();
 
-        if (cacheData.articles && cacheData.articles.length > 0) {
+        if (cacheData.items && cacheData.items.length > 0) {
           var ago = timeAgo(cacheData._cachedAt);
-          var note = ago ? 'Updated ' + ago : '';
-          if (cacheData._stale) note += ' &middot; Refreshing...';
-          renderFeed(cacheData, note);
+          renderIntel(cacheData, ago ? 'Updated ' + ago : '');
 
+          // Refresh in background if stale
           if (cacheData._stale) {
-            fetch('/api/industry-feed', {
+            document.getElementById('intelStatus').textContent = (ago ? 'Updated ' + ago + ' · ' : '') + 'Refreshing...';
+            fetch('/api/sales-intel', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ clientConfig: CLIENT_CONFIG })
             }).then(function(r) { return r.json(); }).then(function(d) {
-              if (d.articles && d.articles.length > 0) renderFeed(d, 'Updated just now');
+              if (d.items && d.items.length > 0) renderIntel(d, 'Updated just now');
             }).catch(function() {});
           }
           return;
         }
-      } catch (e) { /* no cache, fall through */ }
+      } catch (e) { /* no cache */ }
 
-      // Phase 2: No cache — fetch raw headlines instantly (~2-3s)
+      // Phase 2: No cache — full load
       try {
-        var headRes = await fetch('/api/industry-feed/headlines', {
+        var res = await fetch('/api/sales-intel', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ clientConfig: CLIENT_CONFIG })
         });
-        var headText = await headRes.text();
-        var headData;
-        try { headData = JSON.parse(headText); } catch(pe) { headData = { articles: [] }; }
-
-        if (headData.articles && headData.articles.length > 0) {
-          renderFeed(headData, 'Headlines &middot; Loading analysis...');
-
-          // Phase 3: Enhance with AI in background
-          fetch('/api/industry-feed', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ clientConfig: CLIENT_CONFIG })
-          }).then(function(r) { return r.json(); }).then(function(d) {
-            if (d.articles && d.articles.length > 0) renderFeed(d, 'Updated just now');
-          }).catch(function() {});
-          return;
-        }
-      } catch (e) { /* headlines failed too */ }
-
-      document.getElementById('feedSkeleton').style.display = 'none';
-      document.getElementById('feedError').style.display = '';
+        var text = await res.text();
+        var data;
+        try { data = JSON.parse(text); } catch(pe) { throw new Error('parse'); }
+        if (data.error) throw new Error(data.error);
+        renderIntel(data, 'Updated just now');
+      } catch (e) {
+        document.getElementById('feedSkeleton').style.display = 'none';
+        document.getElementById('feedError').style.display = '';
+      }
     }
-    loadFeed();
+    loadIntel();
   </script>
 </body>
 </html>

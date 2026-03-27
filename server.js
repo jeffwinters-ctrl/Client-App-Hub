@@ -696,6 +696,25 @@ app.get('/:slug/industry-feed', requireAuth, async (req, res) => {
   }));
 });
 
+// ─── RESEARCH ASSISTANT APP ──────────────────────────────
+
+app.get('/:slug/research', requireAuth, async (req, res) => {
+  const client = await getClient(req.params.slug);
+  if (!client) return res.status(404).send(renderTemplate('404.html', {}));
+  if (!client.apps.includes('research')) return res.status(403).send('App not available');
+  logEvent(client.slug, 'research', 'app_open', {}, req);
+  res.send(renderTemplate('research.html', {
+    CLIENT_CONFIG: JSON.stringify(client),
+    PAGE_TITLE: `Research Assistant — ${client.companyName}`,
+    SLUG: client.slug,
+    COMPANY_NAME: client.companyName,
+    PRIMARY_COLOR: client.primaryColor,
+    ACCENT_COLOR: client.accentColor,
+    LOGO_URL: client.logo,
+    POWERED_BY: client.poweredBy
+  }));
+});
+
 // ─── AI API PROXIES ──────────────────────────────────────
 
 function buildClientContext(client) {
@@ -1250,143 +1269,185 @@ RULES:
 
 // ─── INDUSTRY FEED API ───────────────────────────────────
 
-// Helper: fetch RSS headlines
-async function fetchRssHeadlines(clientConfig) {
-  const searchTerms = clientConfig.productDescription
-    ? clientConfig.productDescription.split(/[,.]/).slice(0, 2).join(' ').trim()
-    : (clientConfig.context || clientConfig.companyName || '').split('.')[0];
+// ─── SALES INTEL (Claude-powered, cached) ──────────────────────
 
-  let articles = [];
-  const queries = [searchTerms];
-  if (clientConfig.industry && clientConfig.industry !== 'general') {
-    queries.push(clientConfig.industry + ' industry news');
-  }
-
-  for (const q of queries) {
-    if (articles.length >= 10) break;
-    try {
-      const rssUrl = 'https://news.google.com/rss/search?q=' + encodeURIComponent(q) + '&hl=en-US&gl=US&ceid=US:en';
-      const rssRes = await fetch(rssUrl, {
-        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; SapperBot/1.0)' },
-        signal: AbortSignal.timeout(5000)
-      });
-      const rssXml = await rssRes.text();
-      const items = rssXml.split('<item>').slice(1, 8);
-      items.forEach(item => {
-        const title = (item.match(/<title><!\[CDATA\[(.*?)\]\]>/) || item.match(/<title>(.*?)<\/title>/) || [])[1] || '';
-        const link = (item.match(/<link\/>(.*?)</) || item.match(/<link>(.*?)<\/link>/) || [])[1] || '';
-        const pubDate = (item.match(/<pubDate>(.*?)<\/pubDate>/) || [])[1] || '';
-        const source = (item.match(/<source[^>]*>(.*?)<\/source>/) || [])[1] || '';
-        if (title && link) {
-          articles.push({
-            title: title.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/<!\[CDATA\[|\]\]>/g, ''),
-            link: link.trim(),
-            source,
-            date: pubDate ? new Date(pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''
-          });
-        }
-      });
-    } catch (e) {
-      console.error('RSS fetch error for query "' + q + '":', e.message);
-    }
-  }
-
-  const seen = new Set();
-  return articles.filter(a => {
-    const key = a.title.toLowerCase().substring(0, 60);
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  }).slice(0, 8);
-}
-
-// Fast RSS-only endpoint (2-3s)
-app.post('/api/industry-feed/headlines', async (req, res) => {
-  try {
-    const { clientConfig } = req.body;
-    if (!clientConfig) return res.status(400).json({ error: 'Missing client config' });
-    const articles = await fetchRssHeadlines(clientConfig);
-    res.json({ articles, _raw: true });
-  } catch (e) {
-    console.error('Headlines error:', e);
-    res.status(500).json({ error: e.message });
-  }
-});
-
-app.post('/api/industry-feed', async (req, res) => {
+app.post('/api/sales-intel', async (req, res) => {
   try {
     const { clientConfig, cacheOnly } = req.body;
     if (!clientConfig) return res.status(400).json({ error: 'Missing client config' });
 
-    // Check Supabase cache
+    // Check Supabase cache (6-hour TTL)
     if (supabase && clientConfig.slug) {
       try {
         const { data: row } = await supabase.from('clients').select('data').eq('slug', clientConfig.slug).single();
-        if (row?.data?._feedCache && row?.data?._feedCacheTime) {
-          const age = Date.now() - new Date(row.data._feedCacheTime).getTime();
-          const isFresh = age < 4 * 60 * 60 * 1000;
+        if (row?.data?._intelCache && row?.data?._intelCacheTime) {
+          const age = Date.now() - new Date(row.data._intelCacheTime).getTime();
+          const isFresh = age < 6 * 60 * 60 * 1000;
           if (isFresh || cacheOnly) {
-            const cachedAt = row.data._feedCacheTime;
-            return res.json({ ...row.data._feedCache, _cachedAt: cachedAt, _stale: !isFresh });
+            return res.json({ ...row.data._intelCache, _cachedAt: row.data._intelCacheTime, _stale: !isFresh });
           }
         }
-      } catch (e) { /* cache miss, continue */ }
+      } catch (e) { /* cache miss */ }
     }
 
     if (cacheOnly) {
-      return res.json({ articles: [], _noCache: true });
+      return res.json({ items: [], _noCache: true });
     }
 
-    const articles = await fetchRssHeadlines(clientConfig);
+    const pplxKey = process.env.PERPLEXITY_API_KEY;
+    if (!pplxKey) return res.status(500).json({ error: 'Perplexity API key not configured. Add PERPLEXITY_API_KEY to environment variables.' });
 
-    if (articles.length === 0) {
-      return res.json({ articles: [], feed_context: 'No recent articles found.' });
-    }
+    const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+    const clientContext = buildClientContext(clientConfig);
 
-    const systemPrompt = `You are a sales intelligence analyst. Given real news articles and a company profile, add a brief summary and sales angle to each.
+    const systemMsg = `You are a senior sales strategist who prepares daily intelligence briefings for B2B sales teams using the latest real-world data and news.
 
 CLIENT CONTEXT:
-${buildClientContext(clientConfig)}
+${clientContext}
 
-Return ONLY valid JSON:
+Today: ${today}
+
+Search for the latest trends, news, statistics, and competitive intelligence relevant to this company and their buyers. Generate a briefing with exactly 6 items a sales rep can use TODAY.
+
+Return ONLY valid JSON (no markdown, no code fences):
 {
-  "feed_context": "Brief 1-sentence description of the topics covered",
-  "articles": [
+  "items": [
     {
-      "title": "Exact original article title",
-      "link": "Exact original URL",
-      "source": "Source name",
-      "date": "Date string",
-      "summary": "1-2 sentence summary",
-      "sales_angle": "1 actionable sentence for sales reps"
+      "type": "trend",
+      "icon": "📈",
+      "title": "Short punchy headline",
+      "body": "2-3 sentences with REAL current data or news. Cite sources.",
+      "use_it": "Exactly how to use this on a sales call — specific words or questions."
+    },
+    {
+      "type": "objection",
+      "icon": "🛡️",
+      "title": "Common objection headline",
+      "body": "The objection and real data that counters it.",
+      "use_it": "Exact counter with data point to cite."
+    },
+    {
+      "type": "opener",
+      "icon": "💬",
+      "title": "Conversation starter",
+      "body": "A timely question or insight based on current events/trends.",
+      "use_it": "Use in cold outreach, discovery calls, or LinkedIn messages."
+    },
+    {
+      "type": "stat",
+      "icon": "📊",
+      "title": "Compelling real statistic",
+      "body": "A real stat from a recent report or study with the source.",
+      "use_it": "Drop this in a pitch deck, email, or proposal."
+    },
+    {
+      "type": "competitor",
+      "icon": "⚔️",
+      "title": "Competitive insight",
+      "body": "Real competitive landscape intel — recent moves, weaknesses, or openings.",
+      "use_it": "How to position against this."
+    },
+    {
+      "type": "tip",
+      "icon": "🎯",
+      "title": "Tactical tip based on current market",
+      "body": "A practical approach tied to what's happening in the market right now.",
+      "use_it": "Step-by-step how to execute today."
     }
   ]
-}
+}`;
 
-RULES:
-- Keep the 6 MOST relevant articles for this sales team
-- Preserve exact title, link, source, and date from input
-- Be concise — short summaries, punchy sales angles
-- Order by most useful first`;
+    const pplxRes = await fetch('https://api.perplexity.ai/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + pplxKey
+      },
+      body: JSON.stringify({
+        model: 'sonar',
+        messages: [
+          { role: 'system', content: systemMsg },
+          { role: 'user', content: `Generate today's sales intelligence briefing for a company that sells: ${clientConfig.productDescription || clientConfig.context || 'B2B solutions'}. Search for the latest relevant industry news, statistics, and competitive intel.` }
+        ],
+        max_tokens: 2000
+      })
+    });
 
-    const userPrompt = 'Articles:\n' + articles.map((a, i) => (i + 1) + '. "' + a.title + '" — ' + a.source + ' (' + a.date + ') [' + a.link + ']').join('\n');
-    const raw = await callClaude(systemPrompt, userPrompt, 1200);
-    const result = extractJSON(raw);
+    if (!pplxRes.ok) {
+      const err = await pplxRes.text();
+      throw new Error('Perplexity API error: ' + pplxRes.status);
+    }
 
-    // Cache result in Supabase
+    const pplxData = await pplxRes.json();
+    const rawText = pplxData.choices?.[0]?.message?.content || '';
+    const result = extractJSON(rawText);
+
+    // Cache in Supabase
     if (supabase && clientConfig.slug) {
       try {
         const client = await getClient(clientConfig.slug);
         if (client) {
-          const updated = { ...client, _feedCache: result, _feedCacheTime: new Date().toISOString() };
+          const updated = { ...client, _intelCache: result, _intelCacheTime: new Date().toISOString() };
           await supabase.from('clients').update({ data: updated, updated_at: new Date().toISOString() }).eq('slug', clientConfig.slug);
         }
-      } catch (e) { console.error('Feed cache write error:', e.message); }
+      } catch (e) { console.error('Intel cache write error:', e.message); }
     }
 
     res.json(result);
   } catch (e) {
-    console.error('Industry feed error:', e);
+    console.error('Sales intel error:', e);
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// ─── RESEARCH ASSISTANT (Perplexity-powered) ──────────────────
+
+app.post('/api/research', async (req, res) => {
+  try {
+    const { query, clientConfig } = req.body;
+    if (!query || !clientConfig) return res.status(400).json({ error: 'Missing query or client config' });
+
+    const pplxKey = process.env.PERPLEXITY_API_KEY;
+    if (!pplxKey) return res.status(500).json({ error: 'Perplexity API key not configured. Add PERPLEXITY_API_KEY to environment variables.' });
+
+    const systemMsg = `You are a research assistant for a B2B sales team. The company sells: ${clientConfig.productDescription || clientConfig.context || 'B2B products/services'}. Their industry: ${clientConfig.industry || 'general'}. Their buyers: ${clientConfig.targetBuyers || 'business decision-makers'}.
+
+When answering research queries:
+- Provide specific data, statistics, and facts with sources
+- Focus on information that helps sales conversations
+- Include recent/current data when possible
+- Structure your response with clear sections
+- Always cite your sources`;
+
+    const pplxRes = await fetch('https://api.perplexity.ai/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + pplxKey
+      },
+      body: JSON.stringify({
+        model: 'sonar',
+        messages: [
+          { role: 'system', content: systemMsg },
+          { role: 'user', content: query }
+        ],
+        max_tokens: 2000
+      })
+    });
+
+    if (!pplxRes.ok) {
+      const err = await pplxRes.text();
+      throw new Error('Perplexity API error: ' + pplxRes.status + ' ' + err);
+    }
+
+    const pplxData = await pplxRes.json();
+    const answer = pplxData.choices?.[0]?.message?.content || '';
+    const citations = pplxData.citations || [];
+
+    await logEvent(clientConfig.slug, 'research', 'query_complete', { query }, req);
+    res.json({ answer, citations });
+  } catch (e) {
+    console.error('Research error:', e);
     res.status(500).json({ error: e.message });
   }
 });
